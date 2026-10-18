@@ -1,0 +1,18 @@
+# Shell scriptler ve YAML/JSON dosyaları LF kalmali (Linux/macOS build'leri bozulmasin)
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+
+# Binary dosyalar
+*.png binary
+*.ico binary
+*.icns binary
+*.exe binary
+*.dmg binary
+*.flatpak binary

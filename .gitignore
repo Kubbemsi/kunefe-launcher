@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+.venv/
+venv/
+
+# PyInstaller build
+build/
+dist/
+*.spec
+
+# Loglar
+logs/
+
+# IDE
+.idea/
+
+# Büyük binary dosyalar
+downloads/
+*.exe
+*.flatpak
+*.dmg
+
+# Kişisel veriler (users.json sunucudan gelir)

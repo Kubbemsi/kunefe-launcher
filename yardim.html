@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KünefeSMP | Yardım ve Rehber</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <!-- MOBİL TESPİT VE YÖNLENDİRME KODU -->
+    <script>
+        function checkMobileRedirect() {
+            if (window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                window.location.href = "yardim-mobil.html";
+            }
+        }
+        checkMobileRedirect();
+        window.addEventListener('resize', checkMobileRedirect);
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: #0d0401;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- ARKA PLAN --- */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            background: radial-gradient(circle at center, #3d1708 0%, #1c0a03 60%, #0d0401 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 20px 60px 20px;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(rgba(202, 138, 4, 0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(202, 138, 4, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        /* --- ÜST MENÜ (BİREBİR KORUNDU) --- */
+        header {
+            width: 100%;
+            max-width: 1300px;
+            margin: 40px auto 30px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(35, 17, 8, 0.85);
+            border: 2px solid #ca8a04;
+            border-radius: 18px;
+            padding: 15px 25px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            z-index: 50;
+            position: relative;
+        }
+
+        .logo-box {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #fef08a 0%, #facc15 100%);
+            color: #422006;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .logo-box:hover { transform: scale(1.05); }
+
+        nav ul {
+            display: flex;
+            gap: 15px;
+            list-style: none;
+        }
+
+        nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        nav ul li a.active, nav ul li a:hover {
+            background: #facc15;
+            color: #422006;
+        }
+
+        nav ul li a.active svg, nav ul li a:hover svg { fill: #422006; }
+
+                nav ul li { position: relative; }
+
+        /* AÇILIR (DROPDOWN) MENÜ STİLİ */
+        .dropdown { position: relative; }
+        .dropdown-toggle { cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .dropdown-arrow { font-size: 10px; transition: transform 0.25s ease; margin-left: 2px; }
+        .dropdown:hover .dropdown-arrow { transform: rotate(180deg); }
+        .dropdown:hover .dropdown-toggle { background: #facc15; color: #422006; }
+        .dropdown:hover .dropdown-toggle svg { fill: #422006; }
+
+        /* Fare aradaki boşluktan geçerken kapanmaması için görünmez köprü */
+        .dropdown::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 16px;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            width: 290px;
+            background: #190903;
+            border: 2px solid #ca8a04;
+            border-radius: 16px;
+            padding: 10px;
+            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.85);
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        .dropdown:hover .dropdown-menu {
+            display: flex;
+            animation: fadeInDown 0.25s ease forwards;
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(2px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(10px); }
+        }
+        .drop-item {
+            display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+            border-radius: 10px; text-decoration: none; color: #f3f4f6 !important;
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(202, 138, 4, 0.2);
+            transition: all 0.2s ease;
+        }
+        .drop-item:hover {
+            background: rgba(250, 204, 21, 0.15) !important;
+            border-color: #facc15; color: #facc15 !important;
+            transform: translateX(4px);
+        }
+        .drop-icon { font-size: 20px; flex-shrink: 0; }
+        .drop-info { display: flex; flex-direction: column; gap: 2px; text-align: left; }
+        .drop-title { font-size: 13px; font-weight: 900; color: #fff; }
+        .drop-sub { font-size: 10px; color: #9ca3af; font-weight: 700; }
+        .drop-badge { margin-left: auto; font-size: 9px; padding: 2px 7px; border-radius: 8px; font-weight: 900; text-transform: uppercase; }
+        .drop-badge.rec { background: #15803d; color: #fff; }
+        .drop-badge.soon { background: rgba(255, 255, 255, 0.1); color: #9ca3af; }
+        .drop-divider { height: 1px; background: rgba(202, 138, 4, 0.25); margin: 4px 6px; }
+
+        .user-btn {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #ca8a04;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #facc15;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .user-btn:hover { background: rgba(202, 138, 4, 0.2); }
+
+        /* --- İÇERİK KONTEYNERİ --- */
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            margin-top: 10px;
+        }
+
+        .page-header {
+            text-align: center;
+        }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(35, 17, 8, 0.9);
+            border: 1.5px solid #ca8a04;
+            color: #fef08a;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
+        }
+
+        .page-header h1 {
+            font-size: 42px;
+            font-weight: 900;
+            color: #facc15;
+            text-shadow: 0 0 25px rgba(250, 204, 21, 0.35);
+            letter-spacing: 1.5px;
+        }
+
+        .page-header p {
+            font-size: 13px;
+            font-weight: 800;
+            color: #fef08a;
+            margin-top: 6px;
+            opacity: 0.9;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 900;
+            color: #facc15;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .section-line {
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(202, 138, 4, 0.5), transparent);
+        }
+
+        /* --- TEMEL SUNUCU KOMUTLARI --- */
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 14px;
+        }
+
+        .command-card {
+            background: rgba(35, 17, 8, 0.8);
+            border: 2px solid #ca8a04;
+            border-radius: 16px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            backdrop-filter: blur(6px);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .command-card:hover {
+            transform: translateY(-3px);
+            border-color: #facc15;
+            background: rgba(45, 22, 10, 0.95);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+        }
+
+        .cmd-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cmd-badge {
+            border: 1.5px solid #facc15;
+            background: rgba(250, 204, 21, 0.08);
+            color: #facc15;
+            font-weight: 900;
+            font-size: 13px;
+            padding: 8px 14px;
+            border-radius: 10px;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(250, 204, 21, 0.15);
+        }
+
+        .cmd-desc {
+            font-size: 12px;
+            font-weight: 800;
+            color: #e5e7eb;
+            text-align: right;
+            line-height: 1.4;
+        }
+
+        .copy-hint {
+            font-size: 10px;
+            color: #ca8a04;
+            font-weight: 800;
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* --- SUNUCU KURALLARI --- */
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+            gap: 14px;
+        }
+
+        .rule-card {
+            background: rgba(35, 17, 8, 0.8);
+            border: 2px solid #ca8a04;
+            border-radius: 16px;
+            padding: 18px 22px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            backdrop-filter: blur(6px);
+            transition: all 0.25s ease;
+        }
+
+        .rule-card:hover {
+            transform: translateY(-2px);
+            border-color: #facc15;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+        }
+
+        .rule-num {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+            color: #ffffff;
+            font-weight: 900;
+            font-size: 14px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .rule-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .rule-title {
+            font-size: 15px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 0.3px;
+        }
+
+        .rule-desc {
+            font-size: 12px;
+            font-weight: 700;
+            color: #d1d5db;
+            line-height: 1.4;
+        }
+
+        /* --- CANLI DESTEK & TALEP KARTI --- */
+        .support-banner {
+            background: linear-gradient(135deg, #14532d 0%, #166534 100%);
+            border: 2px solid #22c55e;
+            border-radius: 20px;
+            padding: 26px 34px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(22, 101, 52, 0.45);
+            gap: 20px;
+        }
+
+        .support-info h3 {
+            font-size: 22px;
+            font-weight: 900;
+            color: #ffffff;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .support-info p {
+            font-size: 13px;
+            font-weight: 800;
+            color: #bbf7d0;
+            opacity: 0.95;
+        }
+
+        .support-btn {
+            background: #22c55e;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 900;
+            font-size: 13px;
+            padding: 14px 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+            transition: all 0.25s ease;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .support-btn:hover {
+            transform: scale(1.04);
+            background: #16a34a;
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+        }
+
+        /* TOAST BİLDİRİMİ */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #facc15;
+            color: #422006;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 900;
+            font-size: 14px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 850px) {
+            .rules-grid { grid-template-columns: 1fr; }
+            .support-banner { flex-direction: column; gap: 16px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero-section">
+        <!-- ÜST MENÜ (BİREBİR KORUNDU) -->
+        <header>
+            <a href="index.html" class="logo-box">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>
+            </a>
+
+            <nav>
+                <ul>
+                    <li><a href="index.html">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                        ANASAYFA
+                    </a></li>
+                    <li><a href="magaza.html">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                        MAĞAZA
+                    </a></li>
+                    <!-- AÇILIR LAUNCHER MENÜSÜ -->
+                    <li class="dropdown">
+                        <a href="launcher.html" class="dropdown-toggle">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg> 
+                            <span>LAUNCHER</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a href="downloads/KunefeLauncher.exe" download="KunefeLauncher.exe" class="drop-item">
+                                <span class="drop-icon">🪟</span>
+                                <div class="drop-info">
+                                    <span class="drop-title">Windows (.exe)</span>
+                                    <span class="drop-sub">Windows 10 / 11 İndir</span>
+                                </div>
+                                <span class="drop-badge rec">Önerilen</span>
+                            </a>
+                            <a href="downloads/KunefeSMP-Launcher.flatpak" download="KunefeSMP-Launcher.flatpak" class="drop-item">
+                                <span class="drop-icon">🐧</span>
+                                <div class="drop-info">
+                                    <span class="drop-title">Linux (.flatpak)</span>
+                                    <span class="drop-sub">Steam Deck & Tüm Dağıtımlar</span>
+                                </div>
+                                <span class="drop-badge rec">Flatpak</span>
+                            </a>
+                            <a href="downloads/KunefeLauncher.dmg" download="KunefeLauncher.dmg" class="drop-item">
+                                <span class="drop-icon">🍎</span>
+                                <div class="drop-info">
+                                    <span class="drop-title">macOS (.dmg)</span>
+                                    <span class="drop-sub">M1/M2/M3 & Intel İndir</span>
+                                </div>
+                                <span class="drop-badge rec">DMG</span>
+                            </a>
+                            <div class="drop-divider"></div>
+                            <div class="drop-item" style="opacity: 0.65; cursor: default;">
+                                <span class="drop-icon">📱</span>
+                                <div class="drop-info">
+                                    <span class="drop-title">Android & iOS</span>
+                                    <span class="drop-sub">Play Store & App Store</span>
+                                </div>
+                                <span class="drop-badge soon">Yakında</span>
+                            </div>
+                        </div>
+                    </li>
+                    <li><a href="yardim.html" class="active">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+                        YARDIM
+                    </a></li>
+                    <li><a href="destek.html">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z"/></svg>
+                        DESTEK
+                    </a></li>
+                    <li><a href="cezalar.html">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm5.31-3.1L6.1 5.69C7.45 4.63 9.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/></svg>
+                        CEZALAR
+                    </a></li>
+                </ul>
+            </nav>
+
+            <a href="giris.html" class="user-btn">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </a>
+        </header>
+
+        <!-- İÇERİK ALANI -->
+        <div class="container">
+            <!-- BAŞLIK -->
+            <div class="page-header">
+                <div class="header-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#facc15"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+                    <span>BİLGİ & REHBER MERKEZİ</span>
+                </div>
+                <h1>YARDIM VE REHBER</h1>
+                <p>Temel komutlar, sunucu kuralları ve canlı destek bilgileri</p>
+            </div>
+
+            <!-- KOMUTLAR SEKSİYONU (TIKLA-KOPYALA ÖZELLİKLİ) -->
+            <div>
+                <div class="section-header">
+                    <h2 class="section-title">TEMEL SUNUCU KOMUTLARI</h2>
+                    <div class="section-line"></div>
+                </div>
+                <div class="commands-grid">
+                    <!-- SPAWN -->
+                    <div class="command-card" onclick="copyCommand('/spawn')">
+                        <div class="cmd-left">
+                            <div class="cmd-badge">/spawn</div>
+                        </div>
+                        <div class="cmd-desc">
+                            Ana doğma alanına ışınlanır.
+                            <span class="copy-hint">Tıkla ve Kopyala</span>
+                        </div>
+                    </div>
+
+                    <!-- HOME -->
+                    <div class="command-card" onclick="copyCommand('/home')">
+                        <div class="cmd-left">
+                            <div class="cmd-badge">/home</div>
+                        </div>
+                        <div class="cmd-desc">
+                            Ev menüsünü açar (ışınlan veya kaydet).
+                            <span class="copy-hint">Tıkla ve Kopyala</span>
+                        </div>
+                    </div>
+
+                    <!-- TPA -->
+                    <div class="command-card" onclick="copyCommand('/tpa')">
+                        <div class="cmd-left">
+                            <div class="cmd-badge">/tpa [oyuncu]</div>
+                        </div>
+                        <div class="cmd-desc">
+                            Oyuncuya ışınlanma isteği gönderir.
+                            <span class="copy-hint">Tıkla ve Kopyala</span>
+                        </div>
+                    </div>
+
+                    <!-- TPACCEPT -->
+                    <div class="command-card" onclick="copyCommand('/tpaccept')">
+                        <div class="cmd-left">
+                            <div class="cmd-badge">/tpaccept</div>
+                        </div>
+                        <div class="cmd-desc">
+                            Gelen ışınlanma isteğini kabul eder.
+                            <span class="copy-hint">Tıkla ve Kopyala</span>
+                        </div>
+                    </div>
+
+                    <!-- AH -->
+                    <div class="command-card" onclick="copyCommand('/ah')">
+                        <div class="cmd-left">
+                            <div class="cmd-badge">/ah</div>
+                        </div>
+                        <div class="cmd-desc">
+                            Oyuncuların pazarını ve açık artırmayı açar.
+                            <span class="copy-hint">Tıkla ve Kopyala</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KURALLAR SEKSİYONU (2 SÜTUNLU MODERN KARTLAR) -->
+            <div>
+                <div class="section-header">
+                    <h2 class="section-title">SUNUCU KURALLARI</h2>
+                    <div class="section-line"></div>
+                </div>
+                <div class="rules-grid">
+                    <!-- KURAL 1 -->
+                    <div class="rule-card">
+                        <div class="rule-num">01</div>
+                        <div class="rule-content">
+                            <div class="rule-title">Saygılı Olun</div>
+                            <div class="rule-desc">Dini, milli veya kişisel değerlere hakaret etmek, kışkırtıcılık kesinlikle yasaktır.</div>
+                        </div>
+                    </div>
+
+                    <!-- KURAL 2 -->
+                    <div class="rule-card">
+                        <div class="rule-num">02</div>
+                        <div class="rule-content">
+                            <div class="rule-title">Hile & Yazılım Yasaktır</div>
+                            <div class="rule-desc">Her türlü hile istemcisi, X-ray doku paketi, makro ve AutoClicker kalıcı ban sebebidir.</div>
+                        </div>
+                    </div>
+
+                    <!-- KURAL 3 -->
+                    <div class="rule-card">
+                        <div class="rule-num">03</div>
+                        <div class="rule-content">
+                            <div class="rule-title">Sohbet Düzeni</div>
+                            <div class="rule-desc">Spam, büyük harf (CAPS), başka sunucu reklamı ve küfürlü argo söylemler yasaktır.</div>
+                        </div>
+                    </div>
+
+                    <!-- KURAL 4 -->
+                    <div class="rule-card">
+                        <div class="rule-num">04</div>
+                        <div class="rule-content">
+                            <div class="rule-title">Bug İstismarı</div>
+                            <div class="rule-desc">Sunucudaki açıkları kendi çıkarına kullanmak yasaktır. Hataları bildirenlere ödül verilir.</div>
+                        </div>
+                    </div>
+
+                    <!-- KURAL 5 -->
+                    <div class="rule-card">
+                        <div class="rule-num">05</div>
+                        <div class="rule-content">
+                            <div class="rule-title">Hesap Güvenliği</div>
+                            <div class="rule-desc">Hesap ve eşya güvenliği tamamen oyuncunun sorumluluğundadır, şifrenizi paylaşmayın.</div>
+                        </div>
+                    </div>
+
+                    <!-- KURAL 6 -->
+                    <div class="rule-card">
+                        <div class="rule-num">06</div>
+                        <div class="rule-content">
+                            <div class="rule-title">Gerçek Para Ticareti (RMT)</div>
+                            <div class="rule-desc">Oyun içi para ve eşyaların gerçek Türk Lirası ile satılması kesinlikle yasaktır.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CANLI DESTEK BANNER -->
+            <div class="support-banner">
+                <div class="support-info">
+                    <h3>CANLI DESTEK & TİCKET</h3>
+                    <p>Sorunun çözülmedi mi veya şikayetin mi var? Discord sunucumuzdan 7/24 destek bileti açabilirsin.</p>
+                </div>
+                <a href="https://discord.gg/Mj6QMcNQ2" target="_blank" class="support-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                    <span>DİSCORD BİLETİ AÇ</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- TIKLA-KOPYALA TOAST BİLDİRİMİ -->
+    <div id="toast" class="toast">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        <span id="toast-text">Komut kopyalandı!</span>
+    </div>
+
+    <script>
+        function copyCommand(cmd) {
+            navigator.clipboard.writeText(cmd).then(() => {
+                const toast = document.getElementById('toast');
+                const toastText = document.getElementById('toast-text');
+                toastText.innerText = `"${cmd}" panoya kopyalandı!`;
+                toast.style.display = 'inline-flex';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 2000);
+            });
+        }
+    </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"a672f2b7e11e42eea7d1dad621a1b60a","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

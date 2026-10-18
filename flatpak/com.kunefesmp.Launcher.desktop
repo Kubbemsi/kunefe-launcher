@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=KunefeSMP Launcher
+Name[tr]=KunefeSMP Launcher
+Comment=KunefeSMP Ozel Minecraft Client Launcher
+Comment[tr]=KunefeSMP Özel Minecraft Client Launcher
+Exec=kunefe-launcher
+Icon=com.kunefesmp.Launcher
+Categories=Game;
+Keywords=minecraft;kunefe;smp;launcher;
+StartupWMClass=kunefe-launcher
+Terminal=false

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KünefeSMP | Cezalar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <!-- MASAÜSTÜ (PC) TESPİT VE YÖNLENDİRME KODU -->
+    <script>
+        function checkDesktopRedirect() {
+            if (window.innerWidth > 768 && !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                window.location.href = "cezalar.html";
+            }
+        }
+        checkDesktopRedirect();
+        window.addEventListener('resize', checkDesktopRedirect);
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #0d0401; color: #ffffff; min-height: 100vh; overflow-x: hidden; }
+
+        .page-wrapper {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            background: radial-gradient(circle at center, #3d1708 0%, #1c0a03 60%, #0d0401 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 16px 50px 16px;
+        }
+        .page-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(rgba(202,138,4,0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(202,138,4,0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+        }
+
+        /* HEADER */
+        header {
+            width: 100%;
+            margin: 20px auto 20px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(35,17,8,0.85);
+            border: 2px solid #ca8a04;
+            border-radius: 16px;
+            padding: 12px 16px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+        .logo-box { width: 42px; height: 42px; background: linear-gradient(135deg, #fef08a, #facc15); color: #422006; border-radius: 10px; display: flex; justify-content: center; align-items: center; text-decoration: none; flex-shrink: 0; }
+        .header-title { font-size: 16px; font-weight: 900; color: #facc15; letter-spacing: 1px; }
+        .hamburger-btn { width: 42px; height: 42px; border: 2px solid #ca8a04; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px; cursor: pointer; flex-shrink: 0; background: transparent; }
+        .hamburger-btn span { display: block; width: 20px; height: 2px; background: #facc15; border-radius: 2px; transition: all 0.3s ease; }
+        .hamburger-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger-btn.open span:nth-child(2) { opacity: 0; }
+        .hamburger-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        /* DRAWER */
+        .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(2px); }
+        .drawer-overlay.open { opacity: 1; pointer-events: all; }
+        .drawer { position: fixed; top: 0; right: 0; width: 75%; max-width: 280px; height: 100%; background: #111007; border-left: 2px solid #ca8a04; z-index: 100; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; padding: 30px 0; }
+        .drawer.open { transform: translateX(0); }
+        .drawer-header { display: flex; align-items: center; gap: 12px; padding: 0 24px 24px 24px; border-bottom: 1px solid rgba(202,138,4,0.2); margin-bottom: 16px; }
+        .drawer-logo { width: 40px; height: 40px; background: linear-gradient(135deg, #fef08a, #facc15); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #422006; }
+        .drawer-title { font-size: 15px; font-weight: 900; color: #facc15; }
+        .drawer-subtitle { font-size: 10px; color: #9ca3af; font-weight: 700; }
+        .drawer-nav { flex: 1; display: flex; flex-direction: column; gap: 4px; padding: 0 12px; }
+        .drawer-nav a { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 12px; text-decoration: none; color: #d1d5db; font-weight: 800; font-size: 13px; transition: all 0.2s ease; }
+        .drawer-nav a:hover, .drawer-nav a.active { background: rgba(202,138,4,0.15); color: #facc15; }
+        .drawer-nav a .nav-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(255,255,255,0.05); }
+        .drawer-nav a.active .nav-icon { background: rgba(202,138,4,0.2); }
+                /* MOBİL DRAWER AÇILIR (ACCORDION) LAUNCHER MENÜSÜ */
+        .drawer-dropdown {
+            display: flex;
+            flex-direction: column;
+            border-radius: 12px;
+            transition: all 0.25s ease;
+        }
+        .drawer-dropdown.open {
+            background: rgba(202, 138, 4, 0.08);
+            border: 1px solid rgba(202, 138, 4, 0.3);
+        }
+        .drawer-dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: #d1d5db;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 0.5px;
+            user-select: none;
+        }
+        .drawer-dropdown-toggle:active {
+            background: rgba(202, 138, 4, 0.12);
+            color: #facc15;
+        }
+        .drawer-dropdown.open .drawer-dropdown-toggle {
+            color: #facc15;
+        }
+        .drawer-dropdown-toggle .nav-icon {
+            width: 36px; height: 36px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+        .drawer-dropdown.open .drawer-dropdown-toggle .nav-icon {
+            background: rgba(202, 138, 4, 0.25);
+            color: #facc15;
+        }
+        .drawer-dropdown-toggle svg { fill: currentColor; }
+        .drawer-arrow {
+            margin-left: auto;
+            font-size: 10px;
+            color: #ca8a04;
+            transition: transform 0.25s ease;
+        }
+        .drawer-dropdown.open .drawer-arrow {
+            transform: rotate(180deg);
+            color: #facc15;
+        }
+
+        .drawer-submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 0 10px 0 10px;
+        }
+        .drawer-dropdown.open .drawer-submenu {
+            max-height: 360px;
+            padding: 4px 10px 10px 10px;
+        }
+
+        .drawer-subitem {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(202, 138, 4, 0.2);
+            color: #e5e7eb;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 800;
+            transition: all 0.2s ease;
+        }
+        .drawer-subitem:active {
+            background: rgba(250, 204, 21, 0.15);
+            border-color: #facc15;
+            color: #facc15;
+        }
+        .drawer-subitem.disabled {
+            opacity: 0.55;
+            pointer-events: none;
+        }
+        .drawer-subitem .sub-icon { font-size: 16px; flex-shrink: 0; }
+        .drawer-subitem .sub-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .drawer-subitem .sub-title { font-size: 12px; }
+        .drawer-subitem .sub-badge {
+            font-size: 9px;
+            padding: 2px 7px;
+            border-radius: 6px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+        .drawer-subitem .sub-badge.rec { background: #15803d; color: #fff; }
+        .drawer-subitem .sub-badge.soon { background: rgba(255, 255, 255, 0.1); color: #9ca3af; }
+        
+        .drawer-subitem-all {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 9px 12px;
+            border-radius: 8px;
+            background: rgba(250, 204, 21, 0.1);
+            color: #facc15;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 900;
+            margin-top: 2px;
+            transition: all 0.2s ease;
+        }
+        .drawer-subitem-all:active {
+            background: rgba(250, 204, 21, 0.2);
+        }
+
+        .drawer-divider { height: 1px; background: rgba(202,138,4,0.15); margin: 8px 24px; }
+        .drawer-footer { padding: 16px 24px 0 24px; border-top: 1px solid rgba(202,138,4,0.2); }
+        .drawer-footer a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; text-decoration: none; background: rgba(250,204,21,0.1); border: 1px solid rgba(202,138,4,0.3); color: #facc15; font-weight: 800; font-size: 13px; }
+
+        /* İÇERİK */
+        .container { width: 100%; z-index: 10; display: flex; flex-direction: column; gap: 20px; }
+
+        .page-header { text-align: center; margin-bottom: 4px; }
+        .header-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(35,17,8,0.9); border: 1.5px solid #ca8a04; color: #fef08a; padding: 5px 14px; border-radius: 20px; font-size: 10px; font-weight: 800; letter-spacing: 0.8px; margin-bottom: 8px; }
+        .page-header h1 { font-size: 26px; font-weight: 900; color: #facc15; text-shadow: 0 0 20px rgba(250,204,21,0.35); letter-spacing: 1px; }
+        .page-header p { font-size: 11px; font-weight: 800; color: #fef08a; margin-top: 6px; opacity: 0.9; }
+
+        /* MOBİL CEZA KARTLARI */
+        .penalty-list { display: flex; flex-direction: column; gap: 12px; }
+
+        .penalty-card {
+            background: rgba(35,17,8,0.85);
+            border: 1.5px solid #ca8a04;
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            backdrop-filter: blur(6px);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .player-head {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            image-rendering: pixelated;
+            border: 1px solid rgba(202, 138, 4, 0.4);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+        }
+
+        .player-name {
+            font-size: 14px;
+            font-weight: 900;
+            color: #ffffff;
+        }
+
+        /* ROZETLER */
+        .badge-ban {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #ffffff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .badge-mute {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #ffffff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .badge-kick {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: #ffffff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .card-reason {
+            background: rgba(0,0,0,0.25);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border-left: 3px solid #ca8a04;
+            font-size: 12px;
+            font-weight: 700;
+            color: #e5e7eb;
+            line-height: 1.4;
+        }
+
+        .card-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 800;
+            color: #9ca3af;
+            border-top: 1px solid rgba(202,138,4,0.15);
+            padding-top: 8px;
+        }
+
+        .card-bottom .staff { color: #fef08a; font-weight: 800; }
+        .card-bottom .duration { color: #d1d5db; font-weight: 800; }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #9ca3af;
+            font-weight: 700;
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            background: rgba(35,17,8,0.6);
+            border: 1.5px solid rgba(202,138,4,0.3);
+            border-radius: 16px;
+        }
+
+        .empty-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(34, 197, 94, 0.15);
+            border: 1.5px solid #22c55e;
+            color: #22c55e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- DRAWER OVERLAY -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+    <!-- DRAWER MENÜ -->
+    <div class="drawer" id="drawer">
+        <div class="drawer-header">
+            <div class="drawer-logo">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>
+            </div>
+            <div>
+                <div class="drawer-title">KünefeSMP</div>
+                <div class="drawer-subtitle">Minecraft Sunucusu</div>
+            </div>
+        </div>
+        <nav class="drawer-nav">
+            <a href="mobil.html">
+                <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
+                ANA SAYFA
+            </a>
+            <a href="magaza-mobil.html">
+                <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg></div>
+                MAĞAZA
+            </a>
+            <!-- AÇILIR LAUNCHER MOBİL MENÜSÜ -->
+            <div class="drawer-dropdown" id="drawerLauncherDrop">
+                <div class="drawer-dropdown-toggle" onclick="toggleDrawerDropdown()">
+                    <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg></div>
+                    <span>LAUNCHER</span>
+                    <span class="drawer-arrow">▼</span>
+                </div>
+                <div class="drawer-submenu" id="drawerSubmenu">
+                    <a href="downloads/KunefeLauncher.exe" download="KunefeLauncher.exe" class="drawer-subitem">
+                        <span class="sub-icon">🪟</span>
+                        <div class="sub-info">
+                            <span class="sub-title">Windows (.exe)</span>
+                            <span class="sub-badge rec">İndir</span>
+                        </div>
+                    </a>
+                    <a href="downloads/KunefeSMP-Launcher.flatpak" download="KunefeSMP-Launcher.flatpak" class="drawer-subitem">
+                        <span class="sub-icon">🐧</span>
+                        <div class="sub-info">
+                            <span class="sub-title">Linux (.flatpak)</span>
+                            <span class="sub-badge rec">İndir</span>
+                        </div>
+                    </a>
+                    <a href="downloads/KunefeLauncher.dmg" download="KunefeLauncher.dmg" class="drawer-subitem">
+                        <span class="sub-icon">🍎</span>
+                        <div class="sub-info">
+                            <span class="sub-title">macOS (.dmg)</span>
+                            <span class="sub-badge rec">İndir</span>
+                        </div>
+                    </a>
+                    <div class="drawer-subitem disabled">
+                        <span class="sub-icon">📱</span>
+                        <div class="sub-info">
+                            <span class="sub-title">Android & iOS</span>
+                            <span class="sub-badge soon">Yakında</span>
+                        </div>
+                    </div>
+                    <a href="launcher-mobil.html" class="drawer-subitem-all">
+                        <span>🚀 Tüm Launcher Detayları</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+            <a href="yardim-mobil.html">
+                <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg></div>
+                YARDIM
+            </a>
+            <a href="destek-mobil.html">
+                <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z"/></svg></div>
+                DESTEK
+            </a>
+            <a href="cezalar-mobil.html" class="active">
+                <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm5.31-3.1L6.1 5.69C7.45 4.63 9.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/></svg></div>
+                CEZALAR
+            </a>
+        </nav>
+        <div class="drawer-divider"></div>
+        <div class="drawer-footer">
+            <a href="giris-mobil.html">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                HESABIM
+            </a>
+        </div>
+    </div>
+
+    <div class="page-wrapper">
+        <header>
+            <a href="mobil.html" class="logo-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>
+            </a>
+            <span class="header-title">Cezalar</span>
+            <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleDrawer()">
+                <span></span><span></span><span></span>
+            </button>
+        </header>
+
+        <div class="container">
+            <!-- BAŞLIK -->
+            <div class="page-header">
+                <div class="header-badge">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="#facc15"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm5.31-3.1L6.1 5.69C7.45 4.63 9.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/></svg>
+                    DİSİPLİN VE ADALET
+                </div>
+                <h1>SUNUCU CEZALARI</h1>
+                <p>Son ban, mute ve kick kayıtları listelenir</p>
+            </div>
+
+            <!-- DİNAMİK CEZA KARTLARI LİSTESİ -->
+            <div class="penalty-list" id="penalty-list-body"></div>
+
+            <div id="no-penalty-msg" class="empty-state" style="display: none;">
+                <div class="empty-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                </div>
+                <span>Henüz aktif ceza kaydı bulunmamaktadır.</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+                function toggleDrawerDropdown() {
+            const drop = document.getElementById('drawerLauncherDrop');
+            if (drop) { drop.classList.toggle('open'); }
+        }
+        function toggleDrawer() {
+            const drawer = document.getElementById('drawer');
+            const overlay = document.getElementById('drawerOverlay');
+            const btn = document.getElementById('hamburgerBtn');
+            if (drawer.classList.contains('open')) { closeDrawer(); }
+            else {
+                drawer.classList.add('open');
+                overlay.classList.add('open');
+                btn.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        function closeDrawer() {
+            document.getElementById('drawer').classList.remove('open');
+            document.getElementById('drawerOverlay').classList.remove('open');
+            document.getElementById('hamburgerBtn').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        async function fetchAndRenderPenalties() {
+            const container = document.getElementById('penalty-list-body');
+            const noPenaltyMsg = document.getElementById('no-penalty-msg');
+
+            container.innerHTML = '';
+
+            try {
+                const response = await fetch('cezalar.json');
+                if (!response.ok) throw new Error('JSON dosyası okunamadı');
+                
+                const rawData = await response.json();
+                const activePenalties = rawData.filter(item => item.oyuncu && item.oyuncu.trim() !== "");
+
+                if (activePenalties.length === 0) {
+                    noPenaltyMsg.style.display = 'flex';
+                    return;
+                }
+
+                noPenaltyMsg.style.display = 'none';
+
+                activePenalties.forEach(item => {
+                    let badgeClass = 'badge-ban';
+                    const turUpper = (item.tur || '').toUpperCase();
+                    if (turUpper === 'MUTE') badgeClass = 'badge-mute';
+                    if (turUpper === 'KICK') badgeClass = 'badge-kick';
+
+                    const card = document.createElement('div');
+                    card.className = 'penalty-card';
+
+                    card.innerHTML = `
+                        <div class="card-top">
+                            <div class="player-info">
+                                <img src="https://mc-heads.net/avatar/${item.oyuncu}/32" class="player-head" alt="${item.oyuncu}" onError="this.src='https://mc-heads.net/avatar/Steve/32'">
+                                <span class="player-name">${item.oyuncu}</span>
+                            </div>
+                            <span class="${badgeClass}">${item.tur}</span>
+                        </div>
+                        <div class="card-reason">${item.sebep}</div>
+                        <div class="card-bottom">
+                            <span>Yetkili: <span class="staff">${item.yetkili}</span></span>
+                            <span>Süre: <span class="duration">${item.sure}</span></span>
+                        </div>
+                    `;
+
+                    container.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error("Hata:", error);
+                noPenaltyMsg.style.display = 'flex';
+                noPenaltyMsg.innerHTML = "<span>Cezalar yüklenirken bir sorun oluştu.</span>";
+            }
+        }
+
+        fetchAndRenderPenalties();
+    </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"a672f2b7e11e42eea7d1dad621a1b60a","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

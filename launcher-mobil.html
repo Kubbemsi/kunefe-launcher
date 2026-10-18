@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KünefeSMP | Launcher İndir (Mobil)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <!-- MASAÜSTÜ (PC) TESPİT VE YÖNLENDİRME KODU -->
+    <script>
+        function checkDesktopRedirect() {
+            if (window.innerWidth > 768 && !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                window.location.href = "launcher.html";
+            }
+        }
+        checkDesktopRedirect();
+        window.addEventListener('resize', checkDesktopRedirect);
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #0d0401; color: #ffffff; min-height: 100vh; overflow-x: hidden; }
+
+        .page-wrapper {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            background: radial-gradient(circle at center, #3d1708 0%, #1c0a03 60%, #0d0401 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 16px 40px 16px;
+        }
+        .page-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(rgba(202,138,4,0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(202,138,4,0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+        }
+
+        /* HEADER */
+        header {
+            width: 100%;
+            margin: 20px auto 16px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(35,17,8,0.85);
+            border: 2px solid #ca8a04;
+            border-radius: 16px;
+            padding: 12px 16px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            z-index: 20;
+        }
+        .logo-box {
+            width: 42px; height: 42px;
+            background: linear-gradient(135deg, #fef08a, #facc15);
+            color: #422006;
+            border-radius: 10px;
+            display: flex; justify-content: center; align-items: center;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+        .logo-box:active { transform: scale(0.95); }
+        .header-title { font-size: 16px; font-weight: 900; color: #facc15; letter-spacing: 1px; }
+        .hamburger-btn {
+            width: 42px; height: 42px;
+            border: 2px solid #ca8a04;
+            border-radius: 10px;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            gap: 5px; cursor: pointer; flex-shrink: 0; background: rgba(202,138,4,0.12);
+            transition: all 0.2s ease;
+        }
+        .hamburger-btn:active { background: rgba(202,138,4,0.3); }
+        .hamburger-btn span { display: block; width: 20px; height: 2px; background: #facc15; border-radius: 2px; transition: all 0.3s ease; }
+        .hamburger-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger-btn.open span:nth-child(2) { opacity: 0; }
+        .hamburger-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        /* ========================================================
+           SAĞDAN KAYAN DRAWER MENÜ
+           ======================================================== */
+        .drawer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(3px);
+            z-index: 50;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .drawer-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 78%;
+            max-width: 300px;
+            height: 100%;
+            background: #111007;
+            border-left: 2px solid #ca8a04;
+            z-index: 100;
+            transform: translateX(100%);
+            transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .drawer.open {
+            transform: translateX(0);
+        }
+
+        .drawer-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 24px 20px 20px 20px;
+            border-bottom: 1px solid rgba(202,138,4,0.2);
+        }
+        .drawer-logo {
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, #fef08a, #facc15);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            color: #422006;
+            flex-shrink: 0;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+        .drawer-brand { display: flex; flex-direction: column; gap: 1px; }
+        .drawer-brand-name { font-size: 15px; font-weight: 900; color: #facc15; letter-spacing: 0.5px; }
+        .drawer-brand-sub { font-size: 10px; font-weight: 700; color: #ca8a04; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .drawer-nav {
+            display: flex;
+            flex-direction: column;
+            padding: 12px 12px;
+            gap: 4px;
+            flex: 1;
+        }
+        .drawer-nav a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: #e5e7eb;
+            text-decoration: none;
+            font-weight: 900;
+            font-size: 13px;
+            padding: 13px 14px;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            letter-spacing: 0.3px;
+        }
+        .drawer-nav a .nav-icon {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+        .drawer-nav a svg { fill: currentColor; }
+        .drawer-nav a:hover, .drawer-nav a:active {
+            background: rgba(202,138,4,0.12);
+            color: #facc15;
+        }
+        .drawer-nav a:hover .nav-icon { background: rgba(202,138,4,0.2); }
+        .drawer-nav a.active {
+            background: rgba(202,138,4,0.18);
+            color: #facc15;
+        }
+        .drawer-nav a.active .nav-icon {
+            background: #facc15;
+            color: #422006;
+        }
+        .drawer-nav a.active svg { fill: #422006; }
+
+        /* MOBİL DRAWER AÇILIR (ACCORDION) LAUNCHER MENÜSÜ */
+        .drawer-dropdown {
+            display: flex;
+            flex-direction: column;
+            border-radius: 12px;
+            transition: all 0.25s ease;
+        }
+        .drawer-dropdown.open {
+            background: rgba(202, 138, 4, 0.08);
+            border: 1px solid rgba(202, 138, 4, 0.3);
+        }
+        .drawer-dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: #e5e7eb;
+            font-weight: 900;
+            font-size: 13px;
+            padding: 13px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 0.3px;
+            user-select: none;
+        }
+        .drawer-dropdown-toggle:active {
+            background: rgba(202, 138, 4, 0.12);
+            color: #facc15;
+        }
+        .drawer-dropdown.open .drawer-dropdown-toggle {
+            color: #facc15;
+        }
+        .drawer-dropdown-toggle .nav-icon {
+            width: 36px; height: 36px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+        .drawer-dropdown.open .drawer-dropdown-toggle .nav-icon {
+            background: rgba(202, 138, 4, 0.25);
+            color: #facc15;
+        }
+        .drawer-dropdown-toggle svg { fill: currentColor; }
+        .drawer-arrow {
+            margin-left: auto;
+            font-size: 10px;
+            color: #ca8a04;
+            transition: transform 0.25s ease;
+        }
+        .drawer-dropdown.open .drawer-arrow {
+            transform: rotate(180deg);
+            color: #facc15;
+        }
+
+        .drawer-submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 0 10px 0 10px;
+        }
+        .drawer-dropdown.open .drawer-submenu {
+            max-height: 360px;
+            padding: 4px 10px 10px 10px;
+        }
+
+        .drawer-subitem {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(202, 138, 4, 0.2);
+            color: #e5e7eb;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 800;
+            transition: all 0.2s ease;
+        }
+        .drawer-subitem:active {
+            background: rgba(250, 204, 21, 0.15);
+            border-color: #facc15;
+            color: #facc15;
+        }
+        .drawer-subitem.disabled {
+            opacity: 0.55;
+            pointer-events: none;
+        }
+        .drawer-subitem .sub-icon { font-size: 16px; flex-shrink: 0; }
+        .drawer-subitem .sub-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .drawer-subitem .sub-title { font-size: 12px; }
+        .drawer-subitem .sub-badge {
+            font-size: 9px;
+            padding: 2px 7px;
+            border-radius: 6px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+        .drawer-subitem .sub-badge.rec { background: #15803d; color: #fff; }
+        .drawer-subitem .sub-badge.soon { background: rgba(255, 255, 255, 0.1); color: #9ca3af; }
+        
+        .drawer-subitem-all {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 9px 12px;
+            border-radius: 8px;
+            background: rgba(250, 204, 21, 0.1);
+            color: #facc15;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 900;
+            margin-top: 2px;
+            transition: all 0.2s ease;
+        }
+        .drawer-subitem-all:active {
+            background: rgba(250, 204, 21, 0.2);
+        }
+
+        .drawer-divider {
+            height: 1px;
+            background: rgba(202,138,4,0.2);
+            margin: 4px 12px;
+        }
+        .drawer-footer {
+            padding: 12px 12px 24px 12px;
+        }
+        .drawer-account-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            padding: 13px 14px;
+            background: rgba(250,204,21,0.1);
+            border: 1.5px solid rgba(202,138,4,0.4);
+            border-radius: 12px;
+            color: #facc15;
+            font-weight: 900;
+            font-size: 13px;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+        }
+        .drawer-account-btn .nav-icon {
+            width: 36px; height: 36px;
+            background: rgba(250,204,21,0.15);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .drawer-account-btn:active {
+            background: rgba(250,204,21,0.2);
+            border-color: #facc15;
+        }
+
+        /* HERO ALANI */
+        .hero-banner {
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+            margin-bottom: 16px;
+            padding: 0 4px;
+        }
+        .hero-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(250, 204, 21, 0.12);
+            border: 1px solid #ca8a04;
+            color: #facc15;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .hero-title {
+            font-size: 23px;
+            font-weight: 900;
+            color: #ffffff;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+        .hero-title span {
+            background: linear-gradient(135deg, #fef08a, #facc15);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-desc {
+            font-size: 12px;
+            color: #9ca3af;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        /* KATEGORİ TAB BUTONLARI */
+        .category-tabs {
+            width: 100%;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+            margin-bottom: 16px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 12px 8px;
+            border-radius: 14px;
+            font-weight: 900;
+            font-size: 12px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid rgba(202,138,4,0.35);
+            background: rgba(255,255,255,0.04);
+            color: #d1d5db;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .tab-btn.active {
+            background: #15803d;
+            color: #ffffff;
+            border-color: #22c55e;
+            box-shadow: 0 4px 15px rgba(34,197,94,0.3);
+        }
+
+        /* PLATFORM AKORDİYON LİSTESİ */
+        .accordion-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 10;
+        }
+
+        .accordion-item {
+            background: rgba(35,17,8,0.85);
+            border: 2px solid #ca8a04;
+            border-radius: 18px;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+            transition: all 0.3s ease;
+        }
+        .accordion-item.featured {
+            border-color: #facc15;
+            box-shadow: 0 8px 22px rgba(250, 204, 21, 0.2);
+        }
+        .accordion-item.active {
+            border-color: #facc15;
+            background: rgba(45, 20, 10, 0.95);
+        }
+
+        .acc-trigger {
+            width: 100%;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+            color: #ffffff;
+            transition: background 0.2s;
+        }
+        .acc-trigger:active {
+            background: rgba(250, 204, 21, 0.08);
+        }
+        .acc-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .acc-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .icon-win { background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; }
+        .icon-linux { background: linear-gradient(135deg, #ea580c, #c2410c); color: #fff; }
+        .icon-mac { background: linear-gradient(135deg, #475569, #1e293b); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+        .icon-android { background: linear-gradient(135deg, #16a34a, #15803d); color: #fff; }
+        .icon-ios { background: linear-gradient(135deg, #334155, #0f172a); color: #fff; border: 1px solid rgba(255,255,255,0.15); }
+
+        .acc-text-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .acc-title {
+            font-size: 15px;
+            font-weight: 900;
+            letter-spacing: 0.3px;
+            color: #ffffff;
+        }
+        .acc-sub {
+            font-size: 11px;
+            font-weight: 700;
+            color: #ca8a04;
+        }
+        .accordion-item.active .acc-sub { color: #facc15; }
+
+        .acc-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .acc-badge {
+            font-size: 10px;
+            font-weight: 900;
+            padding: 4px 8px;
+            border-radius: 12px;
+            text-transform: uppercase;
+        }
+        .acc-badge.rec {
+            background: linear-gradient(135deg, #fef08a, #facc15);
+            color: #422006;
+        }
+        .acc-badge.soon {
+            background: rgba(255,255,255,0.08);
+            color: #9ca3af;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .acc-arrow {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: rgba(202,138,4,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #facc15;
+            font-size: 11px;
+            transition: transform 0.3s ease, background 0.3s ease;
+            flex-shrink: 0;
+        }
+        .accordion-item.active .acc-arrow {
+            transform: rotate(180deg);
+            background: #facc15;
+            color: #422006;
+        }
+
+        .acc-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid transparent;
+        }
+        .accordion-item.active .acc-content {
+            max-height: 600px;
+            border-top-color: rgba(202, 138, 4, 0.25);
+        }
+
+        .acc-body-inner {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .bullets-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(202,138,4,0.2);
+            border-radius: 12px;
+            padding: 12px;
+        }
+        .bullets-list li {
+            font-size: 11px;
+            font-weight: 700;
+            color: #e5e7eb;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            line-height: 1.4;
+        }
+        .bullets-list li svg {
+            flex-shrink: 0;
+            fill: #22c55e;
+            margin-top: 1px;
+        }
+
+        .btn-download-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #fef08a, #facc15);
+            color: #422006;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 900;
+            padding: 14px;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(250,204,21,0.25);
+            transition: transform 0.2s, filter 0.2s;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+        }
+        .btn-download-action:active {
+            transform: scale(0.98);
+            filter: brightness(0.95);
+        }
+        .btn-download-action svg {
+            fill: #422006;
+            flex-shrink: 0;
+        }
+
+        .btn-disabled {
+            background: rgba(255, 255, 255, 0.08) !important;
+            color: #9ca3af !important;
+            box-shadow: none !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            cursor: not-allowed !important;
+        }
+
+        .cmd-box {
+            background: #000000;
+            border: 1px solid rgba(202,138,4,0.3);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-family: monospace;
+            font-size: 11px;
+            color: #a7f3d0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            overflow-x: auto;
+        }
+        .cmd-copy-btn {
+            background: rgba(202,138,4,0.2);
+            color: #facc15;
+            border: 1px solid rgba(202,138,4,0.4);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 10px;
+            font-weight: 800;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .cmd-copy-btn:active { background: #facc15; color: #422006; }
+
+        .format-footer-note {
+            font-size: 10px;
+            color: #9ca3af;
+            text-align: center;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SAĞDAN KAYAN DRAWER MENÜ -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+    <div class="drawer" id="drawer">
+        <!-- DRAWER BAŞLIK -->
+        <div class="drawer-header">
+            <a href="mobil.html" class="drawer-logo">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="#422006"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>
+            </a>
+            <div class="drawer-brand">
+                <span class="drawer-brand-name">KünefeSMP</span>
+                <span class="drawer-brand-sub">Minecraft Sunucusu</span>
+            </div>
+        </div>
+
+        <!-- DRAWER NAV LİNKLERİ -->
+        <nav class="drawer-nav">
+            <a href="mobil.html">
+                <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
+                ANASAYFA
+            </a>
+            <a href="magaza-mobil.html">
+                <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg></div>
+                MAĞAZA
+            </a>
+            <!-- AÇILIR LAUNCHER MOBİL MENÜSÜ -->
+            <div class="drawer-dropdown open" id="drawerLauncherDrop">
+                <div class="drawer-dropdown-toggle active" onclick="toggleDrawerDropdown()">
+                    <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg></div>
+                    <span>LAUNCHER</span>
+                    <span class="drawer-arrow">▼</span>
+                </div>
+                <div class="drawer-submenu" id="drawerSubmenu">
+                    <a href="downloads/KunefeLauncher.exe" download="KunefeLauncher.exe" class="drawer-subitem">
+                        <span class="sub-icon">🪟</span>
+                        <div class="sub-info">
+                            <span class="sub-title">Windows (.exe)</span>
+                            <span class="sub-badge rec">İndir</span>
+                        </div>
+                    </a>
+                    <a href="downloads/KunefeSMP-Launcher.flatpak" download="KunefeSMP-Launcher.flatpak" class="drawer-subitem">
+                        <span class="sub-icon">🐧</span>
+                        <div class="sub-info">
+                            <span class="sub-title">Linux (.flatpak)</span>
+                            <span class="sub-badge rec">İndir</span>
+                        </div>
+                    </a>
+                    <a href="downloads/KunefeLauncher.dmg" download="KunefeLauncher.dmg" class="drawer-subitem">
+                        <span class="sub-icon">🍎</span>
+                        <div class="sub-info">
+                            <span class="sub-title">macOS (.dmg)</span>
+                            <span class="sub-badge rec">İndir</span>
+                        </div>
+                    </a>
+                    <div class="drawer-subitem disabled">
+                        <span class="sub-icon">📱</span>
+                        <div class="sub-info">
+                            <span class="sub-title">Android & iOS</span>
+                            <span class="sub-badge soon">Yakında</span>
+                        </div>
+                    </div>
+                    <a href="launcher-mobil.html" class="drawer-subitem-all">
+                        <span>🚀 Tüm Launcher Detayları</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+            <a href="yardim-mobil.html">
+                <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg></div>
+                YARDIM
+            </a>
+            <a href="destek-mobil.html">
+                <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z"/></svg></div>
+                DESTEK
+            </a>
+            <a href="cezalar-mobil.html">
+                <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm5.31-3.1L6.1 5.69C7.45 4.63 9.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/></svg></div>
+                CEZALAR
+            </a>
+        </nav>
+
+        <!-- AYRAÇ -->
+        <div class="drawer-divider"></div>
+
+        <!-- HESAP BUTONU -->
+        <div class="drawer-footer">
+            <a href="giris-mobil.html" class="drawer-account-btn">
+                <div class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="#facc15"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+                HESABIM
+            </a>
+        </div>
+    </div>
+
+    <!-- MOBİL SAYFA İÇERİĞİ -->
+    <div class="page-wrapper">
+        <!-- HEADER -->
+        <header>
+            <a href="mobil.html" class="logo-box">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>
+            </a>
+            <span class="header-title">Launcher</span>
+            <!-- BU BUTONA BASILINCA RESMİNDEKİ MENÜ KARTI AÇILIR -->
+            <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleDrawer()" aria-label="Menü">
+                <span></span><span></span><span></span>
+            </button>
+        </header>
+
+        <!-- HERO BANNER -->
+        <div class="hero-banner">
+            <div class="hero-pill">⚡ KÜNEFE CLIENT v4.5</div>
+            <h1 class="hero-title">KÜNEFESMP <span>LAUNCHER</span></h1>
+            <p class="hero-desc">
+                Özel korumalı, otomatik modlu ve skin destekli oyun istemcisi. İndirmek istediğin platforma dokun!
+            </p>
+        </div>
+
+        <!-- KATEGORİ TAB BUTONLARI -->
+        <div class="category-tabs">
+            <button class="tab-btn active" id="btn-desktop" onclick="switchCategory('desktop')">
+                💻 Masaüstü (PC)
+            </button>
+            <button class="tab-btn" id="btn-mobile" onclick="switchCategory('mobile')">
+                📱 Mobil (Telefon)
+            </button>
+        </div>
+
+        <!-- KATEGORİ 1: MASAÜSTÜ AKORDİYON LİSTESİ -->
+        <div class="accordion-list" id="cat-desktop">
+
+            <!-- 1. WINDOWS (.EXE) -->
+            <div class="accordion-item featured active" id="acc-win">
+                <button class="acc-trigger" onclick="toggleAccordionItem('acc-win')">
+                    <div class="acc-left">
+                        <div class="acc-icon icon-win">🪟</div>
+                        <div class="acc-text-wrap">
+                            <div class="acc-title">WINDOWS</div>
+                            <div class="acc-sub">Windows 10 / 11 (64-Bit)</div>
+                        </div>
+                    </div>
+                    <div class="acc-right">
+                        <span class="acc-badge rec">Önerilen</span>
+                        <div class="acc-arrow">▼</div>
+                    </div>
+                </button>
+                <div class="acc-content">
+                    <div class="acc-body-inner">
+                        <ul class="bullets-list">
+                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Kurulum gerektirmez, doğrudan çift tıkla açılır (.exe)</li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Fabric 1.21.x + Sodium FPS artırıcı dahili gelir</li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Kişisel skinini PNG dosyandan tek tıkla yükle</li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Sunucuya tek tıkla otomatik şifresiz giriş</li>
+                        </ul>
+                        <a href="downloads/KunefeLauncher.exe" download="KunefeLauncher.exe" class="btn-download-action">
+                            <svg width="18" height="18" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                            WINDOWS İÇİN İNDİR (.EXE)
+                        </a>
+                        <span class="format-footer-note">Boyut: ~24 MB • Tek Dosya Taşınabilir İstemci</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. LINUX (.FLATPAK) -->
+            <div class="accordion-item" id="acc-linux">
+                <button class="acc-trigger" onclick="toggleAccordionItem('acc-linux')">
+                    <div class="acc-left">
+                        <div class="acc-icon icon-linux">🐧</div>
+                        <div class="acc-text-wrap">
+                            <div class="acc-title">LINUX & STEAM DECK</div>
+                            <div class="acc-sub">SteamOS, Ubuntu, Arch, Fedora</div>
+                        </div>
+                    </div>
+                    <div class="acc-right">
+                        <span class="acc-badge" style="background:#ea580c; color:#fff;">Flatpak</span>
+                        <div class="acc-arrow">▼</div>
+                    </div>
+                </button>
+                <div class="acc-content">
+                    <div class="acc-body-inner">
+                        <ul class="bullets-list">
+                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Evrensel Flatpak paketi — tüm dağıtımlarda çalışır</li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Dahili OpenJDK 21 & Simple Voice Chat ses desteği</li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Wayland ve X11 grafik hızlandırma entegre</li>
+                        </ul>
+                        <a href="downloads/KunefeSMP-Launcher.flatpak" download="KunefeSMP-Launcher.flatpak" class="btn-download-action" style="background: linear-gradient(135deg, #fb923c, #ea580c); color: #fff;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                            LINUX İÇİN İNDİR (.FLATPAK)
+                        </a>
+                        <div class="cmd-box">
+                            <span id="flatpakCmd">flatpak install KunefeSMP-Launcher.flatpak</span>
+                            <button class="cmd-copy-btn" onclick="copyCmd('flatpakCmd')">Kopyala</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. MACOS (.DMG) -->
+            <div class="accordion-item" id="acc-mac">
+                <button class="acc-trigger" onclick="toggleAccordionItem('acc-mac')">
+                    <div class="acc-left">
+                        <div class="acc-icon icon-mac">🍎</div>
+                        <div class="acc-text-wrap">
+                            <div class="acc-title">MACOS</div>
+                            <div class="acc-sub">Apple Silicon (M1/M2/M3) & Intel</div>
+                        </div>
+                    </div>
+                    <div class="acc-right">
+                        <span class="acc-badge" style="background:rgba(255,255,255,0.15); color:#fff;">.DMG</span>
+                        <div class="acc-arrow">▼</div>
+                    </div>
+                </button>
+                <div class="acc-content">
+                    <div class="acc-body-inner">
+                        <ul class="bullets-list">
+                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> macOS Sonoma, Ventura ve Monterey uyumlu</li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Metal grafik motoru ve Retina ekran optimizasyonu</li>
+                        </ul>
+                        <a href="downloads/KunefeLauncher.dmg" download="KunefeLauncher.dmg" class="btn-download-action" style="background: linear-gradient(135deg, #e2e8f0, #94a3b8); color: #0f172a;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#0f172a"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                            MACOS İÇİN İNDİR (.DMG)
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- KATEGORİ 2: MOBİL (TELEFON) AKORDİYON LİSTESİ -->
+        <div class="accordion-list" id="cat-mobile" style="display: none;">
+
+            <!-- ANDROID -->
+            <div class="accordion-item" id="acc-android">
+                <button class="acc-trigger" onclick="toggleAccordionItem('acc-android')">
+                    <div class="acc-left">
+                        <div class="acc-icon icon-android">🤖</div>
+                        <div class="acc-text-wrap">
+                            <div class="acc-title">ANDROID</div>
+                            <div class="acc-sub">Google Play Store & APK</div>
+                        </div>
+                    </div>
+                    <div class="acc-right">
+                        <span class="acc-badge soon">Yakında</span>
+                        <div class="acc-arrow">▼</div>
+                    </div>
+                </button>
+                <div class="acc-content">
+                    <div class="acc-body-inner">
+                        <ul class="bullets-list">
+                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> PojavLauncher & GeyserMC özel KünefeSMP entegrasyonu</li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Dokunmatik ekran kontrolleri ve otomatik sunucu girişi</li>
+                        </ul>
+                        <button class="btn-download-action btn-disabled" disabled>
+                            ⏳ YAKINDA YAYINLANACAK (GOOGLE PLAY)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IOS -->
+            <div class="accordion-item" id="acc-ios">
+                <button class="acc-trigger" onclick="toggleAccordionItem('acc-ios')">
+                    <div class="acc-left">
+                        <div class="acc-icon icon-ios">🍏</div>
+                        <div class="acc-text-wrap">
+                            <div class="acc-title">APPLE IOS</div>
+                            <div class="acc-sub">iPhone & iPad (App Store)</div>
+                        </div>
+                    </div>
+                    <div class="acc-right">
+                        <span class="acc-badge soon">Yakında</span>
+                        <div class="acc-arrow">▼</div>
+                    </div>
+                </button>
+                <div class="acc-content">
+                    <div class="acc-body-inner">
+                        <ul class="bullets-list">
+                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> iOS 15+ iPhone ve iPad cihazlar için geliştirilmektedir</li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> TestFlight beta aşamasında yakında duyurulacak</li>
+                        </ul>
+                        <button class="btn-download-action btn-disabled" disabled>
+                            ⏳ YAKINDA YAYINLANACAK (APP STORE)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT ETKİLEŞİM KODLARI -->
+    <script>
+        // DRAWER MENÜYÜ AÇIP KAPATMA
+        function toggleDrawer() {
+            const overlay = document.getElementById('drawerOverlay');
+            const drawer = document.getElementById('drawer');
+            const btn = document.getElementById('hamburgerBtn');
+            const isOpen = drawer.classList.contains('open');
+
+            if (isOpen) {
+                closeDrawer();
+            } else {
+                overlay.classList.add('open');
+                drawer.classList.add('open');
+                btn.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeDrawer() {
+            document.getElementById('drawerOverlay').classList.remove('open');
+            document.getElementById('drawer').classList.remove('open');
+            document.getElementById('hamburgerBtn').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function toggleDrawerDropdown() {
+            const drop = document.getElementById('drawerLauncherDrop');
+            drop.classList.toggle('open');
+        }
+
+        // KATEGORİ GEÇİŞİ (MASAÜSTÜ & MOBİL)
+        function switchCategory(cat) {
+            const btnDesktop = document.getElementById('btn-desktop');
+            const btnMobile = document.getElementById('btn-mobile');
+            const catDesktop = document.getElementById('cat-desktop');
+            const catMobile = document.getElementById('cat-mobile');
+
+            if (cat === 'desktop') {
+                btnDesktop.classList.add('active');
+                btnMobile.classList.remove('active');
+                catDesktop.style.display = 'flex';
+                catMobile.style.display = 'none';
+            } else {
+                btnMobile.classList.add('active');
+                btnDesktop.classList.remove('active');
+                catDesktop.style.display = 'none';
+                catMobile.style.display = 'flex';
+            }
+        }
+
+        // SAYFA İÇİNDEKİ PLATFORM AÇILIR AKORDİYONLARI
+        function toggleAccordionItem(id) {
+            const item = document.getElementById(id);
+            item.classList.toggle('active');
+        }
+
+        // KOMUT KOPYALAMA
+        function copyCmd(id) {
+            const text = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Komut panoya kopyalandı:\n" + text);
+            }).catch(() => {
+                prompt("Komutu kopyalayın:", text);
+            });
+        }
+    </script>
+</body>
+</html>
