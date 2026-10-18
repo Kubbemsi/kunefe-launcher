@@ -70,7 +70,24 @@ jobs:
             "KunefeLauncher.dmg" \
             "dist/KunefeLauncher.app"
 
-      # ── 8. DMG'yi artifact olarak yükle ────────────────────────────
+      # ── 8. Mimari doğrulama (hangi CPU'lar destekleniyor?) ─────────
+      - name: Mimari doğrulama
+        run: |
+          echo "=== Runner ==="
+          sw_vers
+          uname -m
+          echo "=== Python ==="
+          python -c "import platform; print(platform.machine())"
+          echo "=== Uygulama binary mimarisi ==="
+          file dist/KunefeLauncher.app/Contents/MacOS/KunefeLauncher
+          echo "=== lipo ==="
+          lipo -archs dist/KunefeLauncher.app/Contents/MacOS/KunefeLauncher || true
+          echo "=== Imza ==="
+          codesign -dv dist/KunefeLauncher.app 2>&1 | head -5
+          echo "=== DMG ==="
+          ls -lh KunefeLauncher.dmg
+
+      # ── 9. DMG'yi artifact olarak yükle ────────────────────────────
       - name: Upload DMG as artifact
         uses: actions/upload-artifact@v4
         with:
