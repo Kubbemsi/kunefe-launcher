@@ -8,21 +8,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
     <!-- MOBİL TESPİT VE YÖNLENDİRME KODU -->
     <script>
-        function checkMobileRedirect() {
-            if (window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                window.location.href = "launcher-mobil.html";
-            }
+        if (window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            window.location.href = "launcher-mobil.html";
         }
-        checkMobileRedirect();
-        window.addEventListener('resize', checkMobileRedirect);
     </script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; user-select: none; }
         body { background-color: #0d0401; color: #ffffff; min-height: 100vh; overflow-x: hidden; }
-        .hero-section { position: relative; width: 100%; min-height: 100vh; background: radial-gradient(circle at center, #3d1708 0%, #1c0a03 60%, #0d0401 100%); display: flex; flex-direction: column; align-items: center; padding: 0 20px 60px 20px; }
+        .hero-section { position: relative; width: 100%; min-height: 100vh; background: radial-gradient(circle at center, #3d1708 0%, #1c0a03 60%, #0d0401 100%); display: flex; flex-direction: column; align-items: center; padding: 0 20px 50px 20px; }
         .hero-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(rgba(202, 138, 4, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(202, 138, 4, 0.05) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
-        
-        /* --- ÜST MENÜ (BİREBİR KORUNDU + AÇILIR DROPDOWN MENÜ EKLENDİ) --- */
+
+        /* --- ÜST MENÜ (MAĞAZA İLE BİREBİR AYNI) --- */
         header { width: 100%; max-width: 1300px; margin: 40px auto 30px auto; display: flex; justify-content: space-between; align-items: center; background: rgba(35, 17, 8, 0.85); border: 2px solid #ca8a04; border-radius: 18px; padding: 15px 25px; backdrop-filter: blur(8px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); z-index: 50; position: relative; }
         .logo-box { width: 50px; height: 50px; background: linear-gradient(135deg, #fef08a 0%, #facc15 100%); color: #422006; border-radius: 12px; display: flex; justify-content: center; align-items: center; text-decoration: none; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); transition: transform 0.2s ease; }
         .logo-box:hover { transform: scale(1.05); }
@@ -31,354 +27,190 @@
         nav ul li a { color: #ffffff; text-decoration: none; font-weight: 800; font-size: 14px; padding: 10px 20px; border-radius: 10px; transition: all 0.2s ease; display: flex; align-items: center; gap: 8px; }
         nav ul li a.active, nav ul li a:hover { background: #facc15; color: #422006; }
         nav ul li a.active svg, nav ul li a:hover svg { fill: #422006; }
-        .user-btn { width: 50px; height: 50px; border: 2px solid #ca8a04; border-radius: 12px; display: flex; justify-content: center; align-items: center; color: #facc15; text-decoration: none; transition: all 0.2s ease; }
-        .user-btn:hover { background: rgba(202, 138, 4, 0.2); }
 
-        /* --- ÜST MENÜDEKİ AÇILIR (DROPDOWN) MENÜ --- */
+        /* AÇILIR (DROPDOWN) MENÜ */
         .dropdown { position: relative; }
         .dropdown-toggle { cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .dropdown-arrow { font-size: 10px; transition: transform 0.25s ease; margin-left: 2px; }
         .dropdown:hover .dropdown-arrow { transform: rotate(180deg); }
         .dropdown:hover .dropdown-toggle { background: #facc15; color: #422006; }
         .dropdown:hover .dropdown-toggle svg { fill: #422006; }
-
-        /* Fare boşluktan geçerken kapanmaması için görünmez köprü */
-        .dropdown::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            height: 16px;
-        }
-        
+        .dropdown::after { content: ''; position: absolute; top: 100%; left: 0; width: 100%; height: 16px; }
         .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%) translateY(12px);
-            width: 290px;
-            background: #190903;
-            border: 2px solid #ca8a04;
-            border-radius: 16px;
-            padding: 10px;
+            position: absolute; top: 100%; left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            width: 290px; background: #190903; border: 2px solid #ca8a04;
+            border-radius: 16px; padding: 10px;
             box-shadow: 0 14px 35px rgba(0, 0, 0, 0.85);
-            display: none;
-            flex-direction: column;
-            gap: 6px;
-            z-index: 100;
+            display: none; flex-direction: column; gap: 6px; z-index: 100;
             backdrop-filter: blur(12px);
         }
-        .dropdown:hover .dropdown-menu {
-            display: flex;
-            animation: fadeInDown 0.25s ease forwards;
-        }
+        .dropdown:hover .dropdown-menu { display: flex; animation: fadeInDown 0.25s ease forwards; }
         @keyframes fadeInDown {
-            from { opacity: 0; transform: translateX(-50%) translateY(4px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(12px); }
+            from { opacity: 0; transform: translateX(-50%) translateY(2px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(10px); }
         }
-
-        .drop-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            border-radius: 10px;
-            text-decoration: none;
-            color: #f3f4f6;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(202, 138, 4, 0.2);
-            transition: all 0.2s ease;
-        }
-        .drop-item:hover {
-            background: rgba(250, 204, 21, 0.15);
-            border-color: #facc15;
-            color: #facc15;
-            transform: translateX(4px);
-        }
+        .drop-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 10px; text-decoration: none; color: #f3f4f6 !important; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(202, 138, 4, 0.2); transition: all 0.2s ease; }
+        .drop-item:hover { background: rgba(250, 204, 21, 0.15) !important; border-color: #facc15; color: #facc15 !important; transform: translateX(4px); }
         .drop-icon { font-size: 20px; flex-shrink: 0; }
-        .drop-info { display: flex; flex-direction: column; gap: 2px; }
-        .drop-title { font-size: 13px; font-weight: 900; }
+        .drop-info { display: flex; flex-direction: column; gap: 2px; text-align: left; }
+        .drop-title { font-size: 13px; font-weight: 900; color: #fff; }
         .drop-sub { font-size: 10px; color: #9ca3af; font-weight: 700; }
-        .drop-badge {
-            margin-left: auto;
-            font-size: 9px;
-            padding: 2px 7px;
-            border-radius: 8px;
-            font-weight: 900;
-            text-transform: uppercase;
-        }
+        .drop-badge { margin-left: auto; font-size: 9px; padding: 2px 7px; border-radius: 8px; font-weight: 900; text-transform: uppercase; }
         .drop-badge.rec { background: #15803d; color: #fff; }
         .drop-badge.soon { background: rgba(255, 255, 255, 0.1); color: #9ca3af; }
         .drop-divider { height: 1px; background: rgba(202, 138, 4, 0.25); margin: 4px 6px; }
 
-        /* --- BAŞLIK ALANI --- */
-        .launcher-header-area {
-            text-align: center;
-            max-width: 900px;
-            margin: 10px auto 30px auto;
-            z-index: 10;
+        .user-btn { width: 50px; height: 50px; border: 2px solid #ca8a04; border-radius: 12px; display: flex; justify-content: center; align-items: center; color: #facc15; text-decoration: none; transition: all 0.2s ease; }
+        .user-btn:hover { background: rgba(202, 138, 4, 0.2); }
+
+        /* --- HERO BAŞLIK --- */
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(202, 138, 4, 0.14); border: 2px solid #ca8a04;
+            border-radius: 30px; padding: 9px 20px; margin-top: 10px;
+            font-size: 12px; font-weight: 900; color: #facc15;
+            letter-spacing: 1.2px; text-transform: uppercase;
         }
-        .launcher-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(250, 204, 21, 0.12);
-            border: 1.5px solid #ca8a04;
-            color: #facc15;
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 900;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-            text-transform: uppercase;
+        .hero-title {
+            font-size: clamp(30px, 5.2vw, 54px); font-weight: 900;
+            letter-spacing: -1.5px; text-align: center; margin: 22px 0 14px;
+            text-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
         }
-        .launcher-title {
-            font-size: 36px;
-            font-weight: 900;
-            color: #ffffff;
-            letter-spacing: -0.5px;
-            margin-bottom: 8px;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
-        }
-        .launcher-title span {
-            background: linear-gradient(135deg, #fef08a, #facc15);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .launcher-desc {
-            font-size: 14px;
-            color: #d1d5db;
-            font-weight: 700;
-            line-height: 1.6;
+        .hero-title .accent { color: #facc15; }
+        .hero-desc {
+            max-width: 780px; text-align: center; font-size: 15px;
+            font-weight: 700; color: #d1d5db; line-height: 1.75; margin-bottom: 6px;
         }
 
-        /* --- MAĞAZA İLE BİREBİR AYNI DÜZEN: SIDEBAR & İÇERİK CONTAINER --- */
-        .store-container {
-            width: 100%;
-            max-width: 1300px;
-            display: flex;
-            gap: 24px;
-            z-index: 10;
-            margin-top: 10px;
+        /* --- PLATFORM KARTLARI --- */
+        .platform-grid {
+            width: 100%; max-width: 1300px; z-index: 10; margin-top: 34px;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px;
         }
+        @media (max-width: 1000px) { .platform-grid { grid-template-columns: 1fr; } }
+        .platform-card {
+            background: rgba(35, 17, 8, 0.85); border: 2px solid #ca8a04;
+            border-radius: 20px; padding: 26px 20px 22px; display: flex;
+            flex-direction: column; align-items: center; gap: 13px; text-align: center;
+            backdrop-filter: blur(6px); transition: all 0.25s ease; position: relative;
+        }
+        .platform-card:hover { transform: translateY(-6px); border-color: #facc15; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6); }
 
-        /* YAN MENÜ (SIDEBAR) */
-        .sidebar { width: 280px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; }
-        .sidebar-box { background: rgba(35, 17, 8, 0.85); border: 2px solid #ca8a04; border-radius: 18px; padding: 20px; backdrop-filter: blur(6px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); }
-        .sidebar-title { font-size: 13px; color: #facc15; font-weight: 900; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.8px; }
-        
-        .cat-list { display: flex; flex-direction: column; gap: 10px; }
-        .cat-btn { 
-            background: rgba(255, 255, 255, 0.05); 
-            color: #ffffff; 
-            padding: 13px 16px; 
-            border-radius: 12px; 
-            font-weight: 800; 
-            font-size: 14px;
-            text-align: left; 
-            cursor: pointer; 
-            border: 1.5px solid rgba(202, 138, 4, 0.35);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.25s ease;
-        }
-        .cat-btn:hover {
-            border-color: #facc15;
-            background: rgba(250, 204, 21, 0.12);
-            transform: translateX(4px);
-        }
-        .cat-btn.active { 
-            background: #15803d; 
-            color: #ffffff; 
-            border: 1.5px solid #22c55e;
-            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
-        }
-        .cat-icon { font-size: 18px; }
-
-        .sidebar-info-box {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(202, 138, 4, 0.2);
-            border-radius: 12px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            font-size: 12px;
-            color: #d1d5db;
-            font-weight: 700;
-        }
-        .sidebar-info-box strong { color: #facc15; }
-
-        /* SAĞ TARAF: PLATFORM KARTLARI GRİDİ */
-        .content-area { flex: 1; display: flex; flex-direction: column; gap: 24px; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 20px; }
-        
-        .platform-card { 
-            background: rgba(35, 17, 8, 0.88); 
-            border: 2px solid #ca8a04; 
-            border-radius: 20px; 
-            padding: 24px 20px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            gap: 12px; 
-            text-align: center;
-            position: relative;
-            backdrop-filter: blur(6px);
-            transition: all 0.25s ease;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-        }
-        .platform-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.7);
-            border-color: #facc15;
-        }
-        .platform-card.featured {
-            border-color: #facc15;
-            box-shadow: 0 10px 30px rgba(250, 204, 21, 0.2);
-        }
-
-        .badge-pill {
-            position: absolute;
-            top: -11px;
-            background: linear-gradient(135deg, #fef08a, #facc15);
-            color: #422006;
-            font-size: 10px;
-            font-weight: 900;
-            padding: 3px 12px;
-            border-radius: 20px;
-            letter-spacing: 0.5px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.4);
-        }
-
-        /* Platform Rozet İkonu */
-        .platform-icon-box {
-            width: 76px;
-            height: 76px;
-            border-radius: 18px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 32px;
-            margin-bottom: 4px;
+        .plat-icon {
+            width: 84px; height: 84px; border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 40px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
             transition: transform 0.25s ease;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
         }
-        .platform-card:hover .platform-icon-box {
-            transform: scale(1.08);
+        .platform-card:hover .plat-icon { transform: scale(1.08); }
+        .plat-icon.win { background: linear-gradient(135deg, #60a5fa, #2563eb); }
+        .plat-icon.lnx { background: linear-gradient(135deg, #fb923c, #ea580c); }
+        .plat-icon.mac { background: linear-gradient(135deg, #e2e8f0, #94a3b8); }
+        .plat-icon.soon { background: rgba(255, 255, 255, 0.07); border: 2px solid rgba(202, 138, 4, 0.3); }
+
+        .plat-title { font-size: 19px; font-weight: 900; letter-spacing: 0.6px; }
+        .plat-sub { font-size: 11.5px; font-weight: 800; color: #facc15; margin-top: -8px; letter-spacing: 0.3px; }
+
+        .features-list { list-style: none; display: flex; flex-direction: column; gap: 9px; width: 100%; margin-top: 4px; }
+        .features-list li { font-size: 12.5px; font-weight: 600; color: #d1d5db; padding-left: 23px; position: relative; line-height: 1.5; text-align: left; }
+        .features-list li::before { content: '✓'; position: absolute; left: 0; top: 0; color: #22c55e; font-weight: 900; font-size: 13px; }
+
+        /* --- İNDİRME BUTONU --- */
+        .dl-btn {
+            width: 100%; margin-top: auto; padding: 13px 10px; border: none;
+            border-radius: 12px; font-weight: 900; font-size: 13px; text-align: center;
+            text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: all 0.2s ease; color: #fff;
+        }
+        .dl-btn.win { background: linear-gradient(135deg, #60a5fa, #2563eb); box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); }
+        .dl-btn.lnx { background: linear-gradient(135deg, #fb923c, #ea580c); box-shadow: 0 4px 15px rgba(234, 88, 12, 0.3); }
+        .dl-btn.mac { background: linear-gradient(135deg, #e2e8f0, #94a3b8); color: #0f172a; box-shadow: 0 4px 15px rgba(148, 163, 184, 0.3); }
+        .dl-btn:hover { transform: scale(1.03); filter: brightness(1.07); }
+        .dl-btn.win:hover { box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45); }
+        .dl-btn.lnx:hover { box-shadow: 0 6px 20px rgba(234, 88, 12, 0.45); }
+        .dl-btn.mac:hover { box-shadow: 0 6px 20px rgba(148, 163, 184, 0.45); }
+        .dl-btn.disabled {
+            background: rgba(255, 255, 255, 0.06); color: #9ca3af; cursor: not-allowed;
+            border: 1px dashed rgba(202, 138, 4, 0.4); box-shadow: none;
+        }
+        .dl-btn.disabled:hover { transform: none; filter: none; }
+
+        .file-meta { font-size: 10.5px; font-weight: 800; color: #9ca3af; letter-spacing: 0.3px; margin-top: -5px; }
+
+        /* --- BİLGİ KUTUSU (macOS notu) --- */
+        .info-note {
+            width: 100%; text-align: left; display: flex; gap: 11px;
+            background: rgba(202, 138, 4, 0.09);
+            border: 1px solid rgba(202, 138, 4, 0.32);
+            border-left: 3px solid #ca8a04;
+            border-radius: 12px; padding: 12px 14px;
+            font-size: 11.5px; font-weight: 600; line-height: 1.7; color: #d1d5db;
+        }
+        .info-note .note-icon { font-size: 15px; flex-shrink: 0; line-height: 1.4; }
+        .info-note strong { color: #facc15; font-weight: 900; }
+        .info-note small { display: block; margin-top: 4px; color: #9ca3af; font-size: 10.5px; }
+
+        /* --- YAKINDA BÖLÜMÜ --- */
+        .coming-section { width: 100%; max-width: 1300px; z-index: 10; margin-top: 22px; }
+        .coming-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+        .coming-card {
+            display: flex; align-items: center; gap: 15px;
+            background: rgba(35, 17, 8, 0.55); border: 2px dashed rgba(202, 138, 4, 0.35);
+            border-radius: 16px; padding: 16px 18px; transition: all 0.25s ease;
+        }
+        .coming-card:hover { border-color: rgba(250, 204, 21, 0.6); background: rgba(35, 17, 8, 0.8); }
+        .coming-icon {
+            width: 48px; height: 48px; border-radius: 13px; flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(202, 138, 4, 0.25);
+            display: flex; align-items: center; justify-content: center; font-size: 24px;
+        }
+        .coming-title { font-size: 14px; font-weight: 900; letter-spacing: 0.5px; }
+        .coming-sub { font-size: 11px; font-weight: 700; color: #9ca3af; margin-top: 4px; }
+        .coming-tag {
+            margin-left: auto; flex-shrink: 0; font-size: 9px; font-weight: 900; letter-spacing: 1.2px;
+            padding: 6px 11px; border-radius: 8px; background: rgba(255, 255, 255, 0.07);
+            color: #9ca3af; white-space: nowrap;
         }
 
-        .icon-win { background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff; }
-        .icon-linux { background: linear-gradient(135deg, #ea580c, #c2410c); color: #ffffff; }
-        .icon-mac { background: linear-gradient(135deg, #475569, #1e293b); color: #ffffff; border: 1.5px solid rgba(255, 255, 255, 0.2); }
-        .icon-android { background: linear-gradient(135deg, #16a34a, #15803d); color: #ffffff; }
-        .icon-ios { background: linear-gradient(135deg, #334155, #0f172a); color: #ffffff; border: 1.5px solid rgba(255, 255, 255, 0.15); }
+        /* --- SİSTEM ŞERİDİ --- */
+        .spec-section { width: 100%; max-width: 1300px; z-index: 10; margin-top: 34px; }
+        .spec-heading {
+            font-size: 13px; font-weight: 900; color: #facc15; text-transform: uppercase;
+            letter-spacing: 1.4px; margin-bottom: 16px; text-align: center;
+        }
+        .spec-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+        .spec-item {
+            background: rgba(35, 17, 8, 0.85); border: 2px solid rgba(202, 138, 4, 0.45);
+            border-radius: 16px; padding: 16px 18px; text-align: left; backdrop-filter: blur(6px);
+            transition: all 0.25s ease;
+        }
+        .spec-item:hover { border-color: #facc15; transform: translateY(-4px); }
+        .spec-label { font-size: 10px; font-weight: 900; color: #facc15; text-transform: uppercase; letter-spacing: 0.9px; margin-bottom: 7px; }
+        .spec-value { font-size: 12.5px; font-weight: 800; color: #e5e7eb; line-height: 1.5; }
 
-        .plat-title {
-            font-size: 18px;
-            font-weight: 900;
-            letter-spacing: 0.5px;
-            color: #ffffff;
+        .footer-note {
+            width: 100%; max-width: 1300px; z-index: 10; margin-top: 30px; text-align: center;
+            font-size: 11.5px; font-weight: 700; color: #9ca3af; line-height: 1.8;
         }
-        .plat-sub {
-            font-size: 11px;
-            font-weight: 800;
-            color: #facc15;
-            margin-top: -6px;
-            margin-bottom: 6px;
-        }
-
-        .features-list {
-            list-style: none;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin: 4px 0 16px 0;
-            text-align: left;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(202, 138, 4, 0.25);
-            border-radius: 12px;
-        }
-        .features-list li {
-            font-size: 11px;
-            font-weight: 700;
-            color: #e5e7eb;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .features-list li svg {
-            flex-shrink: 0;
-            fill: #22c55e;
-        }
-
-        /* İndirme Butonları */
-        .download-btn {
-            background: linear-gradient(135deg, #fef08a, #facc15);
-            color: #422006;
-            border: none;
-            padding: 12px 18px;
-            width: 100%;
-            border-radius: 12px;
-            font-weight: 900;
-            font-size: 13px;
-            cursor: pointer;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 4px 14px rgba(250, 204, 21, 0.25);
-            transition: all 0.2s ease;
-            margin-top: auto;
-        }
-        .download-btn:hover {
-            transform: scale(1.02);
-            filter: brightness(1.08);
-            box-shadow: 0 8px 22px rgba(250, 204, 21, 0.4);
-        }
-        .download-btn svg {
-            fill: #422006;
-        }
-
-        .download-btn.disabled {
-            background: rgba(255, 255, 255, 0.08);
-            color: #9ca3af;
-            cursor: not-allowed;
-            box-shadow: none;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transform: none !important;
-            filter: none !important;
-        }
-
-        .format-badge {
-            font-size: 10px;
-            font-weight: 800;
-            color: #ca8a04;
-            margin-top: 4px;
-        }
+        .footer-note strong { color: #facc15; }
     </style>
 </head>
 <body>
-
     <div class="hero-section">
-        <!-- --- ÜST MENÜ (AÇILIR LAUNCHER DROPDOWN İÇERİR) --- -->
+        <!-- ÜST MENÜ -->
         <header>
-            <a href="anasayfa.html" class="logo-box">
+            <a href="index.html" class="logo-box">
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>
             </a>
             <nav>
                 <ul>
-                    <li><a href="anasayfa.html">ANA SAYFA</a></li>
-                    <li><a href="magaza.html">MAĞAZA</a></li>
-                    
+                    <li><a href="index.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> ANASAYFA</a></li>
+                    <li><a href="magaza.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg> MAĞAZA</a></li>
                     <!-- AÇILIR LAUNCHER MENÜSÜ -->
                     <li class="dropdown">
-                        <a href="launcher.html" class="active dropdown-toggle">
+                        <a href="launcher.html" class="dropdown-toggle active">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
                             <span>LAUNCHER</span>
                             <span class="dropdown-arrow">▼</span>
                         </a>
@@ -403,7 +235,7 @@
                                 <span class="drop-icon">🍎</span>
                                 <div class="drop-info">
                                     <span class="drop-title">macOS (.dmg)</span>
-                                    <span class="drop-sub">M1/M2/M3 & Intel İndir</span>
+                                    <span class="drop-sub">Apple Silicon (M1/M2/M3) İndir</span>
                                 </div>
                                 <span class="drop-badge rec">DMG</span>
                             </a>
@@ -418,6 +250,9 @@
                             </div>
                         </div>
                     </li>
+                    <li><a href="yardim.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg> YARDIM</a></li>
+                    <li><a href="destek.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z"/></svg> DESTEK</a></li>
+                    <li><a href="cezalar.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm5.31-3.1L6.1 5.69C7.45 4.63 9.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/></svg> CEZALAR</a></li>
                 </ul>
             </nav>
             <a href="giris.html" class="user-btn">
@@ -425,187 +260,138 @@
             </a>
         </header>
 
-        <!-- BAŞLIK ALANI -->
-        <div class="launcher-header-area">
-            <div class="launcher-tag">⚡ KÜNEFE CLIENT v4.5 • RESMİ İSTEMCİ</div>
-            <h1 class="launcher-title">KÜNEFESMP <span>ÖZEL LAUNCHER</span></h1>
-            <p class="launcher-desc">
-                Otomatik Fabric 1.21.x mod yükleyici, Sodium FPS optimizasyonu, kişisel skin yükleme sistemi ve hile engelleme altyapısıyla hazırlandı. Platformunu seç ve oyuna hemen katıl!
-            </p>
+        <!-- BAŞLIK -->
+        <div class="hero-badge">⚡ KÜNEFE CLIENT V4.5 • RESMÎ İSTEMCİ</div>
+        <h1 class="hero-title">KÜNEFESMP <span class="accent">ÖZEL LAUNCHER</span></h1>
+        <p class="hero-desc">
+            Otomatik Fabric 1.21.x mod yükleyici, Sodium FPS optimizasyonu, kişisel skin yükleme sistemi
+            ve hile engelleme altyapısıyla hazırlandı. İndir, kur ve oyuna birkaç saniyede katıl.
+        </p>
+
+        <!-- PLATFORM KARTLARI -->
+        <div class="platform-grid">
+
+            <!-- WINDOWS -->
+            <div class="platform-card">
+                <div class="plat-icon win">🪟</div>
+                <div class="plat-title">WINDOWS</div>
+                <div class="plat-sub">Windows 10 / 11 (64-Bit)</div>
+                <ul class="features-list">
+                    <li>Kurulum gerektirmez, doğrudan çift tıkla açılır</li>
+                    <li>Fabric &amp; Sodium modlarını otomatik yükler</li>
+                    <li>PNG dosyasından skin yükleme desteği</li>
+                    <li>Sunucuya tek tıkla otomatik bağlanır</li>
+                </ul>
+                <a href="downloads/KunefeLauncher.exe" download="KunefeLauncher.exe" class="dl-btn win">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                    WINDOWS İÇİN İNDİR (.EXE)
+                </a>
+                <div class="file-meta">📦 ~24 MB • Tek dosya • Taşınabilir</div>
+            </div>
+
+            <!-- LINUX -->
+            <div class="platform-card">
+                <div class="plat-icon lnx">🐧</div>
+                <div class="plat-title">LINUX &amp; STEAM DECK</div>
+                <div class="plat-sub">SteamOS, Ubuntu, Arch, Fedora</div>
+                <ul class="features-list">
+                    <li>Steam Deck dahil tüm Linux dağıtımlarında çalışır</li>
+                    <li>Flatpak sandbox ile tam güvenlik izolasyonu</li>
+                    <li>Sistemde OpenJDK 21 kurulu olması yeterli</li>
+                    <li>Hiçbir dağıtıma özel kurulum gerekmez</li>
+                </ul>
+                <a href="downloads/KunefeSMP-Launcher.flatpak" download="KunefeSMP-Launcher.flatpak" class="dl-btn lnx">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                    LINUX İÇİN İNDİR (.FLATPAK)
+                </a>
+                <div class="file-meta">📦 ~372 MB • flatpak install KunefeSMP-Launcher.flatpak</div>
+            </div>
+
+            <!-- MACOS -->
+            <div class="platform-card">
+                <div class="plat-icon mac">🍎</div>
+                <div class="plat-title">MACOS</div>
+                <div class="plat-sub">Apple Silicon (M1 / M2 / M3)</div>
+                <ul class="features-list">
+                    <li>macOS 12 Sonoma ve üzeri sürümlerde çalışır</li>
+                    <li>Tek tıkla kurulum, Applications klasörüne sürükle-bırak</li>
+                    <li>Metal &amp; Retina uyumlu arayüz</li>
+                    <li>Java dahil her şey otomatik kurulur</li>
+                </ul>
+                <div class="info-note">
+                    <span class="note-icon">🛡️</span>
+                    <span>
+                        <strong>İlk açılışta uyarı çıkarsa:</strong> DMG'yi açın, KunefeLauncher.app dosyasına
+                        <strong>sağ tık → Aç</strong> deyin. Bir kez onayladıktan sonra her seferinde normal açılır.
+                        <small>Bu, macOS'in "Tanınmayan geliştirici" güvenlik kontrolüdür — uygulama güvenlidir.</small>
+                    </span>
+                </div>
+                <a href="downloads/KunefeLauncher.dmg" download="KunefeLauncher.dmg" class="dl-btn mac">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                    MACOS İÇİN İNDİR (.DMG)
+                </a>
+                <div class="file-meta">📦 ~18 MB • Apple Silicon (arm64)</div>
+            </div>
         </div>
 
-        <!-- MAĞAZA İLE BİREBİR AYNI YAPI: SIDEBAR & PLATFORM KARTLARI -->
-        <div class="store-container">
-            <!-- YAN MENÜ (KATEGORİLER) -->
-            <div class="sidebar">
-                <div class="sidebar-box">
-                    <div class="sidebar-title">Platform Seçimi</div>
-                    <div class="cat-list">
-                        <button class="cat-btn active" id="btn-all" onclick="switchCategory('all')">
-                            <span class="cat-icon">⭐</span>
-                            <span>Tüm Platformlar</span>
-                        </button>
-                        <button class="cat-btn" id="btn-desktop" onclick="switchCategory('desktop')">
-                            <span class="cat-icon">💻</span>
-                            <span>Masaüstü (PC)</span>
-                        </button>
-                        <button class="cat-btn" id="btn-mobile" onclick="switchCategory('mobile')">
-                            <span class="cat-icon">📱</span>
-                            <span>Mobil (Telefon)</span>
-                        </button>
+        <!-- YAKINDA -->
+        <div class="coming-section">
+            <div class="spec-heading">Yakında</div>
+            <div class="coming-grid">
+                <div class="coming-card">
+                    <div class="coming-icon">🤖</div>
+                    <div>
+                        <div class="coming-title">ANDROID</div>
+                        <div class="coming-sub">Google Play Store &amp; APK • Geliştirme aşamasında</div>
                     </div>
+                    <span class="coming-tag">YAKINDA</span>
                 </div>
-
-                <div class="sidebar-box">
-                    <div class="sidebar-title">Sistem Özeti</div>
-                    <div class="sidebar-info-box">
-                        <div><strong>Sürüm:</strong> v4.5 (Fabric 1.21.x)</div>
-                        <div><strong>Java:</strong> Dahili OpenJDK 21</div>
-                        <div><strong>FPS Modu:</strong> Sodium & Lithium</div>
-                        <div><strong>Ses:</strong> Simple Voice Chat</div>
-                        <div><strong>Skin:</strong> PNG'den Yükle</div>
+                <div class="coming-card">
+                    <div class="coming-icon">📱</div>
+                    <div>
+                        <div class="coming-title">iOS / iPADOS</div>
+                        <div class="coming-sub">App Store • TestFlight ile erken erişim</div>
                     </div>
+                    <span class="coming-tag">YAKINDA</span>
                 </div>
             </div>
+        </div>
 
-            <!-- SAĞ TARAF: KARTLAR -->
-            <div class="content-area">
-                
-                <!-- TÜMÜ / MASAÜSTÜ GRİDİ -->
-                <div class="products-grid" id="grid-desktop">
-                    
-                    <!-- WINDOWS -->
-                    <div class="platform-card featured">
-                        <span class="badge-pill">🔥 EN ÇOK TERCİH EDİLEN</span>
-                        <div class="platform-icon-box icon-win">🪟</div>
-                        <div class="plat-title">WINDOWS</div>
-                        <div class="plat-sub">Windows 10 / 11 (64-Bit)</div>
-
-                        <ul class="features-list">
-                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Kurulum gerektirmez, doğrudan çift tıkla açılır</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Fabric & Sodium modlarını otomatik günceller</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> PNG dosyasından tek tıkla özel skinini yükle</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Sunucuya tek tıkla otomatik şifresiz giriş</li>
-                        </ul>
-
-                        <a href="downloads/KunefeLauncher.exe" download="KunefeLauncher.exe" class="download-btn">
-                            <svg width="18" height="18" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-                            WINDOWS İÇİN İNDİR (.EXE)
-                        </a>
-                        <span class="format-badge">Boyut: ~24 MB • Portable</span>
-                    </div>
-
-                    <!-- LINUX -->
-                    <div class="platform-card">
-                        <div class="platform-icon-box icon-linux">🐧</div>
-                        <div class="plat-title">LINUX & STEAM DECK</div>
-                        <div class="plat-sub">SteamOS, Ubuntu, Arch, Fedora</div>
-
-                        <ul class="features-list">
-                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Steam Deck dahil tüm Linux dağıtımlarına uyumlu</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Dahili OpenJDK 21 ve ses altyapısı hazır</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Flatpak sandbox ile tam güvenlik</li>
-                        </ul>
-
-                        <a href="downloads/KunefeSMP-Launcher.flatpak" download="KunefeSMP-Launcher.flatpak" class="download-btn" style="background: linear-gradient(135deg, #fb923c, #ea580c); color: #fff;">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-                            LINUX İÇİN İNDİR (.FLATPAK)
-                        </a>
-                        <span class="format-badge">flatpak install KunefeSMP-Launcher.flatpak</span>
-                    </div>
-
-                    <!-- MACOS -->
-                    <div class="platform-card">
-                        <div class="platform-icon-box icon-mac">🍎</div>
-                        <div class="plat-title">MACOS</div>
-                        <div class="plat-sub">Apple Silicon (M1/M2/M3) & Intel</div>
-
-                        <ul class="features-list">
-                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Apple Silicon & Intel işlemcilerle tam uyumlu</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> macOS Sonoma, Ventura ve Monterey desteği</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Metal grafik motoru ve Retina optimizasyonu</li>
-                        </ul>
-
-                        <a href="downloads/KunefeLauncher.dmg" download="KunefeLauncher.dmg" class="download-btn" style="background: linear-gradient(135deg, #e2e8f0, #94a3b8); color: #0f172a;">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#0f172a"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-                            MACOS İÇİN İNDİR (.DMG)
-                        </a>
-                        <span class="format-badge">macOS 12+ (Universal Binary)</span>
-                    </div>
-
+        <!-- SİSTEM ÖZETİ -->
+        <div class="spec-section">
+            <div class="spec-heading">Launcher İçeriği</div>
+            <div class="spec-strip">
+                <div class="spec-item">
+                    <div class="spec-label">Oyun Sürümü</div>
+                    <div class="spec-value">Minecraft 1.21.x • Fabric Loader</div>
                 </div>
-
-                <!-- MOBİL GRİDİ -->
-                <div class="products-grid" id="grid-mobile" style="display: none;">
-                    
-                    <!-- ANDROID -->
-                    <div class="platform-card">
-                        <div class="platform-icon-box icon-android">🤖</div>
-                        <div class="plat-title">ANDROID</div>
-                        <div class="plat-sub">Google Play Store & APK</div>
-
-                        <ul class="features-list">
-                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> PojavLauncher & GeyserMC özel KünefeSMP entegrasyonu</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Dokunmatik ekran kontrolleri ve otomatik sunucu girişi</li>
-                        </ul>
-
-                        <button class="download-btn disabled" disabled>
-                            ⏳ YAKINDA YAYINLANACAK (GOOGLE PLAY)
-                        </button>
-                        <span class="format-badge">Geliştirme Aşamasında</span>
-                    </div>
-
-                    <!-- IOS -->
-                    <div class="platform-card">
-                        <div class="platform-icon-box icon-ios">🍏</div>
-                        <div class="plat-title">APPLE IOS</div>
-                        <div class="plat-sub">iPhone & iPad (App Store)</div>
-
-                        <ul class="features-list">
-                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> iOS 15+ iPhone ve iPad cihazlar için geliştirilmektedir</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> TestFlight beta aşamasında yakında duyurulacak</li>
-                        </ul>
-
-                        <button class="download-btn disabled" disabled>
-                            ⏳ YAKINDA YAYINLANACAK (APP STORE)
-                        </button>
-                        <span class="format-badge">TestFlight Beta Hazırlanıyor</span>
-                    </div>
-
+                <div class="spec-item">
+                    <div class="spec-label">Java</div>
+                    <div class="spec-value">Dahili OpenJDK 21 • Ek kurulum yok</div>
                 </div>
-
+                <div class="spec-item">
+                    <div class="spec-label">FPS Modu</div>
+                    <div class="spec-value">Sodium + Lithium • Otomatik kurulum</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Ses</div>
+                    <div class="spec-value">Simple Voice Chat hazır</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Skin</div>
+                    <div class="spec-value">PNG dosyasından yükleme</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-label">Hile Koruması</div>
+                    <div class="spec-value">Sunucu taraflı doğrulama</div>
+                </div>
             </div>
+        </div>
+
+        <div class="footer-note">
+            İndirme sorunu yaşarsan <strong>DESTEK</strong> sayfasından bize ulaşabilirsin.<br>
+            Launcher <strong>v4.5</strong> • KünefeSMP Resmî İstemcisi
         </div>
     </div>
-
-    <!-- KATEGORİ GEÇİŞ SCRIPTI (MAĞAZA İLE BİREBİR AYNI MANTIK) -->
-    <script>
-        function switchCategory(cat) {
-            const btnAll = document.getElementById('btn-all');
-            const btnDesktop = document.getElementById('btn-desktop');
-            const btnMobile = document.getElementById('btn-mobile');
-            const gridDesktop = document.getElementById('grid-desktop');
-            const gridMobile = document.getElementById('grid-mobile');
-
-            // Buton aktifliklerini sıfırla
-            btnAll.classList.remove('active');
-            btnDesktop.classList.remove('active');
-            btnMobile.classList.remove('active');
-
-            if (cat === 'all') {
-                btnAll.classList.add('active');
-                gridDesktop.style.display = 'grid';
-                gridMobile.style.display = 'grid';
-            } else if (cat === 'desktop') {
-                btnDesktop.classList.add('active');
-                gridDesktop.style.display = 'grid';
-                gridMobile.style.display = 'none';
-            } else if (cat === 'mobile') {
-                btnMobile.classList.add('active');
-                gridDesktop.style.display = 'none';
-                gridMobile.style.display = 'grid';
-            }
-        }
-    </script>
 </body>
 </html>
