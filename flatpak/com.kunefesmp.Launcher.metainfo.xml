@@ -4,20 +4,50 @@
   <metadata_license>MIT</metadata_license>
   <project_license>MIT</project_license>
   <name>KunefeSMP Launcher</name>
-  <summary>KunefeSMP Özel Minecraft Launcher</summary>
+  <summary>KunefeSMP Minecraft sunucusu icin ozel baslatici</summary>
+
+  <developer id="com.kunefesmp">
+    <name>KünefeSMP</name>
+  </developer>
+
   <description>
-    <p>KunefeSMP Minecraft sunucusu için özel istemci başlatıcısı.</p>
-    <p>Otomatik mod kurulumu ve yönetimi, kişisel ve sunucu senkronize skin sistemi, sunucu kilitli güvenli bağlantı ve optimize edilmiş FPS profilleri sunar.</p>
+    <p>KunefeSMP Minecraft sunucusu icin ozel istemci baslaticisi.</p>
+    <p>Ozellikler:</p>
+    <ul>
+      <li>Fabric modlarini otomatik kurar ve dogrular</li>
+      <li>Sunucuya ozel resource pack ve skin senkronizasyonu</li>
+      <li>Sunucuya kilitli guvenli baglanti</li>
+      <li>FPS ve performans profilleri</li>
+    </ul>
   </description>
+
+  <launchable type="desktop-id">com.kunefesmp.Launcher.desktop</launchable>
   <url type="homepage">https://kunefesmp.com.tr</url>
+  <url type="bugtracker">https://github.com/Kubbemsi/kunefe-launcher/issues</url>
+  <url type="vcs-browser">https://github.com/Kubbemsi/kunefe-launcher</url>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/Kubbemsi/kunefe-launcher/main/flatpak/screenshot-1.png</image>
+      <caption>KunefeSMP Launcher ana ekrani</caption>
+    </screenshot>
+  </screenshots>
+
   <releases>
-    <release version="4.5" date="2026-10-18"/>
+    <release version="4.6" date="2026-10-22">
+      <description>
+        <p>Bozuk mod dosyasi kontrolu, indirme dogrulamasi ve kararli mod kurulumu.</p>
+      </description>
+    </release>
   </releases>
+
   <content_rating type="oars-1.1"/>
+
   <supports>
     <control>pointing</control>
     <control>keyboard</control>
   </supports>
+
   <requires>
     <internet>always</internet>
   </requires>

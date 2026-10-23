@@ -1,18 +1,21 @@
 import customtkinter as ctk
 import minecraft_launcher_lib
-import subprocess, json, os, sys, hashlib, threading, uuid as uuid_lib, socket, time, zipfile
+import subprocess, json, os, sys, hashlib, threading, uuid as uuid_lib, socket, time, zipfile, re
 import psutil
 import shutil
 from PIL import Image, ImageDraw
 
 # ══════════════════════════════════════════════════
-#  KunefeSMP Client Launcher (Özel Kilitli Sürüm v4.5)
+#  KunefeSMP Client Launcher (Özel Kilitli Sürüm v4.6)
 # ══════════════════════════════════════════════════
 
 SERVER_NAME  = "KunefeSMP Resmi Sunucusu"
 SERVER_IP    = "oyna.kunefesmp.com.tr"
 SERVER_PORT  = "25565"
 CLIENT_BRAND = "Kunefe Client"
+# Sunucunun kendi surumu (Paper 1.21.1 + ViaVersion). Yeni kurulumlarda
+# guvenli varsayilan budur; baska surumler secilirse otomatik indirilir.
+SUNUCU_SURUMU = "1.21.1"
 LAUNCHER_SECRET = "kunefe-gizli-anahtar-degistir"
 AUTH_PORT    = 7899
 
@@ -42,8 +45,9 @@ REQUIRED_MODS = [
     {"slug": "libipn",                   "name": "libIPN"},
     {"slug": "cloth-config",             "name": "Cloth Config API"},
     {"slug": "fabric-language-kotlin",   "name": "Fabric Language Kotlin"},
-    {"slug": "sound-physics-remastered", "name": "Sound Physics Remastered"},
-    {"slug": "viafabric",                "name": "ViaFabric"},
+    # NOT: ViaFabric kaldirildi - sunucuda ViaVersion var ve ViaFabric'in tek jar'i
+    # icinde 1.14-1.20.5 icin paketlenmis surumler "Incompatible mods" hatasi veriyordu.
+    # NOT: Sound Physics kaldirildi - Simple Voice Chat ile surum cakismasi yapiyordu.
     {"slug": "audio-player",             "name": "Audio Player"},
     {"slug": "modmenu",                  "name": "Mod Menu"},
     {"slug": "simple-voice-chat",        "name": "Simple Voice Chat"},
@@ -536,6 +540,10 @@ def setup_kunefe_resource_pack(version_id="26.3"):
         print(f"Resource pack hatası: {e}")
 
 def get_versions_1_21_plus():
+    """1.21 ve uzeri surumler (en yeniden eskiye).
+
+    Secilen surum kurulu degilse _mc_thread icinde otomatik indirilir.
+    """
     try:
         all_v = minecraft_launcher_lib.utils.get_version_list()
         result = []
@@ -546,9 +554,9 @@ def get_versions_1_21_plus():
                 if parts >= (1, 21): result.append(v["id"])
             except Exception:
                 continue
-        return result or ["26.3", "26.2", "1.21.4"]
+        return result or [SUNUCU_SURUMU]
     except Exception:
-        return ["26.3", "26.2", "1.21.4"]
+        return [SUNUCU_SURUMU]
 
 def apply_options(preset_name):
     preset = FPS_PRESETS.get(preset_name, FPS_PRESETS["⚖️ Dengeli"])
@@ -607,8 +615,120 @@ def load_mods_cfg():
 def save_mods_cfg(c):
     with open(MODS_CFG, "w", encoding="utf-8") as f: json.dump(c, f, indent=2, ensure_ascii=False)
 
-def get_modrinth_download(slug, mc_version, loader="fabric"):
-    """Modrinth'ten en güncel uyumlu versiyonun indirme URL ve dosya adını döner."""
+def _v_parcalari(v):
+    """'1.21.8' -> (1, 21, 8) ; '26.2' -> (26, 2, 0)
+    '26.3-alpha.3' gibi ön hazırlık sürümlerinde sadece sayısal gövde alınır."""
+    temel = re.split(r"[-+]", str(v).strip(), maxsplit=1)[0]
+    p = [int(x) for x in re.findall(r"\d+", temel)[:3]]
+    while len(p) < 3:
+        p.append(0)
+    return tuple(p)
+
+def _v_karsilastir(a, b):
+    pa, pb = _v_parcalari(a), _v_parcalari(b)
+    return (pa > pb) - (pa < pb)
+
+def _tek_kural(op, ver, surum):
+    if "*" in ver or "x" in ver.lower():
+        # 1.21.x gibi joker -> ilk iki bilesen karsilastirilir
+        return _v_parcalari(surum)[:2] == _v_parcalari(ver)[:2]
+    c = _v_karsilastir(surum, ver)
+    if op in ("", "="):
+        return c == 0
+    if op == ">=":
+        return c >= 0
+    if op == ">":
+        return c > 0
+    if op == "<=":
+        return c <= 0
+    if op == "<":
+        return c < 0
+    if op in ("^", "~"):
+        if c < 0:
+            return False
+        p = list(_v_parcalari(ver))
+        if op == "^":
+            idx = 0
+            while idx < 2 and p[idx] == 0:
+                idx += 1
+        else:
+            idx = 1
+        p[idx] += 1
+        for j in range(idx + 1, 3):
+            p[j] = 0
+        return _v_karsilastir(surum, ".".join(str(x) for x in p)) < 0
+    return True
+
+def mc_araligi_uyuyor(ifade, surum):
+    """Fabric'in 'depends.minecraft' ifadesini kontrol eder.
+    Ornek: '>=1.21.8', '>=26.2 <26.3', '~1.21.8', '1.21.8', '*', '>=1.20 <1.22'"""
+    if ifade is None:
+        return True
+    if isinstance(ifade, (list, tuple)):
+        return any(mc_araligi_uyuyor(x, surum) for x in ifade)
+    ifade = str(ifade).strip()
+    if ifade in ("", "*"):
+        return True
+    for parca in ifade.split("||"):
+        kurallar = re.findall(r"(>=|<=|>|<|=|\^|~)?\s*(\d[0-9A-Za-z\.\*\+\-]*|\*)", parca)
+        if not kurallar:
+            continue
+        if all(_tek_kural(op, ver, surum) for op, ver in kurallar):
+            return True
+    return False
+
+def jar_mc_uyumlu(jar_yolu, mc_version):
+    """Jar icindeki fabric.mod.json'a gore Minecraft surumu uyuyor mu?
+    Dosya yoksa, 0 baytsa veya bozuk bir zip ise False doner (yeniden indirilir)."""
+    try:
+        if not os.path.isfile(jar_yolu) or os.path.getsize(jar_yolu) < 1024:
+            return False
+        with zipfile.ZipFile(jar_yolu) as z:
+            if z.testzip() is not None:
+                return False
+            aday = [n for n in z.namelist() if n.endswith("fabric.mod.json")]
+            if not aday:
+                return True
+            veri = json.loads(z.read(aday[0]).decode("utf-8", "ignore"))
+        bagimlilik = (veri.get("depends") or {}).get("minecraft")
+        if not bagimlilik:
+            return True
+        return mc_araligi_uyuyor(bagimlilik, mc_version)
+    except Exception:
+        return False
+
+
+def jar_saglam(jar_yolu):
+    """Jar gercekten kullanilabilir mi? (bos / yarim inmis / bozuk zip kontrolu)"""
+    try:
+        if not os.path.isfile(jar_yolu) or os.path.getsize(jar_yolu) < 1024:
+            return False
+        with zipfile.ZipFile(jar_yolu) as z:
+            return z.testzip() is None
+    except Exception:
+        return False
+
+
+def bozuk_modlari_temizle():
+    """0 bayt veya bozuk zip olan mod dosyalarini siler, sayisini doner."""
+    if not os.path.isdir(MODS_DIR):
+        return 0
+    silinen = 0
+    for dosya in os.listdir(MODS_DIR):
+        if not dosya.endswith(".jar"):
+            continue
+        yol = os.path.join(MODS_DIR, dosya)
+        if not jar_saglam(yol):
+            try:
+                os.remove(yol)
+                silinen += 1
+                print(f"[Modlar] Bozuk mod silindi: {dosya}")
+            except Exception:
+                pass
+    return silinen
+
+def get_modrinth_adaylar(slug, mc_version, loader="fabric", limit=6):
+    """Modrinth'te secili surume uyan surumlerin (url, dosya adi) listesi."""
     try:
         import urllib.request, urllib.parse
         params = urllib.parse.urlencode({
@@ -616,40 +736,77 @@ def get_modrinth_download(slug, mc_version, loader="fabric"):
             "loaders": f'["{loader}"]'
         })
         url = f"https://api.modrinth.com/v2/project/{slug}/version?{params}"
-        req = urllib.request.Request(url, headers={"User-Agent": "KunefeSMP-Launcher/4.5"})
+        req = urllib.request.Request(url, headers={"User-Agent": "KunefeSMP-Launcher/4.6"})
         with urllib.request.urlopen(req, timeout=10) as resp:
             versions = json.loads(resp.read().decode())
-            if not versions:
-                return None, None
-            for f in versions[0].get("files", []):
+        adaylar = []
+        for v in versions[:limit]:
+            for f in v.get("files", []):
                 if f.get("primary", True):
-                    return f["url"], f["filename"]
-            return None, None
+                    adaylar.append((f["url"], f["filename"]))
+                    break
+        return adaylar
     except Exception as e:
-        print(f"[Modrinth] {slug} ({mc_version}) için indirme URL alınamadı: {e}")
-        return None, None
+        print(f"[Modrinth] {slug} ({mc_version}) icin indirme URL alinamadi: {e}")
+        return []
+
+def get_modrinth_download(slug, mc_version, loader="fabric"):
+    """Modrinth'ten en güncel uyumlu versiyonun indirme URL ve dosya adını döner."""
+    adaylar = get_modrinth_adaylar(slug, mc_version, loader)
+    return adaylar[0] if adaylar else (None, None)
 
 def install_mod(slug, mc_version, progress_cb=None):
-    """Bir modu Modrinth'ten indirip MODS_DIR'e kurar. Zaten varsa tekrar indirmez."""
+    """Modu indirir ve Minecraft surumune uydugunu dogrular.
+    Indirme once gecici dosyaya yazilir; bos/bozuk inerse atilir ve
+    bir onceki surum denenir."""
     os.makedirs(MODS_DIR, exist_ok=True)
-    url, filename = get_modrinth_download(slug, mc_version)
-    if not url:
+    adaylar = get_modrinth_adaylar(slug, mc_version)
+    if not adaylar:
         return False, None
-    dest = os.path.join(MODS_DIR, filename)
-    if os.path.exists(dest):
-        return True, filename
-    try:
-        import urllib.request
-        if progress_cb:
-            progress_cb(f"📦 {filename} indiriliyor...")
-        req = urllib.request.Request(url, headers={"User-Agent": "KunefeSMP-Launcher/4.5"})
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            with open(dest, "wb") as f:
-                f.write(resp.read())
-        return True, filename
-    except Exception as e:
-        print(f"[Modrinth] {slug} indirme hatası: {e}")
-        return False, None
+    import urllib.request
+    for url, filename in adaylar:
+        dest = os.path.join(MODS_DIR, filename)
+        if os.path.exists(dest):
+            if jar_mc_uyumlu(dest, mc_version):
+                return True, filename
+            try:
+                os.remove(dest)   # eski / uyumsuz / bozuk jar
+            except Exception:
+                pass
+        tmp = dest + ".part"
+        try:
+            if progress_cb:
+                progress_cb(f"📦 {filename} indiriliyor...")
+            req = urllib.request.Request(url, headers={"User-Agent": "KunefeSMP-Launcher/4.6"})
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                veri = resp.read()
+            # Yarim/bos indirmeyi kabul etme
+            if not veri or len(veri) < 1024:
+                raise ValueError(f"eksik indirme ({len(veri) if veri else 0} bayt)")
+            with open(tmp, "wb") as f:
+                f.write(veri)
+            # Zip butunlugu
+            with zipfile.ZipFile(tmp) as z:
+                if z.testzip() is not None:
+                    raise ValueError("bozuk zip")
+            os.replace(tmp, dest)
+        except Exception as e:
+            print(f"[Modrinth] {slug} indirme hatası: {e}")
+            for yol in (tmp, dest):
+                try:
+                    if os.path.exists(yol):
+                        os.remove(yol)
+                except Exception:
+                    pass
+            continue
+        if jar_mc_uyumlu(dest, mc_version):
+            return True, filename
+        print(f"[Modrinth] {slug}: {filename} Minecraft {mc_version} ile uyumsuz -> silindi.")
+        try:
+            os.remove(dest)
+        except Exception:
+            pass
+    return False, None
 
 def clean_unmanaged_mods(allowed_filenames):
     """Sadece kendi listemizdeki modları bırakır, diğerlerini siler."""
@@ -734,7 +891,7 @@ class KunefeLauncher(ctk.CTk):
         ctk.CTkLabel(logo, text=SERVER_IP,
                      font=ctk.CTkFont("Consolas", 12, "bold"), text_color=GOLD).pack(pady=(4, 0))
 
-        ctk.CTkLabel(sol, text="v4.5 Dynamic UI Edition  ·  KunefeSMP",
+        ctk.CTkLabel(sol, text="v4.6 Dynamic UI Edition  ·  KunefeSMP",
                      font=ctk.CTkFont("Segoe UI", 10), text_color=DIM).pack(side="bottom", pady=20)
 
         # Sağ Giriş Alanı
@@ -1042,7 +1199,20 @@ class KunefeLauncher(ctk.CTk):
                      font=ctk.CTkFont("Segoe UI", 12, "bold"), text_color=DIM).pack(anchor="w", padx=15, pady=(15, 8))
         surumler = get_versions_1_21_plus()
         saved_ver = self.cfg.get("version", "")
-        default_ver = saved_ver if saved_ver in surumler else surumler[0]
+        # Varsayilan: kayitli surum -> kurulu en yeni surum -> sunucu surumu.
+        # (Onceden listenin ilk elemani yani Mojang'in en yenisi seciliyordu ve
+        #  kurulu olmadigi icin "Version 26.1.2 was not found" hatasi cikiyordu.)
+        try:
+            kurulu_surumler = {v.get("id") for v in minecraft_launcher_lib.utils.get_installed_versions(MC_DIR)}
+        except Exception:
+            kurulu_surumler = set()
+        if saved_ver in kurulu_surumler:
+            default_ver = saved_ver            # kayitli ve kurulu
+        else:
+            kurulu_var = [s for s in surumler if s in kurulu_surumler]
+            # Hicbiri kurulu degilse (yeni bilgisayar) sunucunun kendi surumu secilir;
+            # boylece "Version X was not found" gibi hatalar olusmaz.
+            default_ver = kurulu_var[0] if kurulu_var else SUNUCU_SURUMU
         self.surum_var = ctk.StringVar(value=default_ver)
 
         def on_surum_change(v):
@@ -1528,9 +1698,6 @@ class KunefeLauncher(ctk.CTk):
 
     def _guard_watcher(self, process):
         allowed_ips = get_allowed_server_ips()
-        has_joined = False
-
-        disconnect_strikes = 0
 
         while process.poll() is None:
             try:
@@ -1538,8 +1705,6 @@ class KunefeLauncher(ctk.CTk):
 
                 proc = psutil.Process(process.pid)
                 conns = proc.net_connections(kind="inet")
-
-                connected_to_kunefe = False
 
                 for c in conns:
                     if c.raddr:
@@ -1553,33 +1718,18 @@ class KunefeLauncher(ctk.CTk):
                             continue
 
                         # Sadece Minecraft sunucu portlarını (25565 vb.) denetle
-                        if port in (25565, 25566, 25567):
-                            if ip not in allowed_ips:
-                                print(f"[KunefeGuard] Yabancı Minecraft sunucusuna bağlantı engellendi: {ip}:{port}")
-                                proc.kill()
-                                break
-                            elif c.status == psutil.CONN_ESTABLISHED:
-                                connected_to_kunefe = True
-
-                if connected_to_kunefe:
-                    has_joined = True
-                    disconnect_strikes = 0
-                elif has_joined and not connected_to_kunefe:
-                    disconnect_strikes += 1
-                    if disconnect_strikes >= 1:
-                        print("[KunefeGuard] KunefeSMP bağlantısı kesildi! Kullanıcıya soruluyor...")
-                        should_close = self._ask_close_minecraft(process.pid)
-                        if should_close:
-                            print("[KunefeGuard] Kullanıcı 'Evet' dedi. Minecraft kapatılıyor...")
+                        if port in (25565, 25566, 25567) and ip not in allowed_ips:
+                            print(f"[KunefeGuard] Yabancı Minecraft sunucusuna bağlantı engellendi: {ip}:{port}")
                             proc.kill()
-                            self.mc_proc = None
-                        else:
-                            print("[KunefeGuard] Kullanıcı 'Hayır' dedi. Minecraft açık kalacak ve launcher kapansa da etkilenmeyecek.")
-                            self.mc_proc = None  # Launcher kapatılsa bile MC açık kalmaya devam etsin!
-                        break
+                            break
 
-            except (psutil.NoSuchProcess, psutil.AccessDenied):
+            except psutil.NoSuchProcess:
                 break
+            except psutil.AccessDenied:
+                # Baglantilar okunamiyorsa (yetki yok) oyunu kapatma ve arayuzu
+                # "oyun kapandi" gibi sifirlama; sadece izlemeyi birak.
+                print("[KunefeGuard] Baglantilar okunamadi (izin yok) - izleme kapatildi, oyun acik kaliyor.")
+                return
             except Exception:
                 pass
 
@@ -1587,71 +1737,8 @@ class KunefeLauncher(ctk.CTk):
 
         self.after(0, self._on_game_closed)
 
-    def _ask_close_minecraft(self, pid=None):
-        """Sunucudan çıkınca oyun F11'de bile olsa kesinlikle görünecek şekilde soru sorar."""
-        try:
-            if sys.platform == "win32":
-                import ctypes
-                from ctypes import wintypes
-
-                # Minecraft'ın penceresini bul
-                mc_hwnd = None
-                if pid:
-                    hwnds = []
-                    def enum_cb(hwnd, extra):
-                        if ctypes.windll.user32.IsWindowVisible(hwnd):
-                            window_pid = wintypes.DWORD()
-                            ctypes.windll.user32.GetWindowThreadProcessId(hwnd, ctypes.byref(window_pid))
-                            if window_pid.value == pid:
-                                hwnds.append(hwnd)
-                        return True
-                    WNDENUMPROC = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_int, ctypes.c_int)
-                    ctypes.windll.user32.EnumWindows(WNDENUMPROC(enum_cb), 0)
-                    if hwnds:
-                        mc_hwnd = hwnds[0]
-
-                # F11 tam ekranda sorunun arkada kalmasını önlemek için:
-                # Minecraft penceresini geçici olarak simge durumuna küçült (SW_MINIMIZE = 6)
-                if mc_hwnd:
-                    ctypes.windll.user32.ShowWindow(mc_hwnd, 6)
-
-                # MB_YESNO (4) | MB_ICONQUESTION (32) | MB_SYSTEMMODAL (4096) | MB_SETFOREGROUND (65536) | MB_TOPMOST (262144)
-                flags = 0x00000004 | 0x00000020 | 0x00001000 | 0x00010000 | 0x00040000
-                res = ctypes.windll.user32.MessageBoxW(
-                    0,
-                    "Minecraft Kapatılsın mı?",
-                    "KunefeSMP Client",
-                    flags
-                )
-                is_yes = (res == 6)  # 6 = IDYES (Evet)
-
-                # Eğer kullanıcı 'Hayır' derse, Minecraft penceresini tekrar geri aç (SW_RESTORE = 9)
-                if not is_yes and mc_hwnd:
-                    ctypes.windll.user32.ShowWindow(mc_hwnd, 9)
-                    ctypes.windll.user32.SetForegroundWindow(mc_hwnd)
-
-                return is_yes
-            else:
-                # Linux & macOS: Tkinter messagebox ve wmctrl
-                try:
-                    if sys.platform.startswith("linux") and pid:
-                        subprocess.run(["wmctrl", "-i", "-r", f"0x{pid:x}", "-b", "add,hidden"],
-                                       capture_output=True, timeout=2)
-                except Exception:
-                    pass
-                import tkinter.messagebox as mb
-                return mb.askyesno("KunefeSMP Client", "Minecraft Kapatılsın mı?", icon="question")
-        except Exception as e:
-            print(f"[KunefeGuard] Soru diyalogu hatası: {e}")
-            return True
-
     def _on_close(self):
-        """Launcher kapatılınca Minecraft da kapatılır."""
-        if self.mc_proc is not None:
-            try:
-                self.mc_proc.kill()
-            except Exception:
-                pass
+        """Launcher kapatılsa bile Minecraft açık kalmaya devam eder."""
         self.destroy()
 
     def _on_game_closed(self):
@@ -1681,7 +1768,7 @@ class KunefeLauncher(ctk.CTk):
             cfg    = load_cfg()
             users  = load_users()
             u_uuid = users.get(self.current_user, {}).get("uuid", str(uuid_lib.uuid4()))
-            latest = self.surum_var.get()
+            latest = (self.surum_var.get() or SUNUCU_SURUMU).strip()
             preset = self.fps_var.get()
 
             # 1. Güvenlik, Sunucu Kilidi ve Sürüme Özel Resource Pack Hazırlığı
@@ -1689,7 +1776,18 @@ class KunefeLauncher(ctk.CTk):
             lock_servers_dat()
             setup_kunefe_resource_pack(latest)
 
-            # 2. Fabric Loader Kurulumu
+            # 2. Surum kurulu mu? Yeni bilgisayarda once vanilla surum indirilir.
+            self.after(0, lambda: self._set_prog(0.05, f"📥 Minecraft {latest} kontrol ediliyor..."))
+            try:
+                kurulu_surumler = {v.get("id") for v in minecraft_launcher_lib.utils.get_installed_versions(MC_DIR)}
+                if latest not in kurulu_surumler:
+                    self.after(0, lambda: self._set_prog(0.06, f"📥 Minecraft {latest} indiriliyor... (ilk kurulum)"))
+                    minecraft_launcher_lib.install.install_minecraft_version(latest, MC_DIR)
+                    self.after(0, lambda: self._set_prog(0.11, f"✅ Minecraft {latest} indirildi."))
+            except Exception as e:
+                print(f"[Surum] indirme hatasi: {e}")
+
+            # 3. Fabric Loader Kurulumu
             self.after(0, lambda: self._set_prog(0.08, "🔧 Fabric Loader kontrol ediliyor..."))
             try:
                 fabric_versions = minecraft_launcher_lib.fabric.get_all_loader_versions()
@@ -1714,6 +1812,20 @@ class KunefeLauncher(ctk.CTk):
             mods_cfg = load_mods_cfg()
             selected_optional = set(mods_cfg.get("selected", []))
 
+            # Minecraft surumu degistiyse eski surumun modlari kalmasin
+            # (farkli surumlerin modlari karisinca "Incompatible mods found" hatasi cikiyordu)
+            onceki_surum = str(mods_cfg.get("mc_version") or "")
+            if onceki_surum and onceki_surum != latest and os.path.isdir(MODS_DIR):
+                silinen = 0
+                for _dosya in os.listdir(MODS_DIR):
+                    if _dosya.endswith(".jar"):
+                        try:
+                            os.remove(os.path.join(MODS_DIR, _dosya))
+                            silinen += 1
+                        except Exception:
+                            pass
+                print(f"[Modlar] Sürüm değişti ({onceki_surum} -> {latest}), {silinen} eski mod silindi.")
+
             # Varsayılan optional seçimleri uygula (ilk kez)
             if "selected" not in mods_cfg:
                 for cat_mods in OPTIONAL_MODS.values():
@@ -1725,6 +1837,12 @@ class KunefeLauncher(ctk.CTk):
             installed_files = set()
             total = len(all_slugs)
 
+            # Yarım inmiş / bozuk jar'ları işe başlamadan temizle
+            bozuk = bozuk_modlari_temizle()
+            if bozuk:
+                print(f"[Modlar] {bozuk} bozuk mod dosyası silindi.")
+
+            basarisiz = []
             for i, slug in enumerate(all_slugs):
                 prog = 0.15 + (i / total) * 0.70
                 mod_name = slug
@@ -1738,9 +1856,29 @@ class KunefeLauncher(ctk.CTk):
                 ok, fname = install_mod(slug, latest)
                 if ok and fname:
                     installed_files.add(fname)
+                else:
+                    basarisiz.append(slug)
+
+            # Geçici ağ hatalarına karşı eksik modları bir kez daha dene
+            if basarisiz:
+                self.after(0, lambda: self._set_prog(0.86, "🔁 Eksik modlar tekrar indiriliyor..."))
+                for slug in list(basarisiz):
+                    ok, fname = install_mod(slug, latest)
+                    if ok and fname:
+                        installed_files.add(fname)
+                        basarisiz.remove(slug)
+                if basarisiz:
+                    print(f"[Modlar] Kurulamayan modlar: {', '.join(basarisiz)}")
+
+            # Hâlâ bozuk kalan dosya varsa Fabric açılırken hata vermesin diye sil
+            bozuk_modlari_temizle()
 
             # Yönetilmeyen modları temizle
             clean_unmanaged_mods(installed_files)
+
+            # Hangi surum icin kurulum yapildigini kaydet (sonraki surum degisiminde temizlik icin)
+            mods_cfg["mc_version"] = latest
+            save_mods_cfg(mods_cfg)
 
             # 4. Skin Hazırlığı ve Sunucuya Gönderme (CustomSkinLoader Entegrasyonu)
             self.after(0, lambda: self._set_prog(0.88, "🎨 Karakter skini hazırlanıyor..."))
@@ -1837,7 +1975,7 @@ class KunefeLauncher(ctk.CTk):
             # Oyunu başlat (Windows'ta konsol/CMD penceresinin açılmasını tamamen engelle)
             creation_flags = subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0
             process = subprocess.Popen(cmd, creationflags=creation_flags)
-            self.mc_proc = process  # Launcher kapanınca MC'yi de kapatmak için tut
+            self.mc_proc = process  # Oyun surecini takip etmek icin tutulur (launcher kapansa da oyun acik kalir)
 
             # CraftRise koruma bekçisini başlat
             threading.Thread(target=self._guard_watcher, args=(process,), daemon=True).start()
@@ -1846,7 +1984,10 @@ class KunefeLauncher(ctk.CTk):
             self.after(2000, lambda: self.iconify())
 
         except Exception as e:
-            self.after(0, lambda: self._set_prog(0, f"❌ Hata oluştu: {e}"))
+            hata = str(e)
+            if "was not found" in hata.lower():
+                hata = "Minecraft surumu indirilemedi. Internet baglantisini kontrol edip tekrar dene."
+            self.after(0, lambda m=hata: self._set_prog(0, f"❌ Hata oluştu: {m}"))
             self.after(0, lambda: self.oyna_btn.configure(state="normal", text="▶  KUNEFESMP'YE GİR"))
 
 

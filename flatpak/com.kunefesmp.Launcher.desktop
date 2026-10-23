@@ -2,8 +2,8 @@
 Type=Application
 Name=KunefeSMP Launcher
 Name[tr]=KunefeSMP Launcher
-Comment=KunefeSMP Ozel Minecraft Client Launcher
-Comment[tr]=KunefeSMP Özel Minecraft Client Launcher
+Comment=Custom Minecraft client launcher for KunefeSMP
+Comment[tr]=KunefeSMP icin ozel Minecraft istemci baslaticisi
 Exec=kunefe-launcher
 Icon=com.kunefesmp.Launcher
 Categories=Game;

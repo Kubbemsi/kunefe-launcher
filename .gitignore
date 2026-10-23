@@ -23,3 +23,5 @@ downloads/
 *.dmg
 
 # Kişisel veriler (users.json sunucudan gelir)
+# API anahtarı içeren kişisel script (repoya girmez)
+script.py

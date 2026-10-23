@@ -30,17 +30,17 @@ echo -e "${YELLOW}[1/4] Flathub ve Freedesktop SDK runtime kontrol ediliyor...${
 flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
 
 # Gerekli SDK ve Platform sürümlerini kur
-flatpak install --user -y flathub org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08 2>/dev/null || true
-flatpak install --user -y flathub org.freedesktop.Sdk.Extension.openjdk21//24.08 2>/dev/null || true
+flatpak install --user -y --noninteractive flathub org.freedesktop.Platform//25.08 org.freedesktop.Sdk//25.08 2>/dev/null || true
+flatpak install --user -y --noninteractive flathub org.freedesktop.Sdk.Extension.openjdk21//25.08 2>/dev/null || true
 
 # Proje ana dizinini tespit et
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$ROOT_DIR"
 
-# Derleme
+# Derleme (yerel test manifesti: kaynak kodu dogrudan proje dizininden alir)
 echo -e "${YELLOW}[2/4] Flatpak paketi derleniyor...${NC}"
-flatpak-builder --force-clean --user --install-deps-from=flathub --repo=flatpak-repo build-dir flatpak/com.kunefesmp.Launcher.yml
+flatpak-builder --force-clean --user --install-deps-from=flathub --repo=flatpak-repo build-dir flatpak/com.kunefesmp.Launcher.test.yml
 
 # Tek dosyalık dağıtılabilir .flatpak bundle oluştur
 echo -e "${YELLOW}[3/4] Dağıtılabilir 'KunefeSMP-Launcher.flatpak' oluşturuluyor...${NC}"

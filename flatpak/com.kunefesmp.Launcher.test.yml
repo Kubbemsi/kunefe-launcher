@@ -1,0 +1,39 @@
+app-id: com.kunefesmp.Launcher
+runtime: org.freedesktop.Platform
+runtime-version: '25.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.openjdk21
+command: kunefe-launcher
+
+finish-args:
+  - --share=network
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --filesystem=xdg-data/kunefesmp:create
+  - --env=JAVA_HOME=/app/jre
+  - --env=PATH=/app/jre/bin:/app/bin:/usr/bin
+
+modules:
+  - name: openjdk
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/jre
+      - cp -r /usr/lib/sdk/openjdk21/jvm/openjdk-21/* /app/jre/
+    sources: []
+
+  - python3-requirements.json
+
+  - name: kunefe-launcher
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 launcher.py /app/bin/launcher.py
+      - install -Dm755 flatpak/kunefe-launcher.sh /app/bin/kunefe-launcher
+      - install -Dm644 flatpak/com.kunefesmp.Launcher.desktop /app/share/applications/com.kunefesmp.Launcher.desktop
+      - install -Dm644 flatpak/com.kunefesmp.Launcher.metainfo.xml /app/share/metainfo/com.kunefesmp.Launcher.metainfo.xml
+      - install -Dm644 flatpak/com.kunefesmp.Launcher.png /app/share/icons/hicolor/256x256/apps/com.kunefesmp.Launcher.png
+    sources:
+      - type: dir
+        path: ..
