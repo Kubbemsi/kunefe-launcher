@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KünefeSMP | Sponsor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; user-select: none; }
+        body {
+            background: #06040a;
+            background-image: radial-gradient(at 0% 0%, rgba(239, 68, 68, 0.2) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
+            color: #ffffff; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px;
+        }
+        .container { width: 100%; max-width: 1000px; display: flex; flex-direction: column; gap: 20px; }
+        .navbar { background: rgba(18, 12, 28, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-btn { color: #a78bfa; text-decoration: none; font-weight: 700; font-size: 14px; }
+        .nav-title { font-weight: 900; letter-spacing: 1.5px; font-size: 16px; background: linear-gradient(90deg, #ef4444, #f87171); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .cart-link { background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.4); color: #c084fc; padding: 8px 16px; border-radius: 10px; font-weight: 800; font-size: 13px; cursor: pointer; }
+        
+        .rank-nav { display: flex; gap: 8px; overflow-x: auto; }
+        .rank-nav a { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #9ca3af; padding: 8px 14px; border-radius: 10px; text-decoration: none; font-weight: 800; font-size: 12px; }
+        .rank-nav a.active { background: #ef4444; color: #fff; border-color: #ef4444; }
+
+        .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .card-grid { grid-template-columns: 1fr; } }
+        .glass-card { background: rgba(15, 10, 24, 0.75); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 20px; }
+        .banner { background: linear-gradient(135deg, #ef4444, #991b1b); box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4); border-radius: 14px; padding: 30px 20px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.15); }
+        .banner h1 { font-size: 32px; font-weight: 900; }
+        .feature-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .feature-item { background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.05); padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; }
+        .price-badge { font-size: 30px; font-weight: 900; color: #22c55e; }
+        .input-group { display: flex; flex-direction: column; gap: 8px; }
+        .input-group label { font-size: 11px; font-weight: 800; color: #a78bfa; }
+        .user-field { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); padding: 12px 16px; border-radius: 10px; font-weight: 800; color: #f87171; }
+        .counter { display: flex; align-items: center; gap: 12px; }
+        .btn-cnt { width: 36px; height: 36px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(255, 255, 255, 0.05); color: #fff; font-weight: 900; cursor: pointer; }
+        .add-btn { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 15px; cursor: pointer; box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3); margin-top: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <a href="/magaza" class="nav-btn">← Mağaza</a>
+            <div class="nav-title">SPONSOR PAKETİ</div>
+            <button class="cart-link" onclick="goToCart()">Sepetim</button>
+        </div>
+
+        <div class="rank-nav">
+            <a href="/vip">VIP</a>
+            <a href="/megavip">MegaVIP</a>
+            <a href="/ultravip">UltraVIP</a>
+            <a href="/kunefevip">KünefeVIP</a>
+            <a href="/sponsor" class="active">Sponsor</a>
+        </div>
+
+        <div class="card-grid">
+            <div class="glass-card">
+                <div class="banner">
+                    <h1>SPONSOR</h1>
+                    <span style="font-size: 11px; font-weight: 800; opacity: 0.85;">Süresiz Üst Düzey Üyelik!</span>
+                </div>
+                <div class="feature-list">
+                    <div class="feature-item">✓ [SPONSOR] Kırmızı Işıltılı Başlık</div>
+                    <div class="feature-item">✓ En Güçlü Sponsor Kiti</div>
+                    <div class="feature-item">✓ Sunucuda Temsilcilik</div>
+                    <div class="feature-item">✓ Özel Discord Rolü ve Diğer VIP Özellikleri</div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div>
+                    <span style="font-size: 12px; font-weight: 700; color: #9ca3af;">PAKET FİYATI</span>
+                    <div class="price-badge" id="display-price">1000.00 ₺</div>
+                </div>
+                <div class="input-group">
+                    <label>HESAP ADI</label>
+                    <div class="user-field" id="user-display">Giriş Yapılmadı</div>
+                </div>
+                <div class="input-group">
+                    <label>ADET</label>
+                    <div class="counter">
+                        <button class="btn-cnt" onclick="updateQty(-1)">-</button>
+                        <span id="qty-val" style="font-weight: 900; font-size: 16px;">1</span>
+                        <button class="btn-cnt" onclick="updateQty(1)">+</button>
+                    </div>
+                </div>
+                <button class="add-btn" onclick="addToCart()">SEPETE EKLE</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const UNIT_PRICE = 500;
+        let qty = 1;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = localStorage.getItem('kunefeUser');
+            document.getElementById('user-display').innerText = (user && user.trim() !== '') ? user : "Giris Yapilmadi";
+        });
+
+        function updateQty(c) {
+            qty = Math.max(1, qty + c);
+            document.getElementById('qty-val').innerText = qty;
+            document.getElementById('display-price').innerText = (UNIT_PRICE * qty).toFixed(2) + ' ₺';
+        }
+
+        function addToCart() {
+            const savedUser = localStorage.getItem('kunefeUser');
+            if (!savedUser || savedUser.trim() === '') {
+                alert("Sepete urun eklemek icin once giris yapmalisiniz!");
+                window.location.href = "/giris";
+                return;
+            }
+            let cart = JSON.parse(localStorage.getItem('kunefeCart') || "[]");
+            const idx = cart.findIndex(i => i.id === 'sponsor');
+            if (idx > -1) cart[idx].quantity += qty;
+            else cart.push({ id: 'sponsor', title: 'Sponsor Paket', price: UNIT_PRICE, quantity: qty, username: savedUser });
+            localStorage.setItem('kunefeCart', JSON.stringify(cart));
+            window.location.href = '/sepet';
+        }
+
+        function goToCart() {
+            const savedUser = localStorage.getItem('kunefeUser');
+            if (!savedUser || savedUser.trim() === '') {
+                alert("Sepeti goruntulemek icin once giris yapmalisiniz!");
+                window.location.href = "/giris";
+                return;
+            }
+            window.location.href = "/sepet";
+        }
+    </script>
+<script src="tebex-checkout.js"></script>
+</body>
+</html>

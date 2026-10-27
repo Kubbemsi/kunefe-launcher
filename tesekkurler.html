@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KünefeSMP | Ödeme Başarılı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body {
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-image: radial-gradient(circle at 50% 20%, rgba(245, 158, 11, 0.12) 0%, transparent 60%);
+        }
+        .success-card {
+            background: #111827;
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 24px;
+            max-width: 520px;
+            width: 100%;
+            padding: 40px 32px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 30px rgba(245, 158, 11, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .success-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b);
+        }
+        .icon-wrapper {
+            width: 80px; height: 80px;
+            background: rgba(16, 185, 129, 0.15);
+            border: 2px solid rgba(16, 185, 129, 0.4);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 24px; font-size: 38px;
+        }
+        h1 { font-size: 26px; font-weight: 800; color: #ffffff; margin-bottom: 8px; }
+        p.subtitle { font-size: 15px; color: #9ca3af; margin-bottom: 24px; line-height: 1.5; }
+        .order-box {
+            background: rgba(17, 24, 39, 0.8);
+            border: 1px solid #1f2937;
+            border-radius: 16px;
+            padding: 20px; text-align: left; margin-bottom: 24px;
+        }
+        .order-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 0; font-size: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .order-row:last-child {
+            border-bottom: none; padding-top: 12px; font-weight: 700; font-size: 15px; color: #f59e0b;
+        }
+        .order-label { color: #9ca3af; }
+        .order-value { color: #f3f4f6; font-weight: 600; }
+        .info-alert {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 12px; padding: 14px; font-size: 13px; color: #fbbf24;
+            margin-bottom: 24px; line-height: 1.5;
+        }
+        .btn-group { display: flex; gap: 12px; }
+        .btn {
+            flex: 1; padding: 14px 20px; border-radius: 12px;
+            font-weight: 700; font-size: 14px; text-decoration: none;
+            display: inline-block; text-align: center; cursor: pointer; border: none;
+        }
+        .btn-primary { background: linear-gradient(135deg, #f59e0b, #d97706); color: #0b0f19; }
+        .btn-secondary { background: #1f2937; color: #e5e7eb; border: 1px solid #374151; }
+    </style>
+</head>
+<body>
+    <div class="success-card">
+        <div class="icon-wrapper">✓</div>
+        <h1>Ödemeniz Alındı!</h1>
+        <p class="subtitle">Siparişiniz başarıyla sisteme iletildi. Yetkililerimiz onayladığında hesabınıza aktarılacaktır.</p>
+
+        <div class="order-box">
+            <div class="order-row">
+                <span class="order-label">Oyuncu:</span>
+                <span class="order-value" id="disp-user">Yükleniyor...</span>
+            </div>
+            <div class="order-row">
+                <span class="order-label">Satın Alınanlar:</span>
+                <span class="order-value" id="disp-items">Yükleniyor...</span>
+            </div>
+            <div class="order-row">
+                <span class="order-label">İşlem Saati:</span>
+                <span class="order-value" id="disp-time">-</span>
+            </div>
+            <div class="order-row">
+                <span class="order-label">Toplam Tutar:</span>
+                <span class="order-value" id="disp-total">0 TL</span>
+            </div>
+        </div>
+
+        <div class="info-alert">
+            ℹ️ <b>Oyun İçi Kontrol:</b> Sunucuya bağlanıp chate <b>/kp</b> yazarak veya tab basarak teslimatın ulaşıp ulaşmadığını kontrol edebilirsiniz.
+        </div>
+
+        <div class="btn-group">
+            <a href="/" class="btn btn-secondary">Ana Sayfa</a>
+            <a href="/magaza" class="btn btn-primary">Mağazaya Dön</a>
+        </div>
+    </div>
+
+    <script>
+        // ================================================
+        // BURAYA DİSCORD WEBHOOK LİNKİNİ YAPIŞTIR:
+        // ================================================
+        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1546471821107265576/MCvXsl0t3OTschGIUkdpYC5S1bUsDVe0errjXzdxEfGdXi3KVTclBjXNYa9dpr5Yb9Ix";
+
+        // Rütbe Fiyatları (TL)
+        const PRICES = {
+            sponsor:    1000,
+            kunefevip:  300,
+            ultravip:   200,
+            megavip:    100,
+            vip:        25
+        };
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const user = localStorage.getItem('kunefeUser') || "Bilinmiyor";
+            const cart = JSON.parse(localStorage.getItem('kunefeCart') || "[]");
+
+            const now = new Date();
+            const fullDateStr = now.toLocaleDateString('tr-TR') + " - " + now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+
+            document.getElementById('disp-user').innerText = user;
+            document.getElementById('disp-time').innerText = fullDateStr;
+
+            if (!cart || cart.length === 0) {
+                document.getElementById('disp-items').innerText = "Kayıtlı aktif sipariş bulunamadı.";
+                return;
+            }
+
+            // Sepeti temizle (F5 koruması)
+            localStorage.removeItem('kunefeCart');
+
+            let total = 0;
+            let itemsTextArray = [];
+            let commandsArray = [];
+
+            cart.forEach(item => {
+                const title = item.title || item.name || "Ürün";
+                const qty = item.quantity || 1;
+                const lower = title.toLowerCase();
+                const id = (item.id || "").toLowerCase();
+
+                // Fiyat: önce sepetteki fiyata bak, yoksa tablomuzdan al
+                let itemPrice = item.price;
+                if (!itemPrice || itemPrice <= 0) {
+                    if      (lower.includes('sponsor')   || id.includes('sponsor'))   itemPrice = PRICES.sponsor;
+                    else if (lower.includes('künefevip') || lower.includes('kunefevip') || id.includes('kunefevip')) itemPrice = PRICES.kunefevip;
+                    else if (lower.includes('ultravip')  || lower.includes('ultra vip')  || id.includes('ultravip'))  itemPrice = PRICES.ultravip;
+                    else if (lower.includes('megavip')   || lower.includes('mega vip')   || id.includes('megavip'))   itemPrice = PRICES.megavip;
+                    else if (lower.includes('vip')       || id.includes('vip'))       itemPrice = PRICES.vip;
+                    else itemPrice = 0;
+                }
+
+                const price = itemPrice * qty;
+                total += price;
+                itemsTextArray.push(`• **${qty}x** ${title} (${price} TL)`);
+
+                // Ürüne göre otomatik konsol komutu
+                if (lower.includes('sponsor') || id.includes('sponsor')) {
+                    commandsArray.push(`lp user ${user} parent add sponsor`);
+                } else if (lower.includes('künefevip') || lower.includes('kunefevip') || id.includes('kunefevip')) {
+                    commandsArray.push(`lp user ${user} parent add kunefevip`);
+                } else if (lower.includes('ultravip') || lower.includes('ultra vip') || id.includes('ultravip')) {
+                    commandsArray.push(`lp user ${user} parent add ultravip`);
+                } else if (lower.includes('megavip') || lower.includes('mega vip') || id.includes('megavip')) {
+                    commandsArray.push(`lp user ${user} parent add megavip`);
+                } else if (lower.includes('vip') || id.includes('vip')) {
+                    commandsArray.push(`lp user ${user} parent add vip`);
+                } else if (lower.includes('kp') || lower.includes('künefe') || lower.includes('kunefe') || id.includes('kp')) {
+                    const match = title.match(/\d+/);
+                    let amount = 100;
+                    if (match) amount = parseInt(match[0]);
+                    commandsArray.push(`points give ${user} ${amount * qty}`);
+                } else {
+                    commandsArray.push(`# ${title} (${qty}x) - Manuel kontrol`);
+                }
+            });
+
+            document.getElementById('disp-items').innerText = cart.map(i => `${i.quantity || 1}x ${i.title}`).join(', ');
+            document.getElementById('disp-total').innerText = total + " TL";
+
+            if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.includes("BURAYA_")) {
+                console.warn("Discord Webhook linki girilmemiş!");
+                return;
+            }
+
+            const payload = {
+                username: "KünefeSMP Mağaza",
+                avatar_url: "https://kunefesmp.com.tr/favicon.png",
+                content: "<@1530527674152255539> <@1513126184978878586>",
+                embeds: [{
+                    title: "🛒 YENİ BAŞARILI SİPARİŞ!",
+                    description: "Bir oyuncu Shopier üzerinden ödemesini başarıyla tamamladı.",
+                    color: 0xF59E0B,
+                    fields: [
+                        { name: "👤 Oyuncu Adı",   value: `\`${user}\``,         inline: true },
+                        { name: "💰 Toplam Tutar",  value: `**${total} TL**`,     inline: true },
+                        { name: "🕒 Sipariş Saati", value: `\`${fullDateStr}\``,  inline: true },
+                        { name: "📦 Satın Alınan Ürünler", value: itemsTextArray.join("\n") || "Belirtilmedi", inline: false },
+                        { name: "⚡ Hazır Konsol Komutu (Tek Tıkla Kopyala)", value: `\`\`\`text\n${commandsArray.join("\n")}\n\`\`\``, inline: false }
+                    ],
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            fetch(DISCORD_WEBHOOK_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            }).catch(err => console.error("Webhook hatası:", err));
+        });
+    </script>
+</body>
+</html>

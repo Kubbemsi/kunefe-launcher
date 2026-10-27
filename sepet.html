@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#06040a">
+    <title>KünefeSMP | Sepet & Ödeme</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap" rel="stylesheet">
+    <!-- Tebex.js: ödeme Tebex sayfasına yönlendirmeden, bu sitede açılır -->
+    <script defer src="https://js.tebex.io/v/1.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body {
+            background: #06040a;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(245, 158, 11, 0.16) 0px, transparent 45%),
+                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.16) 0px, transparent 45%),
+                radial-gradient(at 60% 0%, rgba(34, 197, 94, 0.07) 0px, transparent 40%);
+            background-attachment: fixed;
+            color: #fff;
+            min-height: 100vh;
+            padding: 18px;
+            padding-bottom: calc(18px + env(safe-area-inset-bottom));
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .page { width: 100%; max-width: 1080px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+
+        /* ---------- ÜST BAR ---------- */
+        .topbar {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(18, 12, 28, 0.72);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 12px 16px;
+        }
+        .back-btn {
+            width: 38px; height: 38px; flex: 0 0 auto;
+            display: grid; place-items: center;
+            border-radius: 11px; text-decoration: none;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #a78bfa; font-weight: 900; font-size: 16px;
+            transition: .15s;
+        }
+        .back-btn:hover { background: rgba(167, 139, 250, 0.18); color: #fff; }
+        .brand { font-weight: 900; font-size: 15px; letter-spacing: 1.2px; line-height: 1.1; }
+        .brand small { display: block; font-size: 10px; letter-spacing: 2px; color: #a78bfa; font-weight: 800; margin-top: 2px; }
+        .secure-pill {
+            margin-left: auto; display: flex; align-items: center; gap: 6px;
+            font-size: 10px; font-weight: 900; letter-spacing: .5px;
+            color: #4ade80; background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            padding: 7px 11px; border-radius: 999px; white-space: nowrap;
+        }
+
+        /* ---------- YERLEŞİM ---------- */
+        .layout { display: grid; grid-template-columns: minmax(0, 1fr) 350px; gap: 16px; align-items: start; }
+        @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+
+        .card {
+            background: rgba(15, 10, 24, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 18px;
+            display: flex; flex-direction: column; gap: 14px;
+        }
+        .card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .card-title { font-size: 15px; font-weight: 900; letter-spacing: .3px; }
+        .chip {
+            font-size: 11px; font-weight: 800; color: #a78bfa;
+            background: rgba(167, 139, 250, 0.12);
+            border: 1px solid rgba(167, 139, 250, 0.28);
+            padding: 4px 10px; border-radius: 999px; white-space: nowrap;
+        }
+
+        /* ---------- SEPET KALEMLERİ ---------- */
+        .cart-list { display: flex; flex-direction: column; gap: 10px; }
+
+        .item {
+            display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015));
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 16px; padding: 12px 14px;
+            transition: border-color .18s, transform .18s;
+        }
+        .item:hover { border-color: rgba(167, 139, 250, 0.35); }
+        .item-ico {
+            width: 44px; height: 44px; flex: 0 0 auto;
+            display: grid; place-items: center; font-size: 21px;
+            border-radius: 13px;
+            background: radial-gradient(circle at 30% 20%, rgba(245, 158, 11, 0.35), rgba(168, 85, 247, 0.16));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .item-main { flex: 1 1 150px; min-width: 0; }
+        .item-name { font-weight: 800; font-size: 14px; overflow-wrap: anywhere; }
+        .item-price { font-size: 11.5px; color: #9ca3af; font-weight: 700; margin-top: 3px; }
+        .item-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+        .qty-box {
+            display: flex; align-items: center; gap: 2px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 11px; padding: 3px;
+        }
+        .qty-btn {
+            width: 30px; height: 30px; border: none; border-radius: 8px;
+            background: rgba(255, 255, 255, 0.06); color: #fff;
+            font-weight: 900; font-size: 15px; cursor: pointer;
+            display: grid; place-items: center; transition: .15s;
+        }
+        .qty-btn:hover { background: rgba(167, 139, 250, 0.3); }
+        .qty-val { min-width: 28px; text-align: center; font-weight: 900; font-size: 13px; }
+        .item-total { min-width: 78px; text-align: right; font-weight: 900; font-size: 13.5px; color: #22c55e; }
+        .del-btn {
+            width: 32px; height: 32px; border-radius: 9px; cursor: pointer;
+            background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #f87171; font-size: 14px; display: grid; place-items: center; transition: .15s;
+        }
+        .del-btn:hover { background: rgba(239, 68, 68, 0.25); }
+
+        @media (max-width: 560px) {
+            .item { padding: 12px; gap: 10px; }
+            .item-ico { width: 40px; height: 40px; font-size: 19px; }
+            .item-actions { margin-left: 0; width: 100%; justify-content: space-between; }
+            .item-total { min-width: 0; text-align: left; }
+        }
+
+        .empty {
+            text-align: center; padding: 40px 16px;
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+        }
+        .empty-ico { font-size: 40px; opacity: .8; }
+        .empty p { color: #9ca3af; font-size: 13px; font-weight: 700; }
+        .empty a {
+            margin-top: 4px; text-decoration: none;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #1a1205; font-weight: 900; font-size: 13px;
+            padding: 11px 20px; border-radius: 11px;
+        }
+
+        /* ---------- ÖZET ---------- */
+        .summary { position: sticky; top: 18px; }
+        @media (max-width: 900px) { .summary { position: static; } }
+
+        .user-box {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(0, 0, 0, 0.38);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 13px; border-radius: 12px;
+        }
+        .user-avatar {
+            width: 30px; height: 30px; border-radius: 9px; flex: 0 0 auto;
+            display: grid; place-items: center; font-size: 13px; font-weight: 900; color: #1a1205;
+            background: linear-gradient(135deg, #facc15, #f59e0b);
+        }
+        .user-name { font-weight: 900; color: #f59e0b; font-size: 13px; overflow-wrap: anywhere; }
+        .user-sub { font-size: 10px; color: #9ca3af; font-weight: 700; }
+
+        .sum-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; color: #9ca3af; }
+        .sum-row b { color: #fff; }
+        .total-box {
+            border-top: 1px dashed rgba(255, 255, 255, 0.12);
+            padding-top: 12px;
+            display: flex; justify-content: space-between; align-items: flex-end; gap: 10px;
+        }
+        .total-label { font-size: 12px; font-weight: 800; color: #9ca3af; }
+        .total-tl { font-size: 27px; font-weight: 900; color: #22c55e; line-height: 1.1; letter-spacing: -.5px; }
+        .total-sub { font-size: 10.5px; color: #8b95a5; font-weight: 700; margin-top: 4px; }
+
+        .pay-btn {
+            width: 100%; border: none; cursor: pointer;
+            padding: 15px 18px; border-radius: 13px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #06210f; font-weight: 900; font-size: 14px; letter-spacing: .2px;
+            box-shadow: 0 8px 24px rgba(34, 197, 94, 0.28);
+            transition: transform .15s, box-shadow .15s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .pay-btn:hover { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(34, 197, 94, 0.35); }
+        .pay-btn:active { transform: translateY(0); }
+
+        .badges { display: flex; flex-wrap: wrap; gap: 5px; }
+        .badge {
+            font-size: 9.5px; font-weight: 900; letter-spacing: .3px;
+            color: #c7d2e0; background: rgba(255, 255, 255, 0.055);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 4px 8px; border-radius: 6px;
+        }
+        .kur-note {
+            font-size: 10.5px; font-weight: 700; line-height: 1.5;
+            color: #c4b5fd; background: rgba(167, 139, 250, 0.1);
+            border: 1px solid rgba(167, 139, 250, 0.22);
+            padding: 8px 10px; border-radius: 10px;
+        }
+        .kur-note b { color: #fff; }
+
+        /* ---------- MODAL ---------- */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; z-index: 1000;
+            background: rgba(3, 2, 6, 0.82); backdrop-filter: blur(9px);
+            padding: 20px; align-items: center; justify-content: center;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-sheet {
+            width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto;
+            background: linear-gradient(180deg, #171022, #0c0813);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 22px; padding: 20px;
+            display: flex; flex-direction: column; gap: 14px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+            animation: sheet-in .22s cubic-bezier(.2, .9, .3, 1);
+            -webkit-overflow-scrolling: touch;
+        }
+        @keyframes sheet-in { from { opacity: 0; transform: translateY(14px) scale(.985); } to { opacity: 1; transform: none; } }
+
+        .sheet-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+        .sheet-title { font-size: 17px; font-weight: 900; }
+        .sheet-sub { font-size: 11px; color: #9ca3af; font-weight: 700; margin-top: 3px; }
+        .sheet-close {
+            width: 34px; height: 34px; flex: 0 0 auto; border-radius: 10px; cursor: pointer;
+            background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff; font-size: 15px; display: grid; place-items: center;
+        }
+        .sheet-close:hover { background: rgba(239, 68, 68, 0.22); border-color: rgba(239, 68, 68, 0.4); }
+
+        @media (max-width: 620px) {
+            .modal-overlay { padding: 0; align-items: flex-end; }
+            .modal-sheet {
+                max-width: 100%; max-height: 94vh;
+                border-radius: 22px 22px 0 0;
+                padding: 16px 14px calc(18px + env(safe-area-inset-bottom));
+                border-bottom: none;
+            }
+        }
+
+        .method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+        @media (max-width: 430px) { .method-grid { grid-template-columns: 1fr; } }
+
+        .method {
+            display: flex; align-items: center; gap: 10px; text-align: left;
+            padding: 12px; border-radius: 14px; cursor: pointer;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff; transition: .15s;
+        }
+        .method:hover { border-color: rgba(255, 255, 255, 0.22); }
+        .method.active {
+            border-color: rgba(34, 197, 94, 0.7);
+            background: rgba(34, 197, 94, 0.12);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+        }
+        .method-ico { font-size: 19px; line-height: 1; }
+        .method-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .method-txt b { font-size: 12.5px; font-weight: 900; }
+        .method-txt small { font-size: 10px; color: #9ca3af; font-weight: 700; }
+
+        .pay-panel {
+            display: flex; flex-direction: column; gap: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 16px; padding: 15px;
+        }
+        .pay-panel p { font-size: 12.5px; color: #cbd5e1; line-height: 1.55; font-weight: 600; }
+        .pay-panel p b { color: #fff; }
+
+        .amount-box {
+            display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(34, 197, 94, 0.04));
+            border: 1px solid rgba(34, 197, 94, 0.28);
+            border-radius: 13px; padding: 11px 13px;
+        }
+        .amount-label { font-size: 10.5px; font-weight: 800; color: #86efac; letter-spacing: .4px; }
+        .amount-val { font-size: 17px; font-weight: 900; color: #22c55e; text-align: right; line-height: 1.2; }
+        .amount-val small { display: block; font-size: 10.5px; color: #9ca3af; font-weight: 700; }
+
+        .tebex-btn {
+            width: 100%; border: none; cursor: pointer;
+            padding: 14px; border-radius: 12px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #06210f; font-weight: 900; font-size: 14px;
+            box-shadow: 0 6px 18px rgba(34, 197, 94, 0.28);
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: .15s;
+        }
+        .tebex-btn:hover { filter: brightness(1.06); }
+        .tebex-btn:disabled { opacity: .65; cursor: progress; }
+
+        .info-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 12px; }
+        .info-row > span { color: #9ca3af; font-weight: 700; }
+        .info-row strong { color: #fff; font-weight: 900; font-size: 12.5px; letter-spacing: .3px; overflow-wrap: anywhere; }
+        .copy-tag {
+            background: rgba(167, 139, 250, 0.16); color: #c4b5fd;
+            padding: 5px 9px; border-radius: 7px; font-size: 10px; font-weight: 900;
+            cursor: pointer; border: 1px solid rgba(167, 139, 250, 0.3);
+            margin-left: 6px; white-space: nowrap;
+        }
+        .copy-tag:hover { background: rgba(167, 139, 250, 0.3); }
+
+        .warn {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            padding: 10px 11px; border-radius: 10px;
+            font-size: 11px; color: #fbbf24; line-height: 1.5; font-weight: 700;
+        }
+        .warn b { color: #fff; }
+
+        .code-box {
+            display: flex; align-items: center; justify-content: space-between; gap: 8px;
+            background: rgba(167, 139, 250, 0.1);
+            border: 1px dashed rgba(167, 139, 250, 0.4);
+            border-radius: 10px; padding: 9px 11px;
+        }
+        .code-box span { font-size: 10.5px; color: #c4b5fd; font-weight: 800; }
+        .code-box b { font-size: 13px; letter-spacing: 1px; color: #fff; }
+
+        .confirm-btn {
+            width: 100%; border: none; cursor: pointer;
+            padding: 14px; border-radius: 12px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #1a1205; font-weight: 900; font-size: 14px;
+            box-shadow: 0 6px 18px rgba(245, 158, 11, 0.25);
+            transition: .15s;
+        }
+        .confirm-btn:hover { filter: brightness(1.06); }
+
+        .ghost-btn {
+            width: 100%; border: 1px solid rgba(255,255,255,.14); cursor: pointer;
+            padding: 12px; border-radius: 11px; background: rgba(255,255,255,.05);
+            color: #fff; font-weight: 900; font-size: 12.5px;
+        }
+        .ghost-btn:hover { background: rgba(255,255,255,.1); }
+
+        .fine {
+            font-size: 10px; color: #6b7280; font-weight: 700; line-height: 1.6; text-align: center;
+        }
+
+        .done-wrap { text-align: center; padding: 14px 4px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+        .done-ico { font-size: 46px; line-height: 1; }
+        .done-title { font-size: 19px; font-weight: 900; color: #22c55e; }
+        .done-txt { font-size: 12.5px; color: #cbd5e1; line-height: 1.6; font-weight: 600; }
+        .done-txt b { color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="topbar">
+            <a href="/magaza" class="back-btn" aria-label="Mağazaya dön">←</a>
+            <div class="brand">KÜNEFESMP<small>SEPET &amp; ÖDEME</small></div>
+            <div class="secure-pill">🔒 GÜVENLİ ÖDEME</div>
+        </div>
+
+        <div class="layout">
+            <div class="card">
+                <div class="card-head">
+                    <div class="card-title">Sepetindeki Ürünler</div>
+                    <div class="chip" id="item-count">0 ürün</div>
+                </div>
+                <div class="cart-list" id="cart-list"></div>
+            </div>
+
+            <div class="card summary">
+                <div class="card-title" style="border-bottom:1px solid rgba(255,255,255,.08); padding-bottom:10px;">SİPARİŞ ÖZETİ</div>
+
+                <div class="user-box">
+                    <div class="user-avatar" id="user-avatar">?</div>
+                    <div style="min-width:0;">
+                        <div class="user-name" id="user-display">Kullanıcı</div>
+                        <div class="user-sub">Ödemen bu hesaba tanımlanır</div>
+                    </div>
+                </div>
+
+                <div class="sum-row"><span>Ürün adedi</span><b id="tot-count">0</b></div>
+                <div class="sum-row"><span>Ödeme yöntemi</span><b>Kart (€) / TL</b></div>
+
+                <div class="total-box">
+                    <div>
+                        <div class="total-label">TOPLAM</div>
+                        <div class="total-sub" id="total-sub">Kart ödemesinde tutar euro çekilir</div>
+                    </div>
+                    <div class="total-tl" id="tot-price">0,00 ₺</div>
+                </div>
+
+                <button class="pay-btn" onclick="openPaymentModal()">ÖDEMEYİ TAMAMLA →</button>
+
+                <div class="badges">
+                    <span class="badge">TEBEX</span>
+                    <span class="badge">3D SECURE</span>
+                    <span class="badge">VISA</span>
+                    <span class="badge">MASTERCARD</span>
+                    <span class="badge">PAPARA</span>
+                </div>
+
+                <div class="kur-note" id="kur-note">
+                    💡 TL ödemek istersen <b>Papara / IBAN</b> sekmesini kullanabilirsin.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ÖDEME PENCERESİ -->
+    <div class="modal-overlay" id="pay-modal" onclick="if(event.target === this) closePaymentModal()">
+        <div class="modal-sheet">
+            <div class="sheet-head">
+                <div>
+                    <div class="sheet-title">Ödeme Yöntemi</div>
+                    <div class="sheet-sub">Güvenli ödeme · anında teslimat</div>
+                </div>
+                <button class="sheet-close" onclick="closePaymentModal()" aria-label="Kapat">✕</button>
+            </div>
+
+            <div class="method-grid">
+                <button class="method active" id="btn-card" onclick="switchMethod('card')">
+                    <span class="method-ico">💳</span>
+                    <span class="method-txt"><b>Kart ile Öde</b><small>Tebex · EUR · 3D Secure</small></span>
+                </button>
+                <button class="method" id="btn-papara" onclick="switchMethod('papara')">
+                    <span class="method-ico">🇹🇷</span>
+                    <span class="method-txt"><b>TL ile Öde</b><small>Papara / IBAN / Havale</small></span>
+                </button>
+            </div>
+
+            <!-- KART / TEBEX -->
+            <div id="content-card" class="pay-panel">
+                <p>Kredi veya banka kartınla <b>3D Secure</b> ile öde. Ödeme onaylandığı an
+                   satın aldığın ürün <b>otomatik olarak</b> oyundaki hesabına teslim edilir. ⚡</p>
+
+                <div class="amount-box">
+                    <div>
+                        <div class="amount-label">KARTTAN ÇEKİLECEK</div>
+                        <div class="amount-val" id="modal-eur">hesaplanıyor...</div>
+                    </div>
+                    <div style="font-size:24px;">🔒</div>
+                </div>
+
+                <button id="tebex-pay-btn" class="tebex-btn" onclick="goToTebexCheckout()">
+                    Tebex ile Güvenli Öde
+                </button>
+
+                <div class="warn" style="background:rgba(167,139,250,.1); border-color:rgba(167,139,250,.3); color:#c4b5fd;" id="modal-kur-note">
+                    Ödeme tutarı <b>euro (€)</b> olarak çekilir, bankan TL karşılığını yansıtır.
+                </div>
+
+                <div class="fine">
+                    Tebex, uluslararası ödeme altyapısıdır. Kart bilgilerin sitemizde saklanmaz.
+                </div>
+            </div>
+
+            <!-- PAPARA / IBAN -->
+            <div id="content-papara" class="pay-panel" style="display: none;">
+                <div class="amount-box" style="background:linear-gradient(135deg, rgba(245,158,11,.14), rgba(245,158,11,.04)); border-color:rgba(245,158,11,.3);">
+                    <div>
+                        <div class="amount-label" style="color:#fbbf24;">TL OLARAK ÖDENECEK</div>
+                        <div class="amount-val" id="papara-tutar" style="color:#f59e0b;">0,00 ₺</div>
+                    </div>
+                    <div style="font-size:24px;">🧾</div>
+                </div>
+
+                <div class="info-row">
+                    <span>Papara No</span>
+                    <div style="display:flex; align-items:center;">
+                        <strong id="papara-num">1588226875</strong>
+                        <span class="copy-tag" onclick="copyText('papara-num')">KOPYALA</span>
+                    </div>
+                </div>
+                <div class="info-row">
+                    <span>IBAN</span>
+                    <div style="display:flex; align-items:center;">
+                        <strong id="iban-num" style="font-size:11px;">TR950082900009491588226875</strong>
+                        <span class="copy-tag" onclick="copyText('iban-num')">KOPYALA</span>
+                    </div>
+                </div>
+
+                <div class="code-box">
+                    <span>SİPARİŞ KODUN</span>
+                    <b id="siparis-kod">—</b>
+                </div>
+
+                <div class="warn">
+                    ⚠️ <b>ÖNEMLİ:</b> Ödeme açıklamasına mutlaka <b>Minecraft kullanıcı adını</b>
+                    (<span id="modal-user">oyuncu</span>) veya <b>sipariş kodunu</b> yaz.
+                </div>
+
+                <button class="confirm-btn" id="tl-gonder-btn" onclick="submitOrder()">ÖDEMEYİ YAPTIM · SİPARİŞİ GÖNDER</button>
+
+                <div class="fine">
+                    TL ödemeler manuel kontrol edilir; genellikle birkaç dakika içinde teslim edilir.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TEBEX_MAP = {
+            'vip': 7690256,
+            'VIP Paket': 7690256,
+            'megavip': 7690257,
+            'MEGAVIP Paket': 7690257,
+            'ultravip': 7690266,
+            'ULTRAVIP Paket': 7690266,
+            'kunefevip': 7690271,
+            'KUNEFEVIP Paket': 7690271,
+            'KÜNEFEVIP Paket': 7690271,
+            'sponsor': 7690274,
+            'SPONSOR Rütbesi': 7690274,
+            'SPONSOR Paket': 7690274,
+            '1kp': 7690306,
+            '1 Künefe Parası': 7690306,
+            '10kp': 7690309,
+            '10 Künefe Parası': 7690309,
+            '100kp': 7690316,
+            '100 Künefe Parası': 7690316,
+            '1000kp': 7690317,
+            '1000 Künefe Parası': 7690317
+        };
+
+        let cart = [];
+        let tebexSepeti = null;                                  // { ident, checkout_url, total, ... }
+        let kur = { eur_try: 0, tarih: null };                   // EUR -> TRY
+        let sonSiparisMetni = '';
+
+        /* ---------------- yardımcılar ---------------- */
+        const tl = n => Number(n || 0).toFixed(2).replace('.', ',') + ' ₺';
+        const eur = n => Number(n || 0).toFixed(2).replace('.', ',') + ' €';
+
+        function ikon(item) {
+            const t = ((item.id || '') + ' ' + (item.title || '')).toLowerCase();
+            if (t.includes('vip') || t.includes('sponsor')) return '👑';
+            if (t.includes('kp') || t.includes('paras')) return '🍮';
+            return '🎁';
+        }
+
+        function toplamTL() {
+            return cart.reduce((t, i) => t + (Number(i.price) || 0) * (Number(i.quantity) || 0), 0);
+        }
+
+        function toplamAdet() {
+            return cart.reduce((t, i) => t + (Number(i.quantity) || 0), 0);
+        }
+
+        async function kurYukle() {
+            try {
+                const r = await fetch('/api/kur');
+                const d = await r.json();
+                if (d && Number(d.eur_try) > 0) {
+                    kur = { eur_try: Number(d.eur_try), tarih: d.tarih };
+                    kurNotuGuncelle();
+                }
+            } catch (e) {
+                console.warn('Kur alınamadı:', e.message);
+            }
+        }
+
+        function kurNotuGuncelle() {
+            const note = document.getElementById('kur-note');
+            const modalNote = document.getElementById('modal-kur-note');
+            if (kur.eur_try > 0) {
+                if (note) note.innerHTML = '💡 <b>1 € = ' + tl(kur.eur_try) + '</b> · TL ödemek istersen Papara / IBAN sekmesini kullan.';
+                if (modalNote) modalNote.innerHTML = 'Ödeme tutarı <b>euro (€)</b> olarak çekilir. Güncel kur: <b>1 € = ' + tl(kur.eur_try) + '</b> — bankan TL karşılığını yansıtır.';
+                const sub = document.getElementById('total-sub');
+                if (sub && cart.length > 0) {
+                    sub.innerText = 'Kart ile: ≈ ' + eur(toplamTL() / kur.eur_try) + ' (kur ' + tl(kur.eur_try) + ')';
+                }
+            }
+            kartTutariniGuncelle();
+        }
+
+        /* ---------------- sepet çizimi ---------------- */
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('kunefeUser');
+            if (!savedUser || savedUser.trim() === '') {
+                alert("Sepeti görüntülemek için önce giriş yapmalısınız!");
+                window.location.href = "/giris";
+                return;
+            }
+            document.getElementById('user-display').innerText = savedUser;
+            document.getElementById('modal-user').innerText = savedUser;
+            document.getElementById('user-avatar').innerText = savedUser.trim().charAt(0).toUpperCase();
+            document.getElementById('siparis-kod').innerText = siparisKodu();
+            render();
+            kurYukle();
+        });
+
+        function render() {
+            cart = JSON.parse(localStorage.getItem('kunefeCart') || "[]");
+            const listEl = document.getElementById('cart-list');
+
+            if (cart.length === 0) {
+                listEl.innerHTML = `
+                    <div class="empty">
+                        <div class="empty-ico">🛒</div>
+                        <p>Sepetin şu anda boş.</p>
+                        <a href="/magaza">Mağazaya Git</a>
+                    </div>`;
+                document.getElementById('tot-count').innerText = "0";
+                document.getElementById('item-count').innerText = "0 ürün";
+                document.getElementById('tot-price').innerText = tl(0);
+                document.getElementById('papara-tutar').innerText = tl(0);
+                return;
+            }
+
+            let html = '';
+            cart.forEach((item, idx) => {
+                const adet = Number(item.quantity) || 1;
+                const birim = Number(item.price) || 0;
+                const satir = birim * adet;
+                html += `
+                    <div class="item">
+                        <div class="item-ico">${ikon(item)}</div>
+                        <div class="item-main">
+                            <div class="item-name">${item.title}</div>
+                            <div class="item-price">${tl(birim)} / adet</div>
+                        </div>
+                        <div class="item-actions">
+                            <div class="qty-box">
+                                <button class="qty-btn" onclick="modQty(${idx}, -1)" aria-label="Azalt">−</button>
+                                <span class="qty-val">${adet}</span>
+                                <button class="qty-btn" onclick="modQty(${idx}, 1)" aria-label="Arttır">+</button>
+                            </div>
+                            <div class="item-total">${tl(satir)}</div>
+                            <button class="del-btn" onclick="delItem(${idx})" aria-label="Sil">✕</button>
+                        </div>
+                    </div>`;
+            });
+
+            listEl.innerHTML = html;
+            const toplam = toplamTL();
+            document.getElementById('tot-count').innerText = toplamAdet();
+            document.getElementById('item-count').innerText = toplamAdet() + ' ürün';
+            document.getElementById('tot-price').innerText = tl(toplam);
+            document.getElementById('papara-tutar').innerText = tl(toplam);
+            document.getElementById('total-sub').innerText = kur.eur_try > 0
+                ? 'Kart ile: ≈ ' + eur(toplam / kur.eur_try) + ' (kur ' + tl(kur.eur_try) + ')'
+                : 'Kart ödemesinde tutar euro çekilir';
+        }
+
+        function modQty(idx, change) {
+            cart[idx].quantity = Math.max(1, (Number(cart[idx].quantity) || 1) + change);
+            save();
+        }
+
+        function delItem(idx) {
+            cart.splice(idx, 1);
+            save();
+        }
+
+        function save() {
+            localStorage.setItem('kunefeCart', JSON.stringify(cart));
+            tebexSepeti = null;   // sepet değişti -> Tebex sepeti yeniden kurulacak
+            render();
+        }
+
+        /* ---------------- modal ---------------- */
+        function siparisKodu() {
+            let kod = sessionStorage.getItem('kunefeSiparisKod');
+            if (!kod) {
+                kod = 'KNF-' + Date.now().toString(36).toUpperCase().slice(-6);
+                sessionStorage.setItem('kunefeSiparisKod', kod);
+            }
+            return kod;
+        }
+
+        function openPaymentModal() {
+            if (cart.length === 0) return alert("Sepetiniz boş!");
+            document.getElementById('pay-modal').classList.add('show');
+            document.getElementById('siparis-kod').innerText = siparisKodu();
+            document.getElementById('papara-tutar').innerText = tl(toplamTL());
+            document.body.style.overflow = 'hidden';
+
+            // Sepeti önceden kur: "öde"ye basıldığında anında açılsın (popup engellenmesin)
+            tebexSepeti = null;
+            document.getElementById('modal-eur').innerText = 'hesaplanıyor...';
+            tebexSepetiOlustur()
+                .then(sepet => { tebexSepeti = sepet; kartTutariniGuncelle(); })
+                .catch(hata => {
+                    console.warn('Tebex sepeti önceden hazırlanamadı:', hata.message);
+                    document.getElementById('modal-eur').innerText = '—';
+                });
+        }
+
+        function closePaymentModal() {
+            document.getElementById('pay-modal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function switchMethod(type) {
+            const kart = document.getElementById('content-card');
+            const papara = document.getElementById('content-papara');
+            document.getElementById('btn-card').classList.toggle('active', type === 'card');
+            document.getElementById('btn-papara').classList.toggle('active', type === 'papara');
+            kart.style.display = type === 'card' ? 'flex' : 'none';
+            papara.style.display = type === 'papara' ? 'flex' : 'none';
+        }
+
+        function copyText(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).catch(() => {});
+            alert("Kopyalandı: " + text);
+        }
+
+        function kartTutariniGuncelle() {
+            const el = document.getElementById('modal-eur');
+            if (!el) return;
+            if (tebexSepeti && tebexSepeti.total !== undefined && tebexSepeti.total !== null) {
+                const t = Number(tebexSepeti.total);
+                el.innerHTML = eur(t) + (kur.eur_try > 0
+                    ? '<small>≈ ' + tl(t * kur.eur_try) + '</small>'
+                    : '');
+            }
+        }
+
+        /* ---------------- TL (Papara / IBAN) siparişi ---------------- */
+        let siparisGonderiliyor = false;
+
+        async function submitOrder() {
+            if (siparisGonderiliyor) return;
+            if (cart.length === 0) return alert("Sepetiniz boş!");
+
+            const btn = document.getElementById('tl-gonder-btn');
+            const eskiYazi = btn.innerHTML;
+            const user = localStorage.getItem('kunefeUser') || '';
+            const kod = siparisKodu();
+            const urunler = cart.map(i => {
+                const adet = Number(i.quantity) || 1;
+                const birim = Number(i.price) || 0;
+                return {
+                    ad: i.title,
+                    adet: adet,
+                    birim: birim.toFixed(2).replace('.', ','),
+                    fiyat: (birim * adet).toFixed(2).replace('.', ',')
+                };
+            });
+            const toplamSayi = toplamTL();
+
+            const satirlar = cart.map(i => `${i.title} x${i.quantity} = ${tl((Number(i.price) || 0) * (Number(i.quantity) || 1))}`).join('\n');
+            sonSiparisMetni = `SİPARİŞ KODU: ${kod}\nOyuncu: ${user}\nTarih: ${new Date().toLocaleString('tr-TR')}\n\n${satirlar}\nTOPLAM: ${tl(toplamSayi)}`;
+            navigator.clipboard.writeText(sonSiparisMetni).catch(() => {});
+
+            siparisGonderiliyor = true;
+            btn.disabled = true;
+            btn.innerHTML = 'Gönderiliyor...';
+
+            let sonuc = { ok: false, hata: 'baglanti' };
+            try {
+                const r = await fetch('/api/tl-siparis', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ kod: kod, username: user, toplam: toplamSayi, items: urunler, web: '' })
+                });
+                sonuc = await r.json().catch(() => ({ ok: false, hata: 'yanit' }));
+            } catch (e) {
+                sonuc = { ok: false, hata: 'baglanti' };
+            }
+
+            siparisGonderiliyor = false;
+            btn.disabled = false;
+            btn.innerHTML = eskiYazi;
+
+            // spam / dogrulama hatalari: sepet korunur, kullanici tekrar deneyebilir
+            if (!sonuc.ok) {
+                if (sonuc.hata === 'bekle') {
+                    alert(`Az önce sipariş gönderdin.\n${sonuc.bekle} saniye sonra tekrar deneyebilirsin.`);
+                    return;
+                }
+                if (sonuc.hata === 'bekle_ip') {
+                    alert('Çok sık deneme yapıldı. Lütfen 1 dakika sonra tekrar dene.');
+                    return;
+                }
+                if (sonuc.hata === 'limit_ip' || sonuc.hata === 'limit_global') {
+                    alert('Sipariş bildirimi limiti doldu. Biraz sonra tekrar dene ya da Discord\'dan yaz.');
+                    return;
+                }
+                if (sonuc.hata === 'gecersiz_kullanici') {
+                    alert('Kullanıcı adı geçersiz görünüyor (3-16 karakter; harf, rakam, alt çizgi).');
+                    return;
+                }
+                if (sonuc.hata === 'gecersiz_urunler' || sonuc.hata === 'gecersiz_urun' || sonuc.hata === 'gecersiz_toplam') {
+                    alert('Sepet bilgileri geçersiz. Sayfayı yenileyip tekrar dene.');
+                    return;
+                }
+            }
+
+            const gitti = sonuc.ok === true;
+
+            localStorage.removeItem('kunefeCart');
+            sessionStorage.removeItem('kunefeSiparisKod');
+            cart = [];
+            tebexSepeti = null;
+            render();
+
+            document.getElementById('content-papara').innerHTML = `
+                <div class="done-wrap">
+                    <div class="done-ico">${gitti ? '✅' : '⚠️'}</div>
+                    <div class="done-title" style="color:${gitti ? '#22c55e' : '#f59e0b'};">
+                        ${gitti ? 'Siparişin Yetkililere Gönderildi' : 'Sipariş Kaydedilemedi'}
+                    </div>
+                    <div class="done-txt">
+                        Sipariş kodun: <b>${kod}</b><br>
+                        ${gitti
+                            ? 'Kurucu ve admin Discord üzerinden bilgilendirildi. Ödemen kontrol edildikten sonra ürünlerin hesabına tanımlanacak.'
+                            : 'Bildirim iletilemedi. Aşağıdaki butonla detayları kopyalayıp Discord\'dan yetkililere gönder.'}
+                    </div>
+                    <div class="code-box" style="width:100%;">
+                        <span>DETAYLARI KOPYALA</span>
+                        <span class="copy-tag" onclick="siparisKopyala()">KOPYALA</span>
+                    </div>
+                    <button class="ghost-btn" onclick="window.location.href='/magaza'">Mağazaya Dön</button>
+                </div>`;
+        }
+
+        function siparisKopyala() {
+            navigator.clipboard.writeText(sonSiparisMetni).catch(() => {});
+            alert('Sipariş detayları kopyalandı, Discord\'da paylaşabilirsin.');
+        }
+
+        /* ---------------- TEBEX: SİTEDE GÖMÜLÜ ÖDEME ---------------- */
+        function sepettekiUrunler() {
+            const items = [];
+            for (const item of cart) {
+                const packageId = TEBEX_MAP[item.id] || TEBEX_MAP[item.title];
+                if (!packageId) return { hata: 'Paket ID bulunamadı: ' + (item.title || item.id) };
+                items.push({
+                    package_id: String(packageId),
+                    quantity: Math.max(1, parseInt(item.quantity, 10) || 1)
+                });
+            }
+            if (items.length === 0) return { hata: 'Sepet boş' };
+            return { items: items };
+        }
+
+        async function tebexSepetiOlustur() {
+            const username = localStorage.getItem('kunefeUser');
+            if (!username || username === 'Giris Yapilmadi' || username.trim() === '') {
+                throw new Error('Lütfen önce giriş yapın.');
+            }
+            const liste = sepettekiUrunler();
+            if (liste.hata) throw new Error(liste.hata);
+
+            const res = await fetch('/api/basket', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: username.trim(), items: liste.items })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!data.ident) throw new Error(data.error || data.detail || 'Sepet oluşturulamadı.');
+            return data;
+        }
+
+        function odemeTamamlandi() {
+            try { localStorage.removeItem('kunefeCart'); } catch (e) {}
+            cart = [];
+            tebexSepeti = null;
+            render();
+            const kart = document.getElementById('content-card');
+            if (kart) {
+                kart.innerHTML = `
+                    <div class="done-wrap">
+                        <div class="done-ico">🎉</div>
+                        <div class="done-title">Ödeme Tamamlandı!</div>
+                        <div class="done-txt">
+                            Satın aldıkların birkaç saniye içinde sunucuya <b>otomatik teslim</b> edilir.<br>
+                            Oyuna girip envanterini kontrol edebilirsin.
+                        </div>
+                        <button class="tebex-btn" onclick="window.location.href='/magaza'">Mağazaya Dön</button>
+                    </div>`;
+            }
+        }
+
+        async function goToTebexCheckout() {
+            if (cart.length === 0) return alert("Sepetiniz boş!");
+
+            const btn = document.getElementById('tebex-pay-btn');
+            const eskiYazi = btn.innerHTML;
+
+            let sepet = tebexSepeti;
+            if (!sepet) {
+                btn.disabled = true;
+                btn.innerText = "Sepet hazırlanıyor...";
+                try {
+                    sepet = await tebexSepetiOlustur();
+                    tebexSepeti = sepet;
+                    kartTutariniGuncelle();
+                } catch (hata) {
+                    alert("Ödeme başlatılamadı: " + hata.message);
+                    btn.innerHTML = eskiYazi;
+                    btn.disabled = false;
+                    return;
+                }
+                btn.innerHTML = eskiYazi;
+                btn.disabled = false;
+            }
+
+            // Tebex.js: ödeme penceresi bu sitede açılır (yönlendirme yok)
+            if (typeof Tebex !== 'undefined' && Tebex.checkout) {
+                try {
+                    Tebex.checkout.init({
+                        ident: sepet.ident,
+                        theme: 'dark',
+                        locale: 'tr_TR',
+                        closeOnPaymentComplete: true,
+                        colors: [
+                            { name: 'primary', color: '#22c55e' },
+                            { name: 'secondary', color: '#a78bfa' }
+                        ]
+                    });
+                    Tebex.checkout.on('payment:complete', odemeTamamlandi);
+                    Tebex.checkout.launch();
+                    return;
+                } catch (hata) {
+                    console.warn('Tebex.js açılamadı, yeni sekmede deneniyor:', hata);
+                }
+            }
+
+            // Yedek yol (Tebex.js engellendiyse): yeni sekmede Tebex ödeme sayfası
+            window.open(sepet.checkout_url, '_blank', 'noopener');
+        }
+    </script>
+</body>
+</html>

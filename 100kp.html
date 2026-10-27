@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KünefeSMP | 100 Künefe Parası</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; user-select: none; }
+        body {
+            background: #06040a;
+            background-image: radial-gradient(at 0% 0%, rgba(250, 204, 21, 0.25) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(202, 138, 4, 0.2) 0px, transparent 50%);
+            color: #ffffff; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px;
+        }
+        .container { width: 100%; max-width: 1000px; display: flex; flex-direction: column; gap: 20px; }
+        .navbar { background: rgba(18, 12, 28, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-btn { color: #facc15; text-decoration: none; font-weight: 700; font-size: 14px; }
+        .nav-title { font-weight: 900; letter-spacing: 1.5px; font-size: 16px; background: linear-gradient(90deg, #fef08a, #facc15); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .cart-link { background: rgba(250, 204, 21, 0.15); border: 1px solid rgba(250, 204, 21, 0.4); color: #facc15; padding: 8px 16px; border-radius: 10px; font-weight: 800; font-size: 13px; cursor: pointer; }
+        
+        .rank-nav { display: flex; gap: 8px; overflow-x: auto; }
+        .rank-nav a { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #9ca3af; padding: 10px 18px; border-radius: 10px; text-decoration: none; font-weight: 800; font-size: 13px; }
+        .rank-nav a.active { background: #ca8a04; color: #1c0a03; border-color: #facc15; font-weight: 900; }
+
+        .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .card-grid { grid-template-columns: 1fr; } }
+        .glass-card { background: rgba(15, 10, 24, 0.75); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 20px; }
+        .banner { background: linear-gradient(135deg, #fef08a, #eab308); color: #422006; box-shadow: 0 10px 25px rgba(250, 204, 21, 0.35); border-radius: 14px; padding: 30px 20px; text-align: center; border: 2px solid #facc15; }
+        .banner h1 { font-size: 36px; font-weight: 900; }
+        .feature-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .feature-item { background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.05); padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; color: #e5e7eb; }
+        .price-badge { font-size: 32px; font-weight: 900; color: #22c55e; }
+        .input-group { display: flex; flex-direction: column; gap: 8px; }
+        .input-group label { font-size: 11px; font-weight: 800; color: #facc15; }
+        .user-field { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); padding: 12px 16px; border-radius: 10px; font-weight: 800; color: #facc15; }
+        .counter { display: flex; align-items: center; gap: 12px; }
+        .btn-cnt { width: 36px; height: 36px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(255, 255, 255, 0.05); color: #fff; font-weight: 900; cursor: pointer; }
+        .add-btn { background: linear-gradient(135deg, #fef08a, #facc15); color: #422006; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 15px; cursor: pointer; box-shadow: 0 4px 20px rgba(250, 204, 21, 0.3); margin-top: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <a href="/magaza" class="nav-btn">← Mağaza</a>
+            <div class="nav-title">KÜNEFE PARASI</div>
+            <button class="cart-link" onclick="goToCart()">Sepetim</button>
+        </div>
+
+        <div class="rank-nav">
+            <a href="/1kp">1 KP</a>
+            <a href="/10kp">10 KP</a>
+            <a href="/100kp" class="active">100 KP</a>
+            <a href="/1000kp">1000 KP</a>
+        </div>
+
+        <div class="card-grid">
+            <div class="glass-card">
+                <div class="banner">
+                    <h1>100 KP</h1>
+                    <span style="font-size: 12px; font-weight: 900; opacity: 0.9;">⭐ EN POPÜLER EKONOMİ PAKETİ</span>
+                </div>
+                <div class="feature-list">
+                    <div class="feature-item">✓ 100 Adet Künefe Parası (KP)</div>
+                    <div class="feature-item">✓ Gelişmiş pazar ve açık artırma gücü</div>
+                    <div class="feature-item">✓ Özel kitle ve eşyaların kilitlerini açar</div>
+                    <div class="feature-item">✓ Anında otomatik teslimat</div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div>
+                    <span style="font-size: 12px; font-weight: 700; color: #9ca3af;">PAKET FİYATI</span>
+                    <div class="price-badge" id="display-price">100.00 ₺</div>
+                </div>
+                <div class="input-group">
+                    <label>HESAP ADI</label>
+                    <div class="user-field" id="user-display">Giriş Yapılmadı</div>
+                </div>
+                <div class="input-group">
+                    <label>ADET</label>
+                    <div class="counter">
+                        <button class="btn-cnt" onclick="updateQty(-1)">-</button>
+                        <span id="qty-val" style="font-weight: 900; font-size: 16px;">1</span>
+                        <button class="btn-cnt" onclick="updateQty(1)">+</button>
+                    </div>
+                </div>
+                <button class="add-btn" onclick="addToCart()">SEPETE EKLE</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const UNIT_PRICE = 100;
+        const PRODUCT_ID = 'kp-100';
+        const PRODUCT_TITLE = '100 KP (Künefe Parası)';
+        let qty = 1;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = localStorage.getItem('kunefeUser');
+            document.getElementById('user-display').innerText = (user && user.trim() !== '') ? user : "Giriş Yapılmadı";
+        });
+
+        function updateQty(c) {
+            qty = Math.max(1, qty + c);
+            document.getElementById('qty-val').innerText = qty;
+            document.getElementById('display-price').innerText = (UNIT_PRICE * qty).toFixed(2) + ' ₺';
+        }
+
+        function addToCart() {
+            const savedUser = localStorage.getItem('kunefeUser');
+            if (!savedUser || savedUser.trim() === '') {
+                alert("Sepete ürün eklemek için önce giriş yapmalısınız!");
+                window.location.href = "/giris";
+                return;
+            }
+            let cart = JSON.parse(localStorage.getItem('kunefeCart') || "[]");
+            const idx = cart.findIndex(i => i.id === PRODUCT_ID);
+            if (idx > -1) cart[idx].quantity += qty;
+            else cart.push({ id: PRODUCT_ID, title: PRODUCT_TITLE, price: UNIT_PRICE, quantity: qty, username: savedUser });
+            localStorage.setItem('kunefeCart', JSON.stringify(cart));
+            window.location.href = '/sepet';
+        }
+
+        function goToCart() {
+            const savedUser = localStorage.getItem('kunefeUser');
+            if (!savedUser || savedUser.trim() === '') {
+                alert("Sepeti görüntülemek için önce giriş yapmalısınız!");
+                window.location.href = "/giris";
+                return;
+            }
+            window.location.href = "/sepet";
+        }
+    </script>
+<script src="tebex-checkout.js"></script>
+</body>
+</html>
