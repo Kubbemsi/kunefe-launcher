@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KünefeSMP | Hesabım</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <!-- MOBİL KULLANICI GELİRSE MOBİL SİTESİNE YÖNLENDİR -->
+    <script>
+        function checkMobileRedirect() {
+            if (window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                window.location.href = "/giris-mobil";
+            }
+        }
+        checkMobileRedirect();
+        window.addEventListener('resize', checkMobileRedirect);
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: #0d0401;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- ARKA PLAN --- */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            background: radial-gradient(circle at center, #3d1708 0%, #1c0a03 60%, #0d0401 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 20px 60px 20px;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(rgba(202, 138, 4, 0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(202, 138, 4, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        /* --- ÜST MENÜ (BİREBİR KORUNDU) --- */
+        header {
+            width: 100%;
+            max-width: 1300px;
+            margin: 40px auto 30px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(35, 17, 8, 0.85);
+            border: 2px solid #ca8a04;
+            border-radius: 18px;
+            padding: 15px 25px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            z-index: 50;
+            position: relative;
+        }
+
+        .logo-box {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #fef08a 0%, #facc15 100%);
+            color: #422006;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .logo-box:hover { transform: scale(1.05); }
+
+        nav ul {
+            display: flex;
+            gap: 15px;
+            list-style: none;
+        }
+
+        nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        nav ul li a.active, nav ul li a:hover {
+            background: #facc15;
+            color: #422006;
+        }
+
+        nav ul li a.active svg, nav ul li a:hover svg { fill: #422006; }
+
+        /* --- ÜST MENÜDEKİ AÇILIR (DROPDOWN) LAUNCHER MENÜSÜ --- */
+        .dropdown { position: relative; }
+
+        .dropdown-toggle {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dropdown-arrow {
+            font-size: 10px;
+            transition: transform 0.25s ease;
+            margin-left: 2px;
+        }
+
+        .dropdown:hover .dropdown-arrow { transform: rotate(180deg); }
+        .dropdown:hover .dropdown-toggle { background: #facc15; color: #422006; }
+        .dropdown:hover .dropdown-toggle svg { fill: #422006; }
+
+        /* Fare aradaki boşluktan geçerken kapanmaması için görünmez köprü */
+        .dropdown::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 16px;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            width: 290px;
+            background: #190903;
+            border: 2px solid #ca8a04;
+            border-radius: 16px;
+            padding: 10px;
+            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.85);
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: flex;
+            animation: fadeInDown 0.25s ease forwards;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(2px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(10px); }
+        }
+
+        .drop-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #f3f4f6 !important;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(202, 138, 4, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .drop-item:hover {
+            background: rgba(250, 204, 21, 0.15) !important;
+            border-color: #facc15;
+            color: #facc15 !important;
+            transform: translateX(4px);
+        }
+
+        .drop-icon { font-size: 20px; flex-shrink: 0; }
+        .drop-info { display: flex; flex-direction: column; gap: 2px; text-align: left; }
+        .drop-title { font-size: 13px; font-weight: 900; color: #fff; }
+        .drop-sub { font-size: 10px; color: #9ca3af; font-weight: 700; }
+        .drop-badge { margin-left: auto; font-size: 9px; padding: 2px 7px; border-radius: 8px; font-weight: 900; text-transform: uppercase; }
+        .drop-badge.rec { background: #15803d; color: #fff; }
+        .drop-badge.soon { background: rgba(255, 255, 255, 0.1); color: #9ca3af; }
+        .drop-divider { height: 1px; background: rgba(202, 138, 4, 0.25); margin: 4px 6px; }
+
+        .user-btn {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #ca8a04;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #facc15;
+            background: rgba(202, 138, 4, 0.2);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        /* --- AUTH & PROFILE CONTAINER --- */
+        .auth-container {
+            width: 100%;
+            max-width: 480px;
+            z-index: 10;
+            margin: auto 0;
+        }
+
+        .auth-card {
+            background: rgba(35, 17, 8, 0.85);
+            border: 2px solid #ca8a04;
+            border-radius: 22px;
+            padding: 36px 32px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Sekme Butonları */
+        .tab-buttons {
+            display: flex;
+            gap: 8px;
+            background: rgba(13, 4, 1, 0.6);
+            padding: 6px;
+            border-radius: 14px;
+            border: 1px solid rgba(202, 138, 4, 0.3);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 900;
+            cursor: pointer;
+            background: transparent;
+            color: #d1d5db;
+            transition: all 0.25s ease;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #fef08a, #facc15);
+            color: #422006;
+            box-shadow: 0 4px 15px rgba(250, 204, 21, 0.25);
+        }
+
+        /* Form Elemanları */
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            font-weight: 800;
+            color: #facc15;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            background: rgba(13, 4, 1, 0.75);
+            border: 1.5px solid rgba(202, 138, 4, 0.4);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #facc15;
+            box-shadow: 0 0 12px rgba(250, 204, 21, 0.25);
+            background: rgba(13, 4, 1, 0.9);
+        }
+
+        .form-group input::placeholder {
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #fef08a, #facc15);
+            color: #422006;
+            border: none;
+            padding: 15px 0;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 900;
+            cursor: pointer;
+            margin-top: 6px;
+            transition: transform 0.2s ease, filter 0.2s ease;
+            box-shadow: 0 4px 18px rgba(250, 204, 21, 0.25);
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.02);
+            filter: brightness(1.06);
+        }
+
+        /* Hata Mesajı */
+        .error-msg {
+            color: #f87171;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+            display: none;
+            line-height: 1.4;
+        }
+
+        /* --- PROFİL SEKSİYONU --- */
+        .profile-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 20px;
+            border: 3px solid #facc15;
+            background: #1c0a03;
+            box-shadow: 0 0 25px rgba(250, 204, 21, 0.35);
+            image-rendering: pixelated;
+        }
+
+        .profile-info h2 {
+            font-size: 26px;
+            font-weight: 900;
+            color: #facc15;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-info p {
+            font-size: 13px;
+            color: #d1d5db;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #ffffff;
+            border: none;
+            padding: 14px 0;
+            width: 100%;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.25);
+        }
+
+        .logout-btn:hover {
+            transform: scale(1.02);
+            filter: brightness(1.08);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero-section">
+        <!-- ÜST MENÜ (BİREBİR KORUNDU) -->
+        <header>
+            <a href="/" class="logo-box">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>
+            </a>
+
+            <nav>
+                <ul>
+                    <li><a href="/"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> ANASAYFA</a></li>
+                    <li><a href="/magaza"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg> MAĞAZA</a></li>
+                    <!-- AÇILIR LAUNCHER MENÜSÜ -->
+                    <li class="dropdown">
+                        <a href="/launcher" class="dropdown-toggle">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                            <span>LAUNCHER</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a href="downloads/KunefeLauncher.exe" download="KunefeLauncher.exe" class="drop-item">
+                                <span class="drop-icon">🪟</span>
+                                <div class="drop-info">
+                                    <span class="drop-title">Windows (.exe)</span>
+                                    <span class="drop-sub">Windows 10 / 11 İndir</span>
+                                </div>
+                                <span class="drop-badge rec">Önerilen</span>
+                            </a>
+                            <a href="downloads/KunefeSMP-Launcher.flatpak" download="KunefeSMP-Launcher.flatpak" class="drop-item">
+                                <span class="drop-icon">🐧</span>
+                                <div class="drop-info">
+                                    <span class="drop-title">Linux (.flatpak)</span>
+                                    <span class="drop-sub">Steam Deck & Tüm Dağıtımlar</span>
+                                </div>
+                                <span class="drop-badge rec">Flatpak</span>
+                            </a>
+                            <a href="downloads/KunefeLauncher.dmg" download="KunefeLauncher.dmg" class="drop-item">
+                                <span class="drop-icon">🍎</span>
+                                <div class="drop-info">
+                                    <span class="drop-title">macOS (.dmg)</span>
+                                    <span class="drop-sub">M1/M2/M3 & Intel İndir</span>
+                                </div>
+                                <span class="drop-badge rec">DMG</span>
+                            </a>
+                            <div class="drop-divider"></div>
+                            <div class="drop-item" style="opacity: 0.65; cursor: default;">
+                                <span class="drop-icon">📱</span>
+                                <div class="drop-info">
+                                    <span class="drop-title">Android & iOS</span>
+                                    <span class="drop-sub">Play Store & App Store</span>
+                                </div>
+                                <span class="drop-badge soon">Yakında</span>
+                            </div>
+                        </div>
+                    </li>
+                    <li><a href="/yardim"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg> YARDIM</a></li>
+                    <li><a href="/destek"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1c-4.97 0-9 4.03-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7c0-4.97-4.03-9-9-9z"/></svg> DESTEK</a></li>
+                    <li><a href="/cezalar"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm5.31-3.1L6.1 5.69C7.45 4.63 9.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/></svg> CEZALAR</a></li>
+                </ul>
+            </nav>
+
+            <a href="/giris" class="user-btn">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </a>
+        </header>
+
+        <!-- KULLANICI GİRİŞ / KAYIT / PROFİL KARTI -->
+        <div class="auth-container">
+            <div class="auth-card">
+                
+                <!-- HATA BİLDİRİM KUTUSU -->
+                <div id="error-box" class="error-msg"></div>
+
+                <!-- GİRİŞ & KAYIT FORMLARI -->
+                <div id="auth-forms-wrapper">
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" id="tab-login-btn">Giriş Yap</button>
+                        <button class="tab-btn" id="tab-register-btn">Kayıt Ol</button>
+                    </div>
+
+                    <!-- GİRİŞ YAP FORM -->
+                    <form id="login-form" class="auth-form" style="margin-top: 20px;">
+                        <div class="form-group">
+                            <label for="login-email">E-POSTA ADRESİ</label>
+                            <input type="email" id="login-email" placeholder="ornek@kunefesmp.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">ŞİFRE</label>
+                            <input type="password" id="login-password" placeholder="••••••••" required>
+                        </div>
+                        <button type="submit" class="submit-btn">GİRİŞ YAP</button>
+                    </form>
+
+                    <!-- KAYIT OL FORM -->
+                    <form id="register-form" class="auth-form hidden" style="margin-top: 20px;">
+                        <div class="form-group">
+                            <label for="reg-username">OYUNCU ADI (IGN)</label>
+                            <input type="text" id="reg-username" placeholder="Minecraft kullanıcı adın" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-email">E-POSTA ADRESİ</label>
+                            <input type="email" id="reg-email" placeholder="ornek@kunefesmp.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-password">ŞİFRE</label>
+                            <input type="password" id="reg-password" placeholder="En az 6 karakter" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-password-repeat">TEKRAR ŞİFRE</label>
+                            <input type="password" id="reg-password-repeat" placeholder="••••••••" required>
+                        </div>
+                        <button type="submit" class="submit-btn">KAYIT OL</button>
+                    </form>
+                </div>
+
+                <!-- PROFİL EKRANI -->
+                <div id="profile-wrapper" class="profile-box hidden">
+                    <img id="user-avatar" class="profile-avatar" src="" alt="Avatar">
+                    <div class="profile-info">
+                        <h2 id="user-name">Oyuncu</h2>
+                        <p id="user-email-text">E-posta</p>
+                    </div>
+                    <button id="logout-btn" class="logout-btn">ÇIKIŞ YAP</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE KÜTÜPHANELERİ VE HIZLI OTURUM -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            signOut, 
+            onAuthStateChanged,
+            updateProfile
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Firebase Yapılandırması
+        const firebaseConfig = {
+            apiKey: "AIzaSyCDI7kmxlLRKpcRLp9J-HNYyq4wFBIia1w",
+            authDomain: "kunefesmp.firebaseapp.com",
+            projectId: "kunefesmp",
+            storageBucket: "kunefesmp.firebasestorage.app",
+            messagingSenderId: "394720158469",
+            appId: "1:394720158469:web:f933b340d23c3846f5cd6c"
+        };
+
+        // Firebase Başlat
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // UI Elemanları
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const authFormsWrapper = document.getElementById('auth-forms-wrapper');
+        const profileWrapper = document.getElementById('profile-wrapper');
+        const errorBox = document.getElementById('error-box');
+        const tabLoginBtn = document.getElementById('tab-login-btn');
+        const tabRegisterBtn = document.getElementById('tab-register-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        // Sekmeler Arası Geçiş
+        tabLoginBtn.addEventListener('click', () => switchTab('login'));
+        tabRegisterBtn.addEventListener('click', () => switchTab('register'));
+
+        function switchTab(tab) {
+            showError('');
+            if (tab === 'login') {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                tabLoginBtn.classList.add('active');
+                tabRegisterBtn.classList.remove('active');
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                tabLoginBtn.classList.remove('active');
+                tabRegisterBtn.classList.add('active');
+            }
+        }
+
+        function showError(msg) {
+            if (msg) {
+                errorBox.innerText = msg;
+                errorBox.style.display = 'block';
+            } else {
+                errorBox.style.display = 'none';
+            }
+        }
+
+        // --- KAYIT OL (ANINDA GİRİŞ YAPAR) ---
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showError('');
+
+            const username = document.getElementById('reg-username').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const passwordRepeat = document.getElementById('reg-password-repeat').value;
+
+            if (password !== passwordRepeat) {
+                showError("Şifreler birbiriyle eşleşmiyor!");
+                return;
+            }
+
+            try {
+                // 1. Hesabı oluştur
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // 2. Kullanıcı adını ekle
+                await updateProfile(user, { displayName: username });
+
+                // 3. Veritabanına kaydet
+                await setDoc(doc(db, "users", user.uid), {
+                    username: username,
+                    email: email,
+                    createdAt: new Date().toISOString()
+                });
+
+                // Oturumu hafızaya yaz (anında içeridesin)
+                localStorage.setItem('kunefeUser', username);
+
+            } catch (error) {
+                if (error.code === 'auth/email-already-in-use') {
+                    showError('Bu e-posta adresi zaten kullanımda.');
+                } else if (error.code === 'auth/weak-password') {
+                    showError('Şifre en az 6 karakter olmalıdır.');
+                } else if (error.code === 'auth/invalid-email') {
+                    showError('Geçersiz bir e-posta formatı girdiniz.');
+                } else {
+                    showError('Kayıt oluşturulurken bir hata oluştu: ' + error.message);
+                }
+            }
+        });
+
+        // --- GİRİŞ YAP ---
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showError('');
+
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    showError('E-posta veya şifre hatalı!');
+                } else {
+                    showError('Giriş yapılırken bir hata oluştu.');
+                }
+            }
+        });
+
+        // --- ÇIKIŞ YAP ---
+        logoutBtn.addEventListener('click', async () => {
+            await signOut(auth);
+            localStorage.removeItem('kunefeUser');
+        });
+
+        // --- OTURUM DURUMU DİNLEYİCİ ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                authFormsWrapper.classList.add('hidden');
+                profileWrapper.classList.remove('hidden');
+
+                let username = user.displayName;
+
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists()) {
+                        username = userDoc.data().username || username;
+                    }
+                } catch (e) {
+                    console.error("Kullanıcı verisi çekilemedi:", e);
+                }
+
+                const displayName = username || 'Oyuncu';
+                localStorage.setItem('kunefeUser', displayName);
+
+                document.getElementById('user-name').innerText = displayName;
+                document.getElementById('user-email-text').innerText = user.email;
+                document.getElementById('user-avatar').src = `https://mc-heads.net/avatar/${displayName}/100`;
+
+            } else {
+                authFormsWrapper.classList.remove('hidden');
+                profileWrapper.classList.add('hidden');
+                localStorage.removeItem('kunefeUser');
+            }
+        });
+    </script>
+</body>
+</html>
