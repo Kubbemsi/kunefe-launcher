@@ -335,28 +335,35 @@ def get_allowed_server_ips():
         pass
     return ips
 
-def lock_servers_dat():
-    """Minecraft'ın servers.dat dosyasında sadece KunefeSMP'yi kilitler"""
+def ensure_kunefe_server():
+    """
+    servers.dat yoksa içine KunefeSMP'yi ekler.
+    Dosya zaten varsa DOKUNMAZ: oyuncunun eklediği diğer sunucular silinmez.
+    (Eskiden her 100 ms'de bir dosya sıfırlanıyordu; başka sunucuya girince oyun kapanıyordu.)
+    """
     try:
+        if os.path.exists(SERVERS_DAT):
+            return
         name_b = SERVER_NAME.encode("utf-8")
         ip_b = f"{SERVER_IP}:{SERVER_PORT}".encode("utf-8")
-        
+
         data = bytearray()
         data.extend(b"\x0a\x00\x00")
         data.extend(b"\x09\x00\x07servers")
         data.extend(b"\x0a\x00\x00\x00\x01")
-        
+
         data.extend(b"\x08\x00\x04name")
         data.extend(len(name_b).to_bytes(2, "big"))
         data.extend(name_b)
-        
+
         data.extend(b"\x08\x00\x02ip")
         data.extend(len(ip_b).to_bytes(2, "big"))
         data.extend(ip_b)
-        
+
         data.append(0x00)
         data.append(0x00)
-        
+
+        os.makedirs(os.path.dirname(SERVERS_DAT), exist_ok=True)
         with open(SERVERS_DAT, "wb") as f:
             f.write(data)
     except Exception:
@@ -828,7 +835,7 @@ class KunefeLauncher(ctk.CTk):
     def __init__(self):
         super().__init__()
         ensure_dirs()
-        lock_servers_dat()
+        ensure_kunefe_server()
         setup_kunefe_resource_pack()
         self.cfg = load_cfg()
         self.profiles = load_profiles()
@@ -1697,44 +1704,15 @@ class KunefeLauncher(ctk.CTk):
     # ── CRAFTRISE KORUMASI VE OYUN İZLEME ─────────
 
     def _guard_watcher(self, process):
-        allowed_ips = get_allowed_server_ips()
-
-        while process.poll() is None:
-            try:
-                lock_servers_dat()
-
-                proc = psutil.Process(process.pid)
-                conns = proc.net_connections(kind="inet")
-
-                for c in conns:
-                    if c.raddr:
-                        ip = c.raddr.ip
-                        port = c.raddr.port
-
-                        # Yerel ağ, loopback ve web portlarına izin ver
-                        if ip.startswith("127.") or ip == "::1" or ip.startswith("192.168.") or ip.startswith("10."):
-                            continue
-                        if port in (80, 443, 53):
-                            continue
-
-                        # Sadece Minecraft sunucu portlarını (25565 vb.) denetle
-                        if port in (25565, 25566, 25567) and ip not in allowed_ips:
-                            print(f"[KunefeGuard] Yabancı Minecraft sunucusuna bağlantı engellendi: {ip}:{port}")
-                            proc.kill()
-                            break
-
-            except psutil.NoSuchProcess:
-                break
-            except psutil.AccessDenied:
-                # Baglantilar okunamiyorsa (yetki yok) oyunu kapatma ve arayuzu
-                # "oyun kapandi" gibi sifirlama; sadece izlemeyi birak.
-                print("[KunefeGuard] Baglantilar okunamadi (izin yok) - izleme kapatildi, oyun acik kaliyor.")
-                return
-            except Exception:
-                pass
-
-            time.sleep(0.1)
-
+        """
+        Oyun kapanana kadar bekler ve arayüzü geri getirir.
+        Sunucu listesine veya bağlantılara müdahale ETMEZ: oyuncu istediği sunucuya girebilir.
+        """
+        try:
+            while process.poll() is None:
+                time.sleep(0.2)
+        except Exception:
+            pass
         self.after(0, self._on_game_closed)
 
     def _on_close(self):
@@ -1773,7 +1751,7 @@ class KunefeLauncher(ctk.CTk):
 
             # 1. Güvenlik, Sunucu Kilidi ve Sürüme Özel Resource Pack Hazırlığı
             self.after(0, lambda: self._set_prog(0.03, "🎨 Özel Kunefe butonları ve korumalar yükleniyor..."))
-            lock_servers_dat()
+            ensure_kunefe_server()
             setup_kunefe_resource_pack(latest)
 
             # 2. Surum kurulu mu? Yeni bilgisayarda once vanilla surum indirilir.
