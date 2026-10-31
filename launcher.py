@@ -1590,13 +1590,21 @@ class KunefeLauncher(ctk.CTk):
                      font=ctk.CTkFont("Segoe UI", 11), text_color=DIM).pack(pady=(0, 10))
 
         mods_cfg = load_mods_cfg()
-        selected_slugs = set(mods_cfg.get("selected", []))
-
-        # Varsayılan seçimleri uygula
-        for cat_mods in OPTIONAL_MODS.values():
-            for m in cat_mods:
-                if m["default"] and m["slug"] not in mods_cfg:
-                    selected_slugs.add(m["slug"])
+        if "selected" not in mods_cfg or mods_cfg.get("catalog_v", 0) < 5:
+            # v5.0 zengin mod katalogu guncellemesi: varsayilanlari otomatik sec
+            selected_slugs = set()
+            for cat_mods in OPTIONAL_MODS.values():
+                for m in cat_mods:
+                    if m.get("default"):
+                        selected_slugs.add(m["slug"])
+            selected_shaders = set(s["slug"] for s in SHADER_PACKS if s.get("default"))
+            mods_cfg["selected"] = list(selected_slugs)
+            mods_cfg["selected_shaders"] = list(selected_shaders)
+            mods_cfg["catalog_v"] = 5
+            save_mods_cfg(mods_cfg)
+        else:
+            selected_slugs = set(mods_cfg.get("selected", []))
+            selected_shaders = set(mods_cfg.get("selected_shaders", [s["slug"] for s in SHADER_PACKS if s.get("default")]))
 
         scroll = ctk.CTkScrollableFrame(pop, fg_color="transparent", height=420)
         scroll.pack(fill="both", expand=True, padx=20, pady=(0, 10))
@@ -1663,6 +1671,7 @@ class KunefeLauncher(ctk.CTk):
             new_shaders = [slug for slug, var in shader_vars.items() if var.get()]
             mods_cfg["selected"] = new_selected
             mods_cfg["selected_shaders"] = new_shaders
+            mods_cfg["catalog_v"] = 5
             save_mods_cfg(mods_cfg)
             status_lbl.configure(text="✅ Mod ve shader tercihlerin kaydedildi! Bir sonraki oyunda uygulanır.")
 
