@@ -68,6 +68,8 @@ REQUIRED_MODS = [
     {"slug": "walksylib", "name": "WalksyLib", "desc": "Shield Statuses kütüphanesi"},
     {"slug": "ukulib", "name": "ukulib", "desc": "HUD kütüphanesi"},
     {"slug": "oneconfig", "name": "OneConfig", "desc": "Polyfrost ayar kütüphanesi"},
+    {"slug": "compose-multiplatform", "name": "Compose Multiplatform", "desc": "OneConfig bağımlılığı (zorunlu)"},
+    {"slug": "malilib", "name": "MaLiLib", "desc": "Litematica zorunlu kütüphanesi"},
 ]
 
 # İsteğe bağlı modlar — kullanıcı seçer
@@ -157,7 +159,6 @@ OPTIONAL_MODS = {
     ],
     "🏗️ İnşa": [
         {"slug": "litematica", "name": "Litematica", "desc": "Şematik yapı gösterimi", "default": False},
-        {"slug": "malilib", "name": "MaLiLib", "desc": "Litematica kütüphanesi", "default": False},
         {"slug": "worldedit", "name": "WorldEdit", "desc": "Toplu blok düzenleme", "default": False},
         {"slug": "axiom", "name": "Axiom", "desc": "Profesyonel inşa aracı", "default": False},
         {"slug": "item-scroller", "name": "Item Scroller", "desc": "Envanter kaydırma araçları", "default": False},
