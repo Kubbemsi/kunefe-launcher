@@ -6,7 +6,7 @@ import shutil
 from PIL import Image, ImageDraw
 
 # ══════════════════════════════════════════════════
-#  KunefeSMP Client Launcher (Özel Kilitli Sürüm v4.6)
+#  KunefeSMP Client Launcher (Özel Kilitli Sürüm v4.7)
 # ══════════════════════════════════════════════════
 
 SERVER_NAME  = "KunefeSMP Resmi Sunucusu"
@@ -847,7 +847,7 @@ def get_modrinth_adaylar(slug, mc_version, loader="fabric", limit=6):
             "loaders": f'["{loader}"]'
         })
         url = f"https://api.modrinth.com/v2/project/{slug}/version?{params}"
-        req = urllib.request.Request(url, headers={"User-Agent": "KunefeSMP-Launcher/4.6"})
+        req = urllib.request.Request(url, headers={"User-Agent": "KunefeSMP-Launcher/4.7"})
         with urllib.request.urlopen(req, timeout=10) as resp:
             versions = json.loads(resp.read().decode())
         adaylar = []
@@ -888,7 +888,7 @@ def install_mod(slug, mc_version, progress_cb=None):
         try:
             if progress_cb:
                 progress_cb(f"📦 {filename} indiriliyor...")
-            req = urllib.request.Request(url, headers={"User-Agent": "KunefeSMP-Launcher/4.6"})
+            req = urllib.request.Request(url, headers={"User-Agent": "KunefeSMP-Launcher/4.7"})
             with urllib.request.urlopen(req, timeout=60) as resp:
                 veri = resp.read()
             # Yarim/bos indirmeyi kabul etme
@@ -1054,7 +1054,7 @@ class KunefeLauncher(ctk.CTk):
         ctk.CTkLabel(logo, text=SERVER_IP,
                      font=ctk.CTkFont("Consolas", 12, "bold"), text_color=GOLD).pack(pady=(4, 0))
 
-        ctk.CTkLabel(sol, text="v4.6 Dynamic UI Edition  ·  KunefeSMP",
+        ctk.CTkLabel(sol, text="v4.7 Dynamic UI Edition  ·  KunefeSMP",
                      font=ctk.CTkFont("Segoe UI", 10), text_color=DIM).pack(side="bottom", pady=20)
 
         # Sağ Giriş Alanı
