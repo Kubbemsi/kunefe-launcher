@@ -47,6 +47,7 @@ jobs:
             --hidden-import PIL \
             --hidden-import psutil \
             --collect-all customtkinter \
+            --collect-all minecraft_launcher_lib \
             launcher.py
 
       # ── 6. .app imzalama atlama (ad-hoc) ───────────────────────────

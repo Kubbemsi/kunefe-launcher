@@ -1,0 +1,63 @@
+name: Build Linux AppImage
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'launcher.py'
+      - 'appimage/**'
+      - '.github/workflows/build-appimage.yml'
+  workflow_dispatch:
+
+jobs:
+  build-appimage:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Install system dependencies & appimagetool
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-tk libfuse2 wget file
+          # appimagetool continuous binary
+          wget -q https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage -O /tmp/appimagetool
+          chmod +x /tmp/appimagetool
+          # extract appimagetool to avoid FUSE requirement on runner
+          cd /tmp && ./appimagetool --appimage-extract
+          sudo mv /tmp/squashfs-root /opt/appimagetool
+          sudo ln -s /opt/appimagetool/AppRun /usr/local/bin/appimagetool
+
+      - name: Build AppImage
+        run: |
+          chmod +x appimage/build-appimage.sh
+          # Make sure skins and resourcepacks directories exist
+          mkdir -p skins resourcepacks
+          mkdir -p flatpak
+          if [ ! -f flatpak/com.kunefesmp.Launcher.desktop ]; then
+            printf "[Desktop Entry]\nType=Application\nName=KunefeSMP Launcher\nExec=kunefe-launcher\nIcon=com.kunefesmp.Launcher\nCategories=Game;\n" > flatpak/com.kunefesmp.Launcher.desktop
+          fi
+          bash appimage/build-appimage.sh
+
+      - name: Copy to standard name
+        run: |
+          cp dist/*.AppImage dist/KunefeLauncher.AppImage
+
+      - name: Upload AppImage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: KunefeLauncher-Linux-AppImage
+          path: dist/KunefeLauncher.AppImage
+          retention-days: 30

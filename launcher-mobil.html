@@ -704,10 +704,10 @@
                             <span class="sub-badge rec">İndir</span>
                         </div>
                     </a>
-                    <a href="downloads/KunefeSMP-Launcher.flatpak" download="KunefeSMP-Launcher.flatpak" class="drawer-subitem">
+                    <a href="downloads/KunefeLauncher.AppImage" download="KunefeLauncher.AppImage" class="drawer-subitem">
                         <span class="sub-icon">🐧</span>
                         <div class="sub-info">
-                            <span class="sub-title">Linux (.flatpak)</span>
+                            <span class="sub-title">Linux (.AppImage)</span>
                             <span class="sub-badge rec">İndir</span>
                         </div>
                     </a>
@@ -825,7 +825,7 @@
                 </div>
             </div>
 
-            <!-- 2. LINUX (.FLATPAK) -->
+            <!-- 2. LINUX (.AppImage) -->
             <div class="accordion-item" id="acc-linux">
                 <button class="acc-trigger" onclick="toggleAccordionItem('acc-linux')">
                     <div class="acc-left">
@@ -836,24 +836,24 @@
                         </div>
                     </div>
                     <div class="acc-right">
-                        <span class="acc-badge" style="background:#ea580c; color:#fff;">Flatpak</span>
+                        <span class="acc-badge" style="background:#ea580c; color:#fff; padding:2px 8px; border-radius:12px; font-size:0.75rem;">AppImage</span>
                         <div class="acc-arrow">▼</div>
                     </div>
                 </button>
                 <div class="acc-content">
                     <div class="acc-body-inner">
                         <ul class="bullets-list">
-                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Evrensel Flatpak paketi — tüm dağıtımlarda çalışır</li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Evrensel AppImage — kurulum gerekmez, çalıştır ve oyna</li>
                             <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Dahili OpenJDK 21 & Simple Voice Chat ses desteği</li>
                             <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Wayland ve X11 grafik hızlandırma entegre</li>
                         </ul>
-                        <a href="downloads/KunefeSMP-Launcher.flatpak" download="KunefeSMP-Launcher.flatpak" class="btn-download-action" style="background: linear-gradient(135deg, #fb923c, #ea580c); color: #fff;">
+                        <a href="downloads/KunefeLauncher.AppImage" download="KunefeLauncher.AppImage" class="btn-download-action" style="background: linear-gradient(135deg, #fb923c, #ea580c); color: #fff;">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-                            LINUX İÇİN İNDİR (.FLATPAK)
+                            LINUX İÇİN İNDİR (.AppImage)
                         </a>
                         <div class="cmd-box">
-                            <span id="flatpakCmd">flatpak install KunefeSMP-Launcher.flatpak</span>
-                            <button class="cmd-copy-btn" onclick="copyCmd('flatpakCmd')">Kopyala</button>
+                            <span id="appimageCmd">chmod +x KunefeLauncher.AppImage && ./KunefeLauncher.AppImage</span>
+                            <button class="cmd-copy-btn" onclick="copyCmd('appimageCmd')">Kopyala</button>
                         </div>
                     </div>
                 </div>

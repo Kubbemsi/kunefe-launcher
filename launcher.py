@@ -35,50 +35,154 @@ PACK_DIR     = os.path.join(RP_DIR, "KunefeClient")
 ZIP_PACK     = os.path.join(RP_DIR, "KunefeClient.zip")
 MODS_DIR     = os.path.join(MC_DIR, "mods")
 MODS_CFG     = os.path.join(MC_DIR, "kunefe_mods.json")
+SHADER_DIR   = os.path.join(MC_DIR, "shaderpacks")
 
 # ─── MOD LİSTELERİ ───────────────────────────────────────────────────────────
-# Zorunlu modlar — kullanıcı görmez, otomatik kurulur
+# Tek kaynak: C:/OpenCode/kunefe-modpack/catalog.json
+# Her Modrinth slug'ı Minecraft 1.21.1 + Fabric için tek tek doğrulandı.
+# (Eskiden "ferritecore", "audio-player", "clear-skies" gibi slug'lar 404 veriyordu;
+#  yani o modlar sessizce hiç kurulmuyordu.)
+
+# Zorunlu modlar — kullanıcı görmez, otomatik kurulur (kütüphaneler dahil)
 REQUIRED_MODS = [
-    {"slug": "appleskin",                "name": "AppleSkin"},
-    {"slug": "sodium",                   "name": "Sodium"},
-    {"slug": "fabric-api",               "name": "Fabric API"},
-    {"slug": "libipn",                   "name": "libIPN"},
-    {"slug": "cloth-config",             "name": "Cloth Config API"},
-    {"slug": "fabric-language-kotlin",   "name": "Fabric Language Kotlin"},
-    # NOT: ViaFabric kaldirildi - sunucuda ViaVersion var ve ViaFabric'in tek jar'i
-    # icinde 1.14-1.20.5 icin paketlenmis surumler "Incompatible mods" hatasi veriyordu.
-    # NOT: Sound Physics kaldirildi - Simple Voice Chat ile surum cakismasi yapiyordu.
-    {"slug": "audio-player",             "name": "Audio Player"},
-    {"slug": "modmenu",                  "name": "Mod Menu"},
-    {"slug": "simple-voice-chat",        "name": "Simple Voice Chat"},
-    {"slug": "crosshair-indicator",      "name": "Crosshair Indicator"},
-    {"slug": "customskinloader",        "name": "CustomSkinLoader"},
+    {"slug": "fabric-api", "name": "Fabric API", "desc": "Fabric mod altyapısı"},
+    {"slug": "cloth-config", "name": "Cloth Config API", "desc": "Mod ayar ekranı altyapısı"},
+    {"slug": "fabric-language-kotlin", "name": "Fabric Language Kotlin", "desc": "Kotlin mod desteği"},
+    {"slug": "libipn", "name": "libIPN", "desc": "Envanter profili kütüphanesi"},
+    {"slug": "modmenu", "name": "Mod Menu", "desc": "Mod listesi ekranı"},
+    {"slug": "appleskin", "name": "AppleSkin", "desc": "Açlık ve doygunluk bilgisi"},
+    {"slug": "audioplayer", "name": "Audio Player", "desc": "Sunucu müzik sistemi"},
+    {"slug": "simple-voice-chat", "name": "Simple Voice Chat", "desc": "Yakın sesli sohbet"},
+    {"slug": "crosshair-indicator", "name": "Crosshair Indicator", "desc": "Nişangah göstergesi"},
+    {"slug": "customskinloader", "name": "CustomSkinLoader", "desc": "Skin yükleme altyapısı"},
+    {"slug": "yacl", "name": "Yet Another Config Lib", "desc": "Ayar ekranı kütüphanesi"},
+    {"slug": "architectury-api", "name": "Architectury API", "desc": "Çoklu loader kütüphanesi"},
+    {"slug": "balm", "name": "Balm", "desc": "Mod kütüphanesi (TrashSlot vb.)"},
+    {"slug": "midnightlib", "name": "MidnightLib", "desc": "Ayar kütüphanesi"},
+    {"slug": "owo-lib", "name": "oωo Lib", "desc": "Arayüz kütüphanesi"},
+    {"slug": "searchables", "name": "Searchables", "desc": "Ayar arama kütüphanesi"},
+    {"slug": "badpackets", "name": "Bad Packets", "desc": "Ağ kütüphanesi (WTHIT)"},
+    {"slug": "yungs-api", "name": "YUNG's API", "desc": "YUNG modları altyapısı"},
+    {"slug": "sodium-options-api", "name": "Sodium Options API", "desc": "Sodium ayar API'si"},
+    {"slug": "placeholder-api", "name": "Text Placeholder API", "desc": "Metin yer tutucu API"},
+    {"slug": "walksylib", "name": "WalksyLib", "desc": "Shield Statuses kütüphanesi"},
+    {"slug": "ukulib", "name": "ukulib", "desc": "HUD kütüphanesi"},
+    {"slug": "oneconfig", "name": "OneConfig", "desc": "Polyfrost ayar kütüphanesi"},
 ]
 
 # İsteğe bağlı modlar — kullanıcı seçer
 OPTIONAL_MODS = {
-    "⚡ FPS & Performans": [
-        {"slug": "lithium",          "name": "Lithium",           "desc": "Oyun mantığı optimizasyonu",     "default": True},
-        {"slug": "ferritecore",      "name": "FerriteCore",       "desc": "RAM kullanımını azaltır",         "default": True},
-        {"slug": "entityculling",    "name": "Entity Culling",    "desc": "Görünmez entity render etmez",   "default": True},
-        {"slug": "immediatelyfast",  "name": "ImmediatelyFast",   "desc": "Render hızını artırır",           "default": False},
-        {"slug": "krypton",          "name": "Krypton",           "desc": "Ağ paketi optimizasyonu",         "default": False},
-        {"slug": "moreculling",      "name": "More Culling",      "desc": "Ekstra render optimizasyonu",     "default": False},
-        {"slug": "lazydfu",          "name": "LazyDFU",           "desc": "Oyun başlangıcını hızlandırır",   "default": False},
+    "⚡ Performans": [
+        {"slug": "sodium", "name": "Sodium", "desc": "En büyük FPS artışı", "default": True},
+        {"slug": "lithium", "name": "Lithium", "desc": "Oyun mantığı optimizasyonu", "default": True},
+        {"slug": "ferrite-core", "name": "FerriteCore", "desc": "RAM kullanımını azaltır", "default": True},
+        {"slug": "entityculling", "name": "Entity Culling", "desc": "Görünmez entity çizmez", "default": True},
+        {"slug": "immediatelyfast", "name": "ImmediatelyFast", "desc": "Render hızını artırır", "default": True},
+        {"slug": "krypton", "name": "Krypton", "desc": "Ağ paketi optimizasyonu", "default": True},
+        {"slug": "moreculling", "name": "More Culling", "desc": "Ekstra render optimizasyonu", "default": True},
+        {"slug": "modernfix", "name": "ModernFix", "desc": "Başlangıç + bellek optimizasyonu", "default": True},
+        {"slug": "badoptimizations", "name": "BadOptimizations", "desc": "Mikro optimizasyonlar", "default": True},
+        {"slug": "noisium", "name": "Noisium", "desc": "Dünya üretimi hızlandırır", "default": True},
+        {"slug": "ebe", "name": "Enhanced Block Entities", "desc": "Sandık/tablet render optimizasyonu", "default": True},
+        {"slug": "debugify", "name": "Debugify", "desc": "Vanilla hatalarını düzeltir", "default": True},
+        {"slug": "fastquit", "name": "FastQuit", "desc": "Çıkışı hızlandırır", "default": True},
+        {"slug": "threadtweak", "name": "ThreadTweak", "desc": "İş parçacığı ayarı", "default": True},
+        {"slug": "dynamic-fps", "name": "Dynamic FPS", "desc": "Arka planda FPS düşürür", "default": True},
+        {"slug": "smooth-boot", "name": "Smooth Boot", "desc": "Açılışta donmayı engeller", "default": True},
+        {"slug": "fast-ip-ping", "name": "Fast IP Ping", "desc": "Sunucu pingini hızlandırır", "default": True},
+        {"slug": "no-telemetry", "name": "No Telemetry", "desc": "Telemetriyi kapatır", "default": True},
+        {"slug": "c2me-fabric", "name": "C2ME", "desc": "Chunk yüklemeyi hızlandırır", "default": False},
+        {"slug": "vmp-fabric", "name": "Very Many Players", "desc": "Kalabalık sunucuda FPS", "default": False},
+        {"slug": "scalablelux", "name": "ScalableLux", "desc": "Işık motoru optimizasyonu", "default": False},
+        {"slug": "exordium", "name": "Exordium", "desc": "HUD render'ı FPS'e sabitler", "default": False},
+        {"slug": "nvidium", "name": "Nvidium", "desc": "Sadece NVIDIA ekran kartı", "default": False},
     ],
     "⚔️ PVP": [
-        {"slug": "betterhitboxes",   "name": "Better Hitboxes",   "desc": "Düzeltilmiş hitbox görünümü",    "default": False},
-        {"slug": "no-chat-reports",  "name": "No Chat Reports",   "desc": "Sohbet raporlamayı engeller",    "default": True},
-        {"slug": "clear-skies",      "name": "Clear Skies",       "desc": "Net gökyüzü (sis efekti kaldır)","default": False},
-        {"slug": "dynamic-crosshair","name": "Dynamic Crosshair", "desc": "Dinamik nişangah",               "default": False},
+        {"slug": "no-chat-reports", "name": "No Chat Reports", "desc": "Sohbet raporlamayı engeller", "default": True},
+        {"slug": "armor-hud", "name": "Armor HUD", "desc": "Zırh dayanıklılığı göstergesi", "default": True},
+        {"slug": "totem-counter-mx", "name": "Totem Counter", "desc": "Envanterdeki totem sayısı", "default": True},
+        {"slug": "low-fire-reborn", "name": "Low Fire Reborn", "desc": "Yanarken görüşü kapatmaz", "default": True},
+        {"slug": "no_hurt_cam", "name": "No Hurt Cam", "desc": "Hasar alınca ekran sarsılmaz", "default": True},
+        {"slug": "evergreenhud", "name": "EvergreenHUD", "desc": "FPS / CPS / tuş göstergesi", "default": True},
+        {"slug": "dynamiccrosshair", "name": "Dynamic Crosshair", "desc": "Duruma göre değişen nişangah", "default": True},
+        {"slug": "smooth-swapping", "name": "Smooth Swapping", "desc": "Envanter geçiş animasyonu", "default": True},
+        {"slug": "shield-statuses", "name": "Shield Statuses", "desc": "Kalkan durumunu gösterir", "default": False},
+        {"slug": "betterhurtcam", "name": "BetterHurtCam", "desc": "Sarsıntıyı ayarlanabilir yapar", "default": False},
+        {"slug": "cps-plus", "name": "CPS+", "desc": "Tıklama hızı göstergesi", "default": False},
+        {"slug": "tiertagger", "name": "Tier Tagger", "desc": "PvP tier etiketleri", "default": False},
+        {"slug": "reach-display", "name": "Reach Display", "desc": "Vuruş mesafesi göstergesi", "default": False},
+        {"slug": "old-combat-mod", "name": "Old Combat Mod", "desc": "Eski vuruş animasyonu", "default": False},
+        {"slug": "bactromod", "name": "BactroMod", "desc": "Fullbright + az sis + net görüş", "default": False},
     ],
     "🎮 Kalite (QoL)": [
-        {"slug": "shulkerboxtooltip","name": "Shulker Box Tooltip", "desc": "Sandık içeriğini önizler",    "default": False},
-        {"slug": "jade",             "name": "Jade",              "desc": "Blok/Mob bilgisi gösterir",       "default": False},
-        {"slug": "roughly-enough-items","name": "REI",            "desc": "Tarif & item görüntüleyici",      "default": False},
-        {"slug": "continuity",       "name": "Continuity",        "desc": "Bağlı doku (CTM) desteği",        "default": False},
+        {"slug": "jade", "name": "Jade", "desc": "Baktığın blok/mob bilgisi", "default": True},
+        {"slug": "rei", "name": "REI", "desc": "Tarif ve item görüntüleyici", "default": True},
+        {"slug": "mouse-tweaks", "name": "Mouse Tweaks", "desc": "Envanterde hızlı taşıma", "default": True},
+        {"slug": "zoomify", "name": "Zoomify", "desc": "OptiFine tarzı zoom", "default": True},
+        {"slug": "shulkerboxtooltip", "name": "Shulker Box Tooltip", "desc": "Shulker içeriğini önizler", "default": True},
+        {"slug": "chat-heads", "name": "Chat Heads", "desc": "Sohbette oyuncu kafası", "default": True},
+        {"slug": "better-ping-display-fabric", "name": "Better Ping Display", "desc": "Oyuncu pingini gösterir", "default": True},
+        {"slug": "inventory-profiles-next", "name": "Inventory Profiles Next", "desc": "Envanter sıralama", "default": True},
+        {"slug": "capes", "name": "Capes", "desc": "Pelerin desteği", "default": True},
+        {"slug": "betterf3", "name": "BetterF3", "desc": "Renkli F3 ekranı", "default": False},
+        {"slug": "trashslot", "name": "TrashSlot", "desc": "Envanterde çöp kutusu", "default": False},
+        {"slug": "controlling", "name": "Controlling", "desc": "Tuş atamada arama", "default": False},
+        {"slug": "gamma-utils", "name": "Gamma Utils", "desc": "Fullbright (gece görüşü)", "default": False},
+        {"slug": "screenshot-viewer", "name": "Screenshot Viewer", "desc": "Ekran görüntüsü tarayıcı", "default": False},
+        {"slug": "xaeros-minimap", "name": "Xaero's Minimap", "desc": "Mini harita", "default": False},
+        {"slug": "xaeros-world-map", "name": "Xaero's World Map", "desc": "Tam ekran harita", "default": False},
+        {"slug": "emi", "name": "EMI", "desc": "Alternatif tarif görüntüleyici", "default": False},
+        {"slug": "wthit", "name": "WTHIT", "desc": "Alternatif blok bilgisi", "default": False},
+        {"slug": "chatpatches", "name": "Chat Patches", "desc": "Sohbet geçmişi + düzeltmeler", "default": False},
+        {"slug": "travelers-titles", "name": "Travelers Titles", "desc": "Biyom adı ekranda görünür", "default": False},
+        {"slug": "puzzle", "name": "Puzzle", "desc": "Arayüz iyileştirmeleri", "default": False},
+        {"slug": "ok-zoomer", "name": "Ok Zoomer", "desc": "Alternatif zoom modu", "default": False},
+    ],
+    "🎨 Görsel": [
+        {"slug": "iris", "name": "Iris Shaders", "desc": "Shader desteği (Sodium gerekir)", "default": True},
+        {"slug": "sodium-extra", "name": "Sodium Extra", "desc": "Sodium ek ayarları", "default": True},
+        {"slug": "reeses-sodium-options", "name": "Reese's Sodium Options", "desc": "Sodium ayar arayüzü", "default": True},
+        {"slug": "indium", "name": "Indium", "desc": "Fabric render API desteği", "default": True},
+        {"slug": "entity-model-features", "name": "Entity Model Features", "desc": "Özel entity modelleri (EMF)", "default": True},
+        {"slug": "entitytexturefeatures", "name": "Entity Texture Features", "desc": "Parlayan entity dokuları (ETF)", "default": True},
+        {"slug": "continuity", "name": "Continuity", "desc": "Bağlı doku (CTM) desteği", "default": True},
+        {"slug": "3dskinlayers", "name": "3D Skin Layers", "desc": "3 boyutlu skin katmanı", "default": True},
+        {"slug": "not-enough-animations", "name": "Not Enough Animations", "desc": "Ek animasyonlar", "default": True},
+        {"slug": "fallingleaves", "name": "Falling Leaves", "desc": "Yaprak dökülme efekti", "default": True},
+        {"slug": "visuality", "name": "Visuality", "desc": "Küçük parçacık efektleri", "default": True},
+        {"slug": "lambdabettergrass", "name": "LambdaBetterGrass", "desc": "Daha iyi çim bağlantısı", "default": False},
+        {"slug": "effective", "name": "Effective", "desc": "Şelale/yağmur efektleri (ağır)", "default": False},
+        {"slug": "wakes", "name": "Wakes", "desc": "Tekne/su izi efektleri", "default": False},
+        {"slug": "sodium-dynamic-lights", "name": "Sodium Dynamic Lights", "desc": "Elde meşale ışık verir", "default": False},
+    ],
+    "🏗️ İnşa": [
+        {"slug": "litematica", "name": "Litematica", "desc": "Şematik yapı gösterimi", "default": False},
+        {"slug": "malilib", "name": "MaLiLib", "desc": "Litematica kütüphanesi", "default": False},
+        {"slug": "worldedit", "name": "WorldEdit", "desc": "Toplu blok düzenleme", "default": False},
+        {"slug": "axiom", "name": "Axiom", "desc": "Profesyonel inşa aracı", "default": False},
+        {"slug": "item-scroller", "name": "Item Scroller", "desc": "Envanter kaydırma araçları", "default": False},
+    ],
+    "🌍 Atmosfer": [
+        {"slug": "sound-physics-remastered", "name": "Sound Physics Remastered", "desc": "Gerçekçi ses yankısı", "default": False},
     ],
 }
+
+# Shader paketleri (Iris gerekir) — .minecraft/shaderpacks klasörüne kurulur
+SHADER_PACKS = [
+    {"slug": "complementary-reimagined", "name": "Complementary Reimagined", "desc": "En popüler denge shader'ı", "default": True},
+    {"slug": "bsl-shaders", "name": "BSL Shaders", "desc": "Yumuşak ışık, klasik görünüm", "default": True},
+    {"slug": "makeup-ultra-fast-shaders", "name": "MakeUp Ultra Fast", "desc": "Düşük PC için hızlı shader", "default": True},
+    {"slug": "complementary-unbound", "name": "Complementary Unbound", "desc": "Daha sinematik versiyon", "default": False},
+    {"slug": "sildurs-vibrant-shaders", "name": "Sildur's Vibrant", "desc": "Canlı renkler", "default": False},
+    {"slug": "rethinking-voxels", "name": "Rethinking Voxels", "desc": "Gerçek zamanlı gölge (ağır)", "default": False},
+    {"slug": "photon-shader", "name": "Photon Shader", "desc": "Modern ışıklandırma", "default": False},
+    {"slug": "bliss-shader", "name": "Bliss Shader", "desc": "Yumuşak atmosfer", "default": False},
+    {"slug": "kappa-shader", "name": "Kappa Shader", "desc": "Gerçekçi su ve gökyüzü", "default": False},
+    {"slug": "super-duper-vanilla", "name": "Super Duper Vanilla", "desc": "Vanilla'ya sadık shader", "default": False},
+    {"slug": "solas-shader", "name": "Solas Shader", "desc": "Hafif ve temiz", "default": False},
+    {"slug": "insanity-shader", "name": "Insanity Shader", "desc": "Karanlık/korku atmosferi", "default": False},
+    {"slug": "nostalgia-shader", "name": "Nostalgia Shader", "desc": "Eski sürüm hissi", "default": False},
+]
 
 # Tema Renkleri
 BG      = "#07071a"
@@ -815,6 +919,58 @@ def install_mod(slug, mc_version, progress_cb=None):
             pass
     return False, None
 
+def get_modrinth_shader(slug):
+    """Shader projesinin son surumunun (url, dosya adi) ikilisini doner."""
+    try:
+        import urllib.request
+        url = f"https://api.modrinth.com/v2/project/{slug}/version"
+        req = urllib.request.Request(url, headers={"User-Agent": "KunefeSMP-Launcher/5.0"})
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            versions = json.loads(resp.read().decode())
+        for v in versions[:6]:
+            for f in v.get("files", []):
+                if f.get("primary", True):
+                    return f["url"], f["filename"]
+    except Exception as e:
+        print(f"[Shader] {slug} bilgisi alinamadi: {e}")
+    return None, None
+
+def install_shader(slug, progress_cb=None):
+    """Shader paketini .minecraft/shaderpacks klasorune indirir.
+    Iris modu kurulu degilse shader secilemez (oyun icinde gorunmez)."""
+    os.makedirs(SHADER_DIR, exist_ok=True)
+    url, filename = get_modrinth_shader(slug)
+    if not url or not filename:
+        return False, None
+    dest = os.path.join(SHADER_DIR, filename)
+    if os.path.exists(dest) and os.path.getsize(dest) > 1024:
+        return True, filename
+    tmp = dest + ".part"
+    try:
+        if progress_cb:
+            progress_cb(f"🎨 {filename} indiriliyor...")
+        import urllib.request
+        req = urllib.request.Request(url, headers={"User-Agent": "KunefeSMP-Launcher/5.0"})
+        with urllib.request.urlopen(req, timeout=120) as resp:
+            veri = resp.read()
+        if not veri or len(veri) < 1024:
+            raise ValueError(f"eksik indirme ({len(veri) if veri else 0} bayt)")
+        with open(tmp, "wb") as f:
+            f.write(veri)
+        with zipfile.ZipFile(tmp) as z:
+            if z.testzip() is not None:
+                raise ValueError("bozuk zip")
+        os.replace(tmp, dest)
+        return True, filename
+    except Exception as e:
+        print(f"[Shader] {slug} indirme hatasi: {e}")
+        try:
+            if os.path.exists(tmp):
+                os.remove(tmp)
+        except Exception:
+            pass
+        return False, None
+
 def clean_unmanaged_mods(allowed_filenames):
     """Sadece kendi listemizdeki modları bırakır, diğerlerini siler."""
     if not os.path.exists(MODS_DIR):
@@ -1477,15 +1633,38 @@ class KunefeLauncher(ctk.CTk):
                 ctk.CTkLabel(row, text=m["desc"],
                              font=ctk.CTkFont("Segoe UI", 10), text_color=DIM).pack(side="left", padx=(8, 0))
 
+        # Shader paketleri (Iris Shaders gerekir)
+        selected_shaders = set(mods_cfg.get("selected_shaders", [s["slug"] for s in SHADER_PACKS if s.get("default")]))
+        shader_vars = {}
+        shader_frame = ctk.CTkFrame(scroll, fg_color=CARD, corner_radius=12)
+        shader_frame.pack(fill="x", pady=(6, 0))
+        ctk.CTkLabel(shader_frame, text="✨ Shader Paketleri (Iris Shaders ile çalışır)",
+                     font=ctk.CTkFont("Segoe UI", 12, "bold"), text_color=TEXT).pack(anchor="w", padx=14, pady=(10, 4))
+        for s in SHADER_PACKS:
+            var = ctk.BooleanVar(value=s["slug"] in selected_shaders)
+            shader_vars[s["slug"]] = var
+            row = ctk.CTkFrame(shader_frame, fg_color="transparent")
+            row.pack(fill="x", padx=10, pady=2)
+            ctk.CTkCheckBox(row, text=s["name"],
+                            variable=var,
+                            font=ctk.CTkFont("Segoe UI", 12),
+                            text_color=TEXT,
+                            fg_color=ACCENT, hover_color="#cc4d00",
+                            checkmark_color=TEXT).pack(side="left")
+            ctk.CTkLabel(row, text=s["desc"],
+                         font=ctk.CTkFont("Segoe UI", 10), text_color=DIM).pack(side="left", padx=(8, 0))
+
         # Alt bar
         status_lbl = ctk.CTkLabel(pop, text="", font=ctk.CTkFont("Segoe UI", 11), text_color=SUCCESS)
         status_lbl.pack(pady=(0, 4))
 
         def kaydet():
             new_selected = [slug for slug, var in check_vars.items() if var.get()]
+            new_shaders = [slug for slug, var in shader_vars.items() if var.get()]
             mods_cfg["selected"] = new_selected
+            mods_cfg["selected_shaders"] = new_shaders
             save_mods_cfg(mods_cfg)
-            status_lbl.configure(text="✅ Mod tercihlerin kaydedildi! Bir sonraki oyunda uygulanır.")
+            status_lbl.configure(text="✅ Mod ve shader tercihlerin kaydedildi! Bir sonraki oyunda uygulanır.")
 
         ctk.CTkButton(pop, text="💾  Tercihleri Kaydet",
                       font=ctk.CTkFont("Segoe UI", 13, "bold"),
@@ -1804,12 +1983,15 @@ class KunefeLauncher(ctk.CTk):
                             pass
                 print(f"[Modlar] Sürüm değişti ({onceki_surum} -> {latest}), {silinen} eski mod silindi.")
 
-            # Varsayılan optional seçimleri uygula (ilk kez)
-            if "selected" not in mods_cfg:
+            # Varsayılan optional seçimleri uygula (ilk kez veya v5.0 katalog güncellemesi)
+            if "selected" not in mods_cfg or mods_cfg.get("catalog_v", 0) < 5:
                 for cat_mods in OPTIONAL_MODS.values():
                     for m in cat_mods:
-                        if m["default"]:
+                        if m.get("default"):
                             selected_optional.add(m["slug"])
+                mods_cfg["catalog_v"] = 5
+                mods_cfg["selected"] = list(selected_optional)
+                save_mods_cfg(mods_cfg)
 
             all_slugs = [m["slug"] for m in REQUIRED_MODS] + list(selected_optional)
             installed_files = set()
@@ -1853,6 +2035,24 @@ class KunefeLauncher(ctk.CTk):
 
             # Yönetilmeyen modları temizle
             clean_unmanaged_mods(installed_files)
+
+            # Shader paketlerini indir (.minecraft/shaderpacks)
+            selected_shaders = mods_cfg.get("selected_shaders")
+            if selected_shaders is None:
+                selected_shaders = [s["slug"] for s in SHADER_PACKS if s.get("default")]
+
+            if selected_shaders:
+                self.after(0, lambda: self._set_prog(0.86, "🎨 Shader paketleri kontrol ediliyor..."))
+                for s_slug in selected_shaders:
+                    s_name = s_slug
+                    for s in SHADER_PACKS:
+                        if s["slug"] == s_slug:
+                            s_name = s["name"]
+                    self.after(0, lambda n=s_name: self._set_prog(0.87, f"✨ {n} hazırlanıyor..."))
+                    try:
+                        install_shader(s_slug)
+                    except Exception as _se:
+                        print(f"[Shader] {s_slug} kurulum hatası: {_se}")
 
             # Hangi surum icin kurulum yapildigini kaydet (sonraki surum degisiminde temizlik icin)
             mods_cfg["mc_version"] = latest
