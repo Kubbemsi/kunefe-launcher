@@ -172,6 +172,22 @@
             padding: 6px 11px; border-radius: 8px; background: rgba(255, 255, 255, 0.07);
             color: #9ca3af; white-space: nowrap;
         }
+        /* Android hazır: yakında kartı yerine gerçek indirme kartı */
+        a.coming-card { text-decoration: none; color: inherit; cursor: pointer; }
+        .coming-card.live {
+            border: 2px solid rgba(34, 197, 94, 0.55);
+            background: rgba(22, 40, 22, 0.55);
+        }
+        .coming-card.live:hover {
+            border-color: rgba(74, 222, 128, 0.9);
+            background: rgba(22, 40, 22, 0.85);
+        }
+        .coming-card.live .coming-icon {
+            background: rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.45);
+        }
+        .coming-tag.live {
+            background: rgba(34, 197, 94, 0.18); color: #4ade80;
+        }
 
         /* --- SİSTEM ŞERİDİ --- */
         .spec-section { width: 100%; max-width: 1300px; z-index: 10; margin-top: 34px; }
@@ -240,14 +256,14 @@
                                 <span class="drop-badge rec">DMG</span>
                             </a>
                             <div class="drop-divider"></div>
-                            <div class="drop-item" style="opacity: 0.65; cursor: default;">
-                                <span class="drop-icon">📱</span>
+                            <a href="/kunefe-android.apk" download="KunefeLauncher.apk" class="drop-item">
+                                <span class="drop-icon">🤖</span>
                                 <div class="drop-info">
-                                    <span class="drop-title">Android & iOS</span>
-                                    <span class="drop-sub">Play Store & App Store</span>
+                                    <span class="drop-title">Android (.apk)</span>
+                                    <span class="drop-sub">Android 8.0+ • Doğrudan İndir</span>
                                 </div>
-                                <span class="drop-badge soon">Yakında</span>
-                            </div>
+                                <span class="drop-badge rec">APK</span>
+                            </a>
                         </div>
                     </li>
                     <li><a href="/yardim"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg> YARDIM</a></li>
@@ -296,7 +312,7 @@
                 <div class="plat-sub">SteamOS, Ubuntu, Arch, Fedora</div>
                 <ul class="features-list">
                     <li>Steam Deck dahil tüm Linux dağıtımlarında çalışır</li>
-                    <li>Kurulum gerektirmez — çalıştır ve oyna (x86_64)</li>
+                    <li>Tüm Linux dağıtımlarında çalışır (x86_64)</li>
                     <li>Sistemde OpenJDK 21 kurulu olması yeterli</li>
                     <li>Hiçbir dağıtıma özel kurulum gerekmez</li>
                 </ul>
@@ -336,16 +352,16 @@
 
         <!-- YAKINDA -->
         <div class="coming-section">
-            <div class="spec-heading">Yakında</div>
+            <div class="spec-heading">Mobil</div>
             <div class="coming-grid">
-                <div class="coming-card">
+                <a class="coming-card live" href="/kunefe-android.apk" download="KunefeLauncher.apk">
                     <div class="coming-icon">🤖</div>
                     <div>
                         <div class="coming-title">ANDROID</div>
-                        <div class="coming-sub">Google Play Store &amp; APK • Geliştirme aşamasında</div>
+                        <div class="coming-sub">APK • Android 8.0 ve üzeri • Otomatik kurulum</div>
                     </div>
-                    <span class="coming-tag">YAKINDA</span>
-                </div>
+                    <span class="coming-tag live">İNDİR</span>
+                </a>
                 <div class="coming-card">
                     <div class="coming-icon">📱</div>
                     <div>

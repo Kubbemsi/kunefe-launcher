@@ -628,6 +628,15 @@
             cursor: not-allowed !important;
         }
 
+        .file-meta {
+            margin-top: 10px;
+            font-size: 10.5px;
+            font-weight: 700;
+            color: #9ca3af;
+            text-align: center;
+            line-height: 1.5;
+        }
+
         .cmd-box {
             background: #000000;
             border: 1px solid rgba(202,138,4,0.3);
@@ -718,13 +727,13 @@
                             <span class="sub-badge rec">İndir</span>
                         </div>
                     </a>
-                    <div class="drawer-subitem disabled">
-                        <span class="sub-icon">📱</span>
+                    <a href="/kunefe-android.apk" download="KunefeLauncher.apk" class="drawer-subitem">
+                        <span class="sub-icon">🤖</span>
                         <div class="sub-info">
-                            <span class="sub-title">Android & iOS</span>
-                            <span class="sub-badge soon">Yakında</span>
+                            <span class="sub-title">Android (.apk)</span>
+                            <span class="sub-badge rec">İndir</span>
                         </div>
-                    </div>
+                    </a>
                     <a href="/launcher-mobil" class="drawer-subitem-all">
                         <span>🚀 Tüm Launcher Detayları</span>
                         <span>→</span>
@@ -825,7 +834,7 @@
                 </div>
             </div>
 
-            <!-- 2. LINUX (.AppImage) -->
+            <!-- 2. LINUX (.FLATPAK) -->
             <div class="accordion-item" id="acc-linux">
                 <button class="acc-trigger" onclick="toggleAccordionItem('acc-linux')">
                     <div class="acc-left">
@@ -843,7 +852,7 @@
                 <div class="acc-content">
                     <div class="acc-body-inner">
                         <ul class="bullets-list">
-                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Evrensel AppImage — kurulum gerekmez, çalıştır ve oyna</li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Evrensel AppImage — kurulum gerekmez (x86_64)</li>
                             <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Dahili OpenJDK 21 & Simple Voice Chat ses desteği</li>
                             <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Wayland ve X11 grafik hızlandırma entegre</li>
                         </ul>
@@ -900,23 +909,26 @@
                         <div class="acc-icon icon-android">🤖</div>
                         <div class="acc-text-wrap">
                             <div class="acc-title">ANDROID</div>
-                            <div class="acc-sub">Google Play Store & APK</div>
+                            <div class="acc-sub">APK • Android 8.0 ve üzeri</div>
                         </div>
                     </div>
                     <div class="acc-right">
-                        <span class="acc-badge soon">Yakında</span>
+                        <span class="acc-badge rec">İndir</span>
                         <div class="acc-arrow">▼</div>
                     </div>
                 </button>
                 <div class="acc-content">
                     <div class="acc-body-inner">
                         <ul class="bullets-list">
-                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> PojavLauncher & GeyserMC özel KünefeSMP entegrasyonu</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Dokunmatik ekran kontrolleri ve otomatik sunucu girişi</li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Künefe Launcher • Android 8.0 ve üzeri</li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Fabric 1.21.1 + gerekli modlar otomatik kurulur</li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Dokunmatik kontroller ve otomatik sunucu girişi</li>
                         </ul>
-                        <button class="btn-download-action btn-disabled" disabled>
-                            ⏳ YAKINDA YAYINLANACAK (GOOGLE PLAY)
-                        </button>
+                        <a href="/kunefe-android.apk" download="KunefeLauncher.apk" class="btn-download-action">
+                            <svg width="18" height="18" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                            ANDROID İÇİN İNDİR (.APK)
+                        </a>
+                        <div class="file-meta">📦 ~60 MB • ARM64 • Bilinmeyen kaynaklara izin vermeniz gerekir</div>
                     </div>
                 </div>
             </div>
