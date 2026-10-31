@@ -1,0 +1,233 @@
+# ==============================================================================
+#                       KÜNEFESMP - KÜNEFEBOT AYARLARI
+# ==============================================================================
+
+# Mesajların başında görünecek ön ek (prefix)
+prefix: "&6&l[KünefeBot]&r "
+
+# Oyuncuların soru sorma aralığı (saniye cinsinden cooldown)
+cooldown-seconds: 3
+
+# Cevap geldiğinde ses çalsın mı?
+play-sound: true
+sound-name: "ENTITY_EXPERIENCE_ORB_PICKUP"
+sound-volume: 1.0
+sound-pitch: 1.4
+
+# ==============================================================================
+#                              YAPAY ZEKA (AI) AYARLARI
+# ==============================================================================
+ai:
+  enabled: true
+  provider: "gemini"
+  gemini:
+    api-key: ""
+    model: "gemini-1.5-flash"
+  openai:
+    api-key: ""
+    model: "gpt-4o-mini"
+    endpoint: "https://api.openai.com/v1/chat/completions"
+  timeout-seconds: 6
+  system-prompt: |
+    Sen KünefeSMP adındaki Minecraft hayatta kalma (Survival/SMP) sunucusunun akıllı, eğlenceli ve yardımsever oyun içi botu 'KünefeBot'sun.
+    Sunucumuzda Windows/Linux/macOS/Android için KunefeLauncher, 103 Fabric modu + 13 shader, /sat, /shop, /ah, /order, /kp_ana_menu, /kp_spawner, /ev, /sethome, /isinlan, /ayarlar, /rutbeler, /kit, /tamir, /masa, /besle, /ec mevcuttur.
+    Oyuncuların sorularını Türkçe, çok kısa (en fazla 2 kısa cümle), samimi ve renkli Minecraft renk kodları (&6, &e, &a, &b, &f, &7 vb.) ile yanıtla.
+
+# ==============================================================================
+#                               MESAJLAR
+# ==============================================================================
+messages:
+  cooldown: "&cTekrar soru sormadan önce &e{seconds} &csaniye beklemelisin!"
+  no-permission: "&cBu komutu kullanmak için yetkin yok!"
+  thinking: "&eSorunun cevabını düşünüyorum... &7(Lütfen bekle)"
+  unknown-fallback: "&cÜzgünüm, bu soru için doğrudan bir yanıt bulamadım! &7Sorunu başka kelimelerle sorabilir veya &e/yardim &7yazabilirsin. Yetkili desteği için: &b/discord"
+  reload-success: "&aKünefeBot ayarları ve soru-cevap veritabanı başarıyla yenilendi!"
+
+# ==============================================================================
+#                    AKILLI YEREL SORU-CEVAP BANKASI (FAQ)
+# ==============================================================================
+faq:
+
+  launcher_genel:
+    keywords: ["launcher", "kunefelauncher", "nereden indirilir", "nereden yuklenir", "indirme linki", "oyunu nasil yuklerim", "launcher nasil kurulur", "nasil indirilir"]
+    response: "&7KunefeLauncher'ı sitemizden indirebilirsin: &bhttps://kunefesmp.com &7(Windows, Linux AppImage, macOS ve Android sürümleri mevcuttur!)"
+
+  launcher_windows:
+    keywords: ["windows launcher", "exe", "windows indir", "kunefelauncher4.7", "bilgisayara yukle", "pc indir", "pc yukle"]
+    response: "&7Windows için en güncel &6KunefeLauncher 4.7 &7sürümünü sitemizden veya &bhttps://kunefesmp.com/downloads/KunefeLauncher4.7.exe &7adresinden indirebilirsin!"
+
+  launcher_linux:
+    keywords: ["linux", "appimage", "ubuntu", "flatpak", "linux launcher", "linux nasil acilir"]
+    response: "&7Linux için AppImage sürümümüz hazır! İndirdikten sonra terminalde &echmod +x KunefeLauncher.AppImage &7yapıp &e./KunefeLauncher.AppImage &7ile çalıştırabilirsin."
+
+  launcher_macos:
+    keywords: ["mac", "macos", "dmg", "apple", "mac launcher", "mac nasil yuklenir", "gelistirici dogrulanamadi"]
+    response: "&7macOS için &eKunefeLauncher.dmg &7indirilebilir! Açılışta uyarı verirse: &eSistem Ayarları -> Gizlilik ve Güvenlik -> 'Yine de Aç' &7seçeneğini kullan."
+
+  launcher_android:
+    keywords: ["android", "apk", "telefon", "tablet", "mobil launcher", "android indir", "mobil indir", "android yukle", "mobilden oyna"]
+    response: "&7Android için optimize edilmiş &6kunefe-android.apk &7canlıda! İndirme linki: &bhttps://kunefesmp.com/kunefe-android.apk &7(İçinde 65 optimize mod hazır gelir!)"
+
+  bedrock_baglanti:
+    keywords: ["bedrock", "pe", "pocket edition", "telefondan giris", "bedrock ip", "port", "bedrock port", "geyser", "telefondan nasil girerim"]
+    response: "&7Bedrock ile sunucuya katılmak için IP: &eoyna.kunefesmp.com.tr &7| Port: &e19132 &7(Geyser altyapımızla orijinal ve crackli Bedrock desteklenir!)"
+
+  sunucu_ip:
+    keywords: ["ip", "sunucu adresi", "ip nedir", "server ip", "port ne", "nasil katilirim", "baglanti adresi"]
+    response: "&7Sunucu Giriş IP: &eoyna.kunefesmp.com.tr &7(Java Port: &e25565&7, Bedrock Port: &e19132&7)"
+
+  mod_yoneticisi:
+    keywords: ["mod", "modlar", "mod yoneticisi", "hangi modlar var", "fps modlari", "pvp modlari", "sodium", "iris", "shader", "litematica"]
+    response: "&7Launcher'ımızda 103 Fabric modu ve 13 Shader paketi yüklü gelir! Launcher açılışındaki &e'Mod Yöneticisi' &7butonundan istediğin modları kolayca açıp kapatabilirsin."
+
+  sesli_sohbet:
+    keywords: ["sesli sohbet", "voice chat", "mikrofon", "konusma", "voice", "ses nasil acilir", "ses ayari", "v tusu"]
+    response: "&7Sunucumuzda Simple Voice Chat etkindir! Oyunda &eV tuşuna &7basarak ses ayarlarını açabilir, yakındaki oyuncularla sesli konuşabilirsin."
+
+  kayit:
+    keywords: ["kayit", "register", "nasil kayit olunur", "hesap acma", "sifre koyma", "kayit ol"]
+    response: "&7Sunucuya ilk kez giriyorsan &a/kayit <şifren> <şifren-tekrar> &7yazarak hesabını oluşturabilirsin."
+
+  giris:
+    keywords: ["giris", "login", "nasil giris yapilir", "oturum ac", "sifre girme", "giris yap"]
+    response: "&7Giriş yapmak için &a/giris <şifren> &7yazmalısın. Şifreni unuttuysan Discord destek talebi açabilirsin: &b/discord"
+
+  ayarlar:
+    keywords: ["ayarlar", "ayar", "ayarlar menusu", "istek kapat", "ozel mesaj kapat", "sohbet kapat", "otomatik kabul"]
+    response: "&7Özel ayarlar panelini açmak için &e/ayarlar &7yaz! Buradan ışınlanma isteklerini engelleme/otomatik kabul etme, PM ve sohbet ayarlarını değiştirebilirsin."
+
+  market:
+    keywords: ["market", "shop", "magaza", "alisveris", "market nasil acilir", "markete git", "market ac"]
+    response: "&7Oyun içi markete &e/shop &7yazarak ulaşabilirsin! Bloklar, yiyecekler, iksirler ve cevherler burada bulunur. Oyuncu pazarı için: &e/ah"
+
+  sat:
+    keywords: ["sat", "sell", "esya sat", "nasil satilir", "para kazanma", "para nasil kazanilir", "maden satma", "tarim satma"]
+    response: "&7Envanterindeki veya elindeki eşyaları satıp para kazanmak için &e/sat &7yaz! 1300'den fazla eşya desteklenir."
+
+  ah:
+    keywords: ["ah", "ihale", "acik artirma", "oyuncu pazari", "pazar", "esya satisa koy", "ah sell"]
+    response: "&7Oyuncu pazarına bakmak için &e/ah &7yazabilirsin. Eline eşyayı alıp &e/ah sell <fiyat> &7yazarak kendi ürününü satışa koyabilirsin!"
+
+  order:
+    keywords: ["order", "siparis", "esya siparisi", "siparis ver", "siparis al"]
+    response: "&7İhtiyacın olan eşyayı diğer oyunculardan sipariş etmek veya siparişleri teslim edip para kazanmak için &e/order &7yazabilirsin!"
+
+  para:
+    keywords: ["para", "bakiye", "money", "bal", "cuzdan", "param ne kadar", "para gonder", "pay"]
+    response: "&7Bakiyeni öğrenmek için &e/money &7veya &e/bal &7yazabilirsin. Başka birine para göndermek için: &e/pay <oyuncu> <miktar>"
+
+  siralama:
+    keywords: ["siralama", "leaderboard", "en zengin", "top para", "top oldurme", "top kp", "en cok olduren"]
+    response: "&7Sunucu sıralamalarına bakmak için &e/siralama &7(veya &e/siralama para&7, &e/siralama oldurme&7, &e/siralama kp&7) yazabilirsin!"
+
+  kp_nedir:
+    keywords: ["kp", "kunefe puani", "playerpoints", "kp nedir", "kp nasil kazanilir", "puan", "kp bakiyesi"]
+    response: "&7Künefe Puanı (KP), sunucu sitemizden veya özel etkinliklerden kazanılan değerli para birimidir! Harcamak için: &e/kp_ana_menu"
+
+  kp_menu:
+    keywords: ["kp menu", "kp_ana_menu", "kp market", "ozel pvp", "ozel iksir", "kp esyalari"]
+    response: "&7KP ile özel eşyalar, iksirler ve madenler almak için &e/kp_ana_menu &7yazabilirsin!"
+
+  spawner:
+    keywords: ["spawner", "kp_spawner", "zombi spawner", "iskelet spawner", "golem spawner", "spawner nasil alinir", "spawner market"]
+    response: "&7Spawner marketini açmak için &e/kp_spawner &7yaz! KP karşılığında Zombi, İskelet ve Demir Golem spawnerı satın alabilirsin."
+
+  ozel_yiyecekler:
+    keywords: ["kunefeal", "patatesal", "porsiyonkunefe", "porsiyonpatates", "kunefe nasil alinir", "patates", "porsiyon"]
+    response: "&7Sunucumuzun meşhur lezzetleri için &e/kunefeal&7, &e/patatesal&7, &e/porsiyonkunefeal &7veya &e/porsiyonpatatesal &7komutlarını kullanabilirsin!"
+
+  rutbeler:
+    keywords: ["rutbeler", "rutbe", "rank", "rutbe atla", "rutbe secim", "rutbeler menusu"]
+    response: "&7Rütbe seçim menüsünü açmak ve yeni rütbeleri incelemek için &e/rutbeler &7yazabilirsin!"
+
+  rutbekitleri:
+    keywords: ["rutbekitleri", "rutbe kiti", "rank kit"]
+    response: "&7Sahip olduğun rütbenin kitini almak için &e/rutbekitleri &7yazabilirsin!"
+
+  kit:
+    keywords: ["kit", "kitler", "hediye", "baslangic kiti", "starter", "gunluk kit", "kunefekit"]
+    response: "&7Mevcut kitleri görmek ve almak için &e/kit &7yazabilirsin (Künefe kiti, Patates kiti vb. seni bekliyor)!"
+
+  home:
+    keywords: ["home", "ev", "ev kaydet", "sethome", "eve git", "evime nasil giderim", "evler"]
+    response: "&7Ev listeni açmak için &e/ev&7, bulunduğun yeri kaydetmek için &e/sethome <isim> &7(veya &e/ev kaydet <isim>&7) yazabilirsin. Maksimum 10 ev kaydedebilirsin!"
+
+  ev_sil:
+    keywords: ["ev sil", "delsome", "home sil", "ev silme"]
+    response: "&7Kaydettiğin bir evi silmek için menüden seçebilir veya &e/ev sil <isim> &7yazabilirsin."
+
+  isinlanma:
+    keywords: ["tpa", "isinlan", "isinlanma", "arkadasima git", "tpakabul", "isinlankabul", "isinlanreddet"]
+    response: "&7Bir oyuncuya ışınlanma isteği yollamak için &e/isinlan <oyuncu> &7(veya &e/tpa <oyuncu>&7). Kabul için &e/isinlankabul&7, ret için &e/isinlanreddet&7."
+
+  spawn:
+    keywords: ["spawn", "baslangic", "merkez", "lobi", "spawna git"]
+    response: "&7Sunucu merkezine ve başlangıç alanına dönmek için &e/spawn &7yazabilirsin."
+
+  rtp:
+    keywords: ["rtp", "rastgele", "wild", "vahsi doga", "haritaya git", "bos alan", "uzaga git"]
+    response: "&7Haritada güvenli, rastgele bir noktaya anında ışınlanmak için &e/rtp &7yazabilirsin!"
+
+  besle:
+    keywords: ["besle", "feed", "aclik", "karnimi doyur"]
+    response: "&7Açlığını anında tamamen doldurmak için &e/besle &7(veya &e/feed&7) yazabilirsin (VIP özellik)."
+
+  ec:
+    keywords: ["ec", "ender", "enderchest", "endersandigi", "sandik ac"]
+    response: "&7Ender sandığını her yerden açmak için &e/ec &7(veya &e/enderchest&7) komutunu kullanabilirsin (VIP özellik)."
+
+  masa:
+    keywords: ["masa", "craft", "workbench", "calisma masasi", "crafting masasi"]
+    response: "&7Çalışma masasını yanında masa olmadan her yerden açmak için &e/masa &7veya &e/craft &7yazabilirsin!"
+
+  tamir:
+    keywords: ["tamir", "fix", "repair", "kilic tamir", "esya tamir", "tamir et"]
+    response: "&7Elindeki eşyanın canını yenilemek için &e/tamir &7(veya &e/fix&7) komutunu kullanabilirsin (VIP yetkisi gerekir)."
+
+  phead:
+    keywords: ["phead", "kafa", "playerhead", "oyuncu kafasi"]
+    response: "&7Bir oyuncunun kafasını almak için &e/phead <oyuncu> &7komutunu kullanabilirsin (Yetkili/VIP özellik)."
+
+  skin:
+    keywords: ["skin", "kostum", "gorunus", "skin degistir", "skin sec"]
+    response: "&7Karakter görünüşünü değiştirmek için &e/skin <isim> &7yazabilirsin!"
+
+  team:
+    keywords: ["takim", "klan", "team", "lonca", "birlik", "takim kur", "takim davet"]
+    response: "&7Takım kurmak için &e/team kur <isim>&7, arkadaşını davet etmek için &e/team davet <oyuncu>&7, takımdan ayrılmak için &e/team ayril &7yazabilirsin!"
+
+  claim:
+    keywords: ["claim", "arazi", "koruma", "alan koruma", "arsa", "calinmasin", "evimi koru", "altin kurek"]
+    response: "&7Arsanı korumak için eline altın kürek alıp iki çapraz köşeye sağ tıklayarak claim atabilirsin! Detaylı rehber: &e/claimbilgi"
+
+  site:
+    keywords: ["site", "vip", "web", "magaza linki", "tebex", "satin al", "vip paketleri", "fiyatlar"]
+    response: "&7Resmi web sitemiz ve sunucu mağazası için: &bhttps://kunefesmp.com &7(VIP ve KP paketlerini buradan güvenle satın alabilirsin!)"
+
+  sepet_odeme:
+    keywords: ["sepet", "odeme", "tl ile ode", "havale", "eft", "odeme bildirimi", "iban", "tebex odeme"]
+    response: "&7Sitemizde sepete ürün ekledikten sonra Tebex ile veya 'TL / Havale ile Öde' seçeneğiyle sipariş verebilirsin. Ödeme bildirimin yetkililere anında iletilir!"
+
+  discord:
+    keywords: ["discord", "dc", "topluluk", "destek talebi", "ticket", "discord link"]
+    response: "&7Resmi Discord topluluğumuza katılmak için &b/discord &7yazabilirsin. Çekilişler ve duyurular orada yapılır!"
+
+  yetkili:
+    keywords: ["yetkili", "admin", "destek", "rapor", "sikayet", "yardim lazim", "moderator", "operator"]
+    response: "&7Bir oyuncuyu veya kural ihlalini bildirmek için &e/rapor <oyuncu> <sebep> &7kullanabilir veya Discord'dan bilet açabilirsin!"
+
+  kurallar:
+    keywords: ["kural", "kurallar", "yasak", "ban", "hile", "kufur", "dolandiricilik"]
+    response: "&7Sunucu kurallarını görmek için &e/kurallar &7yaz! Hile, küfür, argo, dolandırıcılık ve bug suistimali kesinlikle yasaktır."
+
+  pvp:
+    keywords: ["pvp", "savas", "duello", "duel", "dovus"]
+    response: "&7PvP açık alanlarda dikkatli ol! Başka bir oyuncuya düello teklif etmek için &e/duel <oyuncu> &7yazabilirsin."
+
+  bot_kim:
+    keywords: ["kimsin", "sen kimsin", "kunefebot", "kbot", "nesin", "bot musun"]
+    response: "&6Ben KünefeSMP sunucusunun akıllı yardımcı botuyum! &7Sunucu, komutlar, launcher veya oyunla ilgili her şeyi bana &e/kunefebot <sorun> &7ile sorabilirsin."
+
+  selam:
+    keywords: ["merhaba", "selam", "selamun aleykum", "sa", "as", "nasilsin", "naber", "gunaydin", "iyi gunler"]
+    response: "&6Aleyküm selam / Merhaba! &7KünefeSMP dünyasına hoş geldin! Aklına takılan her şeyi bana &e/kunefebot <sorun> &7yazarak danışabilirsin."

@@ -1,0 +1,23 @@
+name: KunefeBot
+version: 1.0.0
+main: com.kunefesmp.bot.KunefeBot
+api-version: '1.21'
+authors: [KunefeSMP]
+description: KünefeSMP Akıllı Soru-Cevap & AI Yardımcı Botu
+
+commands:
+  kunefebot:
+    description: KünefeBot'a soru sor veya bilgi al.
+    usage: /kunefebot <sorun>
+    aliases: [kbot, bot, sor]
+
+permissions:
+  kunefebot.use:
+    description: KünefeBot komutunu kullanma izni
+    default: true
+  kunefebot.admin:
+    description: KünefeBot yönetici komutları (/kunefebot reload)
+    default: op
+  kunefebot.bypass:
+    description: Soru sorma bekleme süresini (cooldown) atlar
+    default: op
