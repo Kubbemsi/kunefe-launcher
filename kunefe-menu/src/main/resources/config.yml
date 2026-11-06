@@ -1,0 +1,432 @@
+# ==============================================================================
+#                      KÜNEFESMP - KÜNEFEMENU YAPILANDIRMASI
+# ==============================================================================
+
+menus:
+  main:
+    title: "&8» &6&lKÜNEFESMP &8| &eSunucu Menüsü"
+    size: 54
+    open-sound: "BLOCK_CHEST_OPEN 0.8 1.0"
+    items:
+
+      # ========================================================================
+      #                              DEKORATİF ÇERÇEVELER
+      # ========================================================================
+      ust_cerceve:
+        material: ORANGE_STAINED_GLASS_PANE
+        slots: [1, 2, 3, 5, 6, 7]
+        name: " "
+        lore: []
+        actions: []
+
+      arka_plan:
+        material: GRAY_STAINED_GLASS_PANE
+        slots: [9, 11, 13, 15, 17, 18, 20, 22, 24, 26, 27, 29, 31, 33, 35, 36, 38, 40, 42, 44, 45, 47, 51, 53]
+        name: " "
+        lore: []
+        actions: []
+
+      # ========================================================================
+      #                       ÜST SIRA: PROFİL VE BAĞLANTILAR
+      # ========================================================================
+      magaza:
+        material: EMERALD
+        slot: 0
+        glow: true
+        name: "&a&lKÜNEFESMP MAĞAZA &8(&fkunefesmp.com&8)"
+        lore:
+          - "&7VIP paketleri, Künefe Puanı (KP)"
+          - "&7ve özel hediyeleri web sitemizden"
+          - "&7güvenle satın alabilirsin."
+          - ""
+          - "&f💳 Ödeme: &eKredi Kartı / Havale / EFT / Tebex"
+          - ""
+          - "&a▶ Sitemizi açmak için tıkla!"
+        actions:
+          - "[url] https://kunefesmp.com"
+
+      profil:
+        material: PLAYER_HEAD
+        slot: 4
+        skull-owner: "%player%"
+        name: "&6&l%player% &e&lProfili"
+        lore:
+          - "&7Hoş geldin, &f%player%&7!"
+          - "&e─────────────────────────────"
+          - "&f• Rütbe: &e%rank%"
+          - "&f• Bakiye: &a%balance% ₺"
+          - "&f• Künefe Puanı (KP): &b%points% KP"
+          - "&f• Çevrimiçi Oyuncular: &a%online%&7/&c%max_players%"
+          - "&f• Gecikme (Ping): &a%ping% ms"
+          - "&f• Bulunduğun Dünya: &b%world%"
+          - "&e─────────────────────────────"
+          - "&7KünefeSMP dünyasında iyi eğlenceler dileriz!"
+        actions:
+          - "[sound] ENTITY_EXPERIENCE_ORB_PICKUP 1.0 1.5"
+
+      discord:
+        material: AMETHYST_SHARD
+        slot: 8
+        glow: true
+        name: "&9&lDISCORD TOPLULUĞUMUZ"
+        lore:
+          - "&7Resmi Discord sunucumuza katılarak"
+          - "&7günlük çekilişlere, duyurulara ve"
+          - "&7etkinliklere katılabilirsin!"
+          - ""
+          - "&f🎫 Destek talepleri ve biletler burada!"
+          - ""
+          - "&9▶ Discord bağlantısını almak için tıkla!"
+        actions:
+          - "[url] https://discord.gg/kunefesmp"
+          - "[player] discord"
+
+      # ========================================================================
+      #                   1. SIRA: DÜNYALAR VE IŞINLANMA
+      # ========================================================================
+      spawn:
+        material: COMPASS
+        slot: 10
+        glow: true
+        name: "&e&lSPAWN (BAŞLANGIÇ MERKEZİ)"
+        lore:
+          - "&7Sunucumuzun ana merkezine ve"
+          - "&7güvenli başlangıç alanına ışınlan."
+          - ""
+          - "&f• NPC Marketler ve Bilgilendirmeler"
+          - "&f• Güvenli takas ve toplanma noktası"
+          - ""
+          - "&e▶ Işınlanmak için tıkla!"
+        actions:
+          - "[player] spawn"
+          - "[sound] ENTITY_ENDERMAN_TELEPORT 1.0 1.2"
+
+      rtp:
+        material: ENDER_PEARL
+        slot: 12
+        name: "&a&lVAHŞİ DOĞA (RTP)"
+        lore:
+          - "&7Hayatta kalma dünyasında keşfedilmemiş,"
+          - "&7güvenli ve rastgele bir konuma ışınlan."
+          - ""
+          - "&f• Kendi evini kur, maden ve kaynak topla"
+          - "&f• Arkadaşlarınla güvenli üs inşa et"
+          - ""
+          - "&a▶ Rastgele ışınlanmak için tıkla!"
+        actions:
+          - "[player] rtp"
+          - "[sound] ENTITY_ENDERMAN_TELEPORT 1.0 1.0"
+
+      arena:
+        material: DIAMOND_SWORD
+        slot: 14
+        name: "&c&lSAVAŞ ARENASI (PVP)"
+        lore:
+          - "&7Diğer savaşçılarla kozlarını paylaşabileceğin"
+          - "&7gladyatör arenasına ışınlan."
+          - ""
+          - "&c⚠ DİKKAT: Burada eşya düşmesi aktiftir!"
+          - ""
+          - "&c▶ Arenaya ışınlanmak için tıkla!"
+        actions:
+          - "[player] warp arena"
+          - "[sound] ITEM_ARMOR_EQUIP_DIAMOND 1.0 1.0"
+
+      parkur:
+        material: SLIME_BLOCK
+        slot: 16
+        name: "&b&lPARKUR ALANI"
+        lore:
+          - "&7Zorlu blok atlayışları ve parkur"
+          - "&7etaplarını tamamlayarak ödüller kazan!"
+          - ""
+          - "&f• Farklı zorluk seviyeleri"
+          - "&f• Liderlik tablosu ve eğlence"
+          - ""
+          - "&b▶ Parkura ışınlanmak için tıkla!"
+        actions:
+          - "[player] warp parkur"
+          - "[sound] ENTITY_SLIME_JUMP 1.0 1.2"
+
+      # ========================================================================
+      #                   2. SIRA: EKONOMİ VE TİCARET
+      # ========================================================================
+      market:
+        material: CHEST
+        slot: 19
+        glow: true
+        name: "&6&lSUNUCU MARKETİ"
+        lore:
+          - "&7Bloklar, madenler, tarım ürünleri ve"
+          - "&7tüm inşaat malzemelerini satın al."
+          - ""
+          - "&f• Zengin ürün yelpazesi"
+          - "&f• 7/24 alışveriş imkanı"
+          - ""
+          - "&6▶ Marketi açmak için tıkla!"
+        actions:
+          - "[player] shop"
+          - "[sound] BLOCK_CHEST_OPEN 1.0 1.0"
+
+      sat:
+        material: SUNFLOWER
+        slot: 21
+        glow: true
+        name: "&e&lHIZLI EŞYA SAT (/sat)"
+        lore:
+          - "&7Envanterindeki veya elindeki ürünleri"
+          - "&7anında satarak oyun içi para (₺) kazan."
+          - ""
+          - "&f• 1300+ eşya desteği"
+          - "&f• Maden, tarım ve canavar ganimetleri"
+          - ""
+          - "&e▶ Satış menüsünü açmak için tıkla!"
+        actions:
+          - "[player] sat"
+          - "[sound] ENTITY_EXPERIENCE_ORB_PICKUP 1.0 1.5"
+
+      ah:
+        material: GOLDEN_CARROT
+        slot: 23
+        name: "&d&lOYUNCU PAZARI (AH)"
+        lore:
+          - "&7Diğer oyuncuların satışa koyduğu eşyaları"
+          - "&7incele veya elindeki nadir eşyaları sat!"
+          - ""
+          - "&f• Satış komutu: &e/ah sell <fiyat>"
+          - "&f• Güvenli oyuncular arası pazar"
+          - ""
+          - "&d▶ Pazarı açmak için tıkla!"
+        actions:
+          - "[player] ah"
+          - "[sound] BLOCK_NOTE_BLOCK_PLING 1.0 1.4"
+
+      order:
+        material: WRITABLE_BOOK
+        slot: 25
+        name: "&3&lOYUNCU SİPARİŞLERİ (ORDER)"
+        lore:
+          - "&7İhtiyacın olan eşyayı oyunculara sipariş et"
+          - "&7veya verilen siparişleri teslim ederek para kazan!"
+          - ""
+          - "&f• Komut: &e/order"
+          - "&f• Otomatik teslimat ve ödül sistemi"
+          - ""
+          - "&3▶ Siparişleri görmek için tıkla!"
+        actions:
+          - "[player] order"
+          - "[sound] ITEM_BOOK_PAGE_TURN 1.0 1.0"
+
+      # ========================================================================
+      #                   3. SIRA: ÖZEL SİSTEMLER VE GELİŞİM
+      # ========================================================================
+      kp_magaza:
+        material: NETHER_STAR
+        slot: 28
+        glow: true
+        name: "&b&lKP ÖZEL MAĞAZASI"
+        lore:
+          - "&7Künefe Puanlarınla (KP) özel zırhlar,"
+          - "&7nadir iksirler ve efsanevi eşyalar al!"
+          - ""
+          - "&fMevcut KP Bakiyen: &b%points% KP"
+          - ""
+          - "&b▶ KP Mağazasını açmak için tıkla!"
+        actions:
+          - "[player] kp_ana_menu"
+          - "[sound] ENTITY_PLAYER_LEVELUP 1.0 1.5"
+
+      rutbeler:
+        material: NETHERITE_UPGRADE_SMITHING_TEMPLATE
+        slot: 30
+        glow: true
+        name: "&6&lRÜTBELER & YÜKSELME"
+        lore:
+          - "&7Görevleri tamamla, rütbe atla ve"
+          - "&7yeni yetkilerin, kitlerin kilidini aç!"
+          - ""
+          - "&fŞu anki Rütben: &e%rank%"
+          - ""
+          - "&6▶ Rütbeleri incelemek için tıkla!"
+        actions:
+          - "[player] rutbeler"
+          - "[sound] BLOCK_ANVIL_USE 0.8 1.2"
+
+      kitler:
+        material: BUNDLE
+        slot: 32
+        glow: true
+        name: "&a&lKİTLER & ÖDÜLLER"
+        lore:
+          - "&7Başlangıç kiti, günlük hediyeler ve"
+          - "&7rütbene özel eşya paketlerini teslim al."
+          - ""
+          - "&f• Komutlar: &e/kit &7veya &e/rutbekitleri"
+          - ""
+          - "&a▶ Kit menüsünü açmak için tıkla!"
+        actions:
+          - "[player] kit"
+          - "[sound] BLOCK_CHEST_OPEN 1.0 1.2"
+
+      siralamalar:
+        material: GOLDEN_HELMET
+        slot: 34
+        name: "&e&lSUNUCU SIRALAMALARI"
+        lore:
+          - "&7Sunucunun en zenginleri, en çok adam öldürenleri"
+          - "&7ve en yüksek KP sahiplerini gör!"
+          - ""
+          - "&f• Bakiye, Öldürme ve KP Tabloları"
+          - ""
+          - "&e▶ Sıralamaları görmek için tıkla!"
+        actions:
+          - "[player] siralama"
+          - "[sound] UI_TOAST_CHALLENGE_COMPLETE 0.8 1.2"
+
+      # ========================================================================
+      #                   4. SIRA: KİŞİSEL ÖZELLİKLER VE GÜVENLİK
+      # ========================================================================
+      evlerim:
+        material: RED_BED
+        slot: 37
+        name: "&c&lEVLERİM & IŞINLANMA"
+        lore:
+          - "&7Kaydettiğin evlerin listesini aç ve"
+          - "&7tek tıkla üssüne ışınlan!"
+          - ""
+          - "&f• Yeni ev kaydet: &e/sethome <isim>"
+          - "&f• Maksimum 10 ev kaydedebilirsin!"
+          - ""
+          - "&c▶ Ev menüsünü açmak için tıkla!"
+        actions:
+          - "[player] ev"
+          - "[sound] BLOCK_WOODEN_DOOR_OPEN 1.0 1.0"
+
+      takimlar:
+        material: SHIELD
+        slot: 39
+        name: "&3&lTAKIMLAR & KLANLAR (TEAM)"
+        lore:
+          - "&7Arkadaşlarınla takım kur, ortak klan"
+          - "&7kasası oluştur ve birlikte büyü!"
+          - ""
+          - "&f• Takım kur: &e/team kur <isim>"
+          - "&f• Davet et: &e/team davet <oyuncu>"
+          - ""
+          - "&3▶ Takım komutlarını açmak için tıkla!"
+        actions:
+          - "[player] team"
+          - "[sound] ITEM_ARMOR_EQUIP_IRON 1.0 1.0"
+
+      claim:
+        material: GOLDEN_SHOVEL
+        slot: 41
+        glow: true
+        name: "&6&lARAZİ KORUMA (CLAIM SİSTEMİ)"
+        lore:
+          - "&7Yapılarını ve sandıklarını korumak için"
+          - "&7altın kürek ile alanını claimle!"
+          - ""
+          - "&f• Eline altın kürek al ve iki çapraz köşeye sağ tıkla"
+          - "&f• Claimli alanda başkaları blok kıramaz ve sandık açamaz!"
+          - ""
+          - "&6▶ Claim rehberi mesajını almak için tıkla!"
+        actions:
+          - "[player] claimbilgi"
+          - "[sound] ITEM_ARMOR_EQUIP_GOLD 1.0 1.0"
+
+      ayarlar:
+        material: COMPARATOR
+        slot: 43
+        name: "&7&lKİŞİSEL OYUN AYARLARI"
+        lore:
+          - "&7Işınlanma isteklerini engelleme/kabul etme,"
+          - "&7özel mesaj ve sohbet tercihlerini özelleştir."
+          - ""
+          - "&f• Komut: &e/ayarlar"
+          - ""
+          - "&7▶ Ayarlar panelini açmak için tıkla!"
+        actions:
+          - "[player] ayarlar"
+          - "[sound] BLOCK_LEVER_CLICK 1.0 1.4"
+
+      # ========================================================================
+      #                   5. SIRA: DESTEK, LAUNCHER VE BİLGİ
+      # ========================================================================
+      kunefebot:
+        material: BEACON
+        slot: 46
+        glow: true
+        name: "&e&lKÜNEFEBOT (YAPAY ZEKA DESTEK)"
+        lore:
+          - "&7Sunucu, modlar veya komutlarla ilgili bir"
+          - "&7sorun mu var? KünefeBot 7/24 yanında!"
+          - ""
+          - "&f• Kullanım: &e/kunefebot <sorun>"
+          - "&f• Örnek: &7/kunefebot market nasıl açılır?"
+          - ""
+          - "&e▶ Sohbet rehberini açmak için tıkla!"
+        actions:
+          - "[close]"
+          - "[message] &6&l[KünefeBot]&r &eAklına takılan her şeyi bana sormak için: &b/kunefebot <sorun>"
+          - "[sound] ENTITY_EXPERIENCE_ORB_PICKUP 1.0 1.4"
+
+      launcher:
+        material: FIREWORK_ROCKET
+        slot: 48
+        glow: true
+        name: "&d&lKUNEFELAUNCHER 4.7 & MODLAR"
+        lore:
+          - "&7En yüksek FPS ve en iyi grafikler!"
+          - "&7103 Fabric modu ve 13 Shader hazır gelir."
+          - ""
+          - "&f• Windows, macOS, Linux (AppImage) ve Android"
+          - "&f• Otomatik güncelleme ve mod yöneticisi"
+          - ""
+          - "&d▶ İndirme bağlantısını almak için tıkla!"
+        actions:
+          - "[url] https://kunefesmp.com/downloads/KunefeLauncher4.7.exe"
+
+      kapat:
+        material: BARRIER
+        slot: 49
+        name: "&c&lMENÜYÜ KAPAT"
+        lore:
+          - "&7Bu pencereyi kapatır."
+        actions:
+          - "[close]"
+          - "[sound] BLOCK_IRON_DOOR_CLOSE 1.0 1.0"
+
+      kurallar:
+        material: BOOK
+        slot: 50
+        name: "&f&lSUNUCU KURALLARI"
+        lore:
+          - "&7Adil, keyifli ve saygılı bir oyun deneyimi"
+          - "&7için geçerli olan temel kurallar."
+          - ""
+          - "&c• Hile ve makro kesinlikle yasaktır"
+          - "&c• Küfür, hakaret ve argo yasaktır"
+          - "&c• Bug suistimali yasaktır"
+          - ""
+          - "&f▶ Kuralları okumak için tıkla!"
+        actions:
+          - "[player] kurallar"
+          - "[sound] ITEM_BOOK_PAGE_TURN 1.0 1.0"
+
+      sesli_sohbet:
+        material: JUKEBOX
+        slot: 52
+        name: "&b&lSESLİ SOHBET (VOICE CHAT)"
+        lore:
+          - "&7Oyun içinde yakındaki oyuncularla"
+          - "&7kendi sesinizle konuşun!"
+          - ""
+          - "&f• Klavye Tuşu: &e'V' tuşuna bas"
+          - "&f• Mikrofon ve grup ayarları panelde!"
+          - ""
+          - "&b▶ Bilgilendirme mesajı almak için tıkla!"
+        actions:
+          - "[close]"
+          - "[message] &6&l[Sesli Sohbet]&r &7Sunucumuzda sesli sohbet etkindir! Ayarlar ve konuşma için klavyenizden &eV tuşuna &7basın."
+          - "[sound] BLOCK_NOTE_BLOCK_CHIME 1.0 1.2"

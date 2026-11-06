@@ -1,0 +1,35 @@
+name: KunefeMenu
+version: 1.0.0
+main: com.kunefesmp.menu.KunefeMenu
+api-version: '1.21'
+author: KunefeSMP
+description: KünefeSMP Kapsamlı Sunucu Menüsü Eklentisi
+
+softdepend:
+  - PlaceholderAPI
+  - Vault
+  - PlayerPoints
+  - LuckPerms
+
+commands:
+  menu:
+    description: KünefeSMP Ana Sunucu Menüsünü açar.
+    aliases:
+      - menü
+      - sunucu
+      - sunucumenu
+      - server
+    usage: /menu
+  kunefemenu:
+    description: KunefeMenu yönetim komutu.
+    permission: kunefemenu.admin
+    permission-message: "&cBu komutu kullanmak için yetkiniz yok!"
+    usage: /kunefemenu [reload|ac|yardim]
+
+permissions:
+  kunefemenu.use:
+    description: Menüyü açma yetkisi
+    default: true
+  kunefemenu.admin:
+    description: Eklenti yönetim yetkisi
+    default: op
