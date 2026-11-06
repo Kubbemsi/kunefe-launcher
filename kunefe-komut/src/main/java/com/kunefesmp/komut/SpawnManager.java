@@ -1,12 +1,18 @@
 package com.kunefesmp.komut;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Objects;
+import java.util.*;
 
 public class SpawnManager {
     private final KunefeKomut plugin;
@@ -18,6 +24,8 @@ public class SpawnManager {
     private double minX, maxX, minY, maxY, minZ, maxZ;
     private int preferredSlot;
     private ItemStack cachedSpawnItem;
+
+    private final Map<Integer, ItemStack> spawnItems = new HashMap<>();
 
     public SpawnManager(KunefeKomut plugin, ItemDataHelper helper) {
         this.plugin = plugin;
@@ -39,12 +47,75 @@ public class SpawnManager {
         this.maxZ = config.getDouble("spawn-system.region.max-z", 710.0);
 
         this.preferredSlot = config.getInt("spawn-system.slot", 4);
+        this.spawnItems.clear();
 
+        // 1. Config'deki 'spawn-system.items' listesini yükle
+        ConfigurationSection itemsSec = config.getConfigurationSection("spawn-system.items");
+        if (itemsSec != null) {
+            for (String key : itemsSec.getKeys(false)) {
+                ConfigurationSection sec = itemsSec.getConfigurationSection(key);
+                if (sec == null) continue;
+
+                int slot = sec.getInt("slot", 0);
+                if (slot < 0 || slot > 8) continue;
+
+                String matStr = sec.getString("material", "COMPASS").toUpperCase(Locale.ROOT);
+                Material mat = Material.matchMaterial(matStr);
+                if (mat == null) mat = Material.COMPASS;
+
+                ItemStack stack = new ItemStack(mat, 1);
+                ItemMeta meta = stack.getItemMeta();
+                if (meta != null) {
+                    String name = sec.getString("name", "");
+                    if (!name.isEmpty()) {
+                        meta.setDisplayName(colorize(name));
+                    }
+                    List<String> lore = sec.getStringList("lore");
+                    if (!lore.isEmpty()) {
+                        List<String> coloredLore = new ArrayList<>();
+                        for (String l : lore) {
+                            coloredLore.add(colorize(l));
+                        }
+                        meta.setLore(coloredLore);
+                    }
+                    if (sec.getBoolean("glow", false)) {
+                        meta.addEnchant(Enchantment.UNBREAKING, 1, true);
+                        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    }
+                    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+                    stack.setItemMeta(meta);
+                }
+
+                String cmd = sec.getString("command", "");
+                boolean isConsole = sec.getBoolean("is-console", false);
+                int cooldown = sec.getInt("cooldown", 1);
+
+                if (!cmd.isEmpty()) {
+                    helper.bindCommand(stack, cmd, isConsole ? ItemDataHelper.CommandType.CONSOLE : ItemDataHelper.CommandType.PLAYER);
+                }
+                helper.setCooldown(stack, cooldown);
+                helper.markAsSpawnItem(stack, true);
+
+                this.spawnItems.put(slot, stack);
+            }
+        }
+
+        // 2. Geriye dönük uyumluluk: 'spawn-system.item' varsa ekle
         if (config.contains("spawn-system.item")) {
-            this.cachedSpawnItem = config.getItemStack("spawn-system.item");
+            ItemStack singleItem = config.getItemStack("spawn-system.item");
+            if (singleItem != null) {
+                this.cachedSpawnItem = singleItem;
+                if (!this.spawnItems.containsKey(this.preferredSlot)) {
+                    this.spawnItems.put(this.preferredSlot, singleItem);
+                }
+            }
+        } else if (!this.spawnItems.isEmpty()) {
+            this.cachedSpawnItem = this.spawnItems.values().iterator().next();
         } else {
             this.cachedSpawnItem = null;
         }
+
+        plugin.getLogger().info("Spawn eşyaları yüklendi: " + this.spawnItems.size() + " adet eşya aktif.");
     }
 
     public boolean isInSpawn(Location loc) {
@@ -60,11 +131,11 @@ public class SpawnManager {
     }
 
     public boolean hasSpawnItemConfigured() {
-        return cachedSpawnItem != null;
+        return !spawnItems.isEmpty() || cachedSpawnItem != null;
     }
 
     public ItemStack getSpawnItem() {
-        return cachedSpawnItem != null ? cachedSpawnItem.clone() : null;
+        return cachedSpawnItem != null ? cachedSpawnItem.clone() : (spawnItems.isEmpty() ? null : spawnItems.values().iterator().next().clone());
     }
 
     public int getPreferredSlot() {
@@ -78,9 +149,11 @@ public class SpawnManager {
             clone.setAmount(1);
             helper.markAsSpawnItem(clone, true);
             this.cachedSpawnItem = clone;
+            this.spawnItems.put(this.preferredSlot, clone);
             plugin.getConfig().set("spawn-system.item", clone);
         } else {
             this.cachedSpawnItem = null;
+            this.spawnItems.remove(this.preferredSlot);
             plugin.getConfig().set("spawn-system.item", null);
         }
         plugin.getConfig().set("spawn-system.slot", this.preferredSlot);
@@ -91,23 +164,58 @@ public class SpawnManager {
     }
 
     public void giveSpawnItem(Player player) {
-        if (!enabled || cachedSpawnItem == null || player == null || !player.isOnline()) return;
+        giveSpawnItems(player);
+    }
 
-        // Oyuncuda zaten spawn eşyası var mı kontrol et
-        if (hasSpawnItem(player)) return;
+    public void giveSpawnItems(Player player) {
+        if (!enabled || player == null || !player.isOnline()) return;
+        if (spawnItems.isEmpty()) return;
 
-        ItemStack item = cachedSpawnItem.clone();
-        ItemStack currentSlotItem = player.getInventory().getItem(preferredSlot);
+        for (Map.Entry<Integer, ItemStack> entry : spawnItems.entrySet()) {
+            int slot = entry.getKey();
+            ItemStack spawnItem = entry.getValue().clone();
 
-        if (currentSlotItem == null || currentSlotItem.getType().isAir()) {
-            player.getInventory().setItem(preferredSlot, item);
-        } else {
-            // Yuva doluysa envanterdeki ilk boş yere koy veya o yuvayı kaydır
-            player.getInventory().addItem(item);
+            ItemStack current = player.getInventory().getItem(slot);
+
+            // Oyuncuda zaten spawn eşyası varsa güncelle
+            if (current != null && helper.isSpawnItem(current)) {
+                player.getInventory().setItem(slot, spawnItem);
+                continue;
+            }
+
+            // Yuva doluysa ve oyuncunun kendi eşyasıysa envanterdeki boş alana taşı
+            if (current != null && !current.getType().isAir()) {
+                int emptySlot = findEmptyStorageSlot(player);
+                if (emptySlot != -1) {
+                    player.getInventory().setItem(emptySlot, current);
+                } else {
+                    HashMap<Integer, ItemStack> leftovers = player.getInventory().addItem(current);
+                    if (!leftovers.isEmpty()) {
+                        // Çanta tamamen doluysa eşyasını silme
+                        continue;
+                    }
+                }
+            }
+
+            player.getInventory().setItem(slot, spawnItem);
         }
     }
 
+    private int findEmptyStorageSlot(Player player) {
+        for (int i = 9; i < 36; i++) {
+            ItemStack it = player.getInventory().getItem(i);
+            if (it == null || it.getType().isAir()) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public void removeSpawnItem(Player player) {
+        removeSpawnItems(player);
+    }
+
+    public void removeSpawnItems(Player player) {
         if (player == null || !player.isOnline()) return;
 
         boolean removed = false;
@@ -137,10 +245,15 @@ public class SpawnManager {
     public void updateAllPlayers() {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (isInSpawn(p.getLocation())) {
-                giveSpawnItem(p);
+                giveSpawnItems(p);
             } else {
-                removeSpawnItem(p);
+                removeSpawnItems(p);
             }
         }
+    }
+
+    private String colorize(String text) {
+        if (text == null) return "";
+        return ChatColor.translateAlternateColorCodes('&', text);
     }
 }

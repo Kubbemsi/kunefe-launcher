@@ -15,7 +15,7 @@ sound-volume: 1.0
 sound-pitch: 1.2
 
 # ==============================================================================
-#                      OTOMATİK SPAWN EŞYASI & BÖLGE AYARLARI
+#                      OTOMATİK SPAWN EŞYALARI VE BÖLGE AYARLARI
 # ==============================================================================
 spawn-system:
   enabled: true
@@ -30,8 +30,116 @@ spawn-system:
     max-y: 120.0
     min-z: 400.0
     max-z: 710.0
-  # Eşyanın oyuncunun hangi hotbar yuvasına geleceği (0: 1. yuva, 4: ortadaki 5. yuva, 8: 9. yuva)
-  slot: 4
+
+  # Ana Spawnda oyunculara otomatik dağıtılacak hotbar eşyaları:
+  # (Spawna girince verilir, spawndan çıkınca çantadan otomatik silinir.
+  #  Yere atılamaz, sandığa konulamaz, ölünce düşmez!)
+  items:
+
+    # 1. Hotbar Yuvası (Slot 0): Sunucu Menüsü
+    menu:
+      slot: 0
+      material: COMPASS
+      glow: true
+      name: "&6&lSUNUCU MENÜSÜ &7(Sağ Tıkla)"
+      lore:
+        - "&7Sunucumuzdaki tüm sistemlere,"
+        - "&7warplara ve özelliklere tek tıkla ulaş!"
+        - ""
+        - "&e► Menüyü açmak için sağ tıkla!"
+      command: "menu"
+      is-console: false
+      cooldown: 1
+
+    # 2. Hotbar Yuvası (Slot 1): Vahşi Doğa (RTP)
+    rtp:
+      slot: 1
+      material: ENDER_PEARL
+      glow: false
+      name: "&a&lVAHŞİ DOĞA / RTP &7(Sağ Tıkla)"
+      lore:
+        - "&7Hayatta kalma dünyasında keşfedilmemiş"
+        - "&7rastgele bir noktaya anında ışınlan!"
+        - ""
+        - "&a► Vahşi doğaya gitmek için sağ tıkla!"
+      command: "rtp"
+      is-console: false
+      cooldown: 3
+
+    # 3. Hotbar Yuvası (Slot 2): Sunucu Marketi
+    market:
+      slot: 2
+      material: CHEST
+      glow: false
+      name: "&e&lSUNUCU MARKETİ &7(Sağ Tıkla)"
+      lore:
+        - "&7Bloklar, tarım ve maden ürünlerini"
+        - "&7satın alabileceğin marketi açar."
+        - ""
+        - "&e► Marketi açmak için sağ tıkla!"
+      command: "shop"
+      is-console: false
+      cooldown: 1
+
+    # 5. Hotbar Yuvası (Slot 4 - Ortada): Savaş Arenası
+    arena:
+      slot: 4
+      material: DIAMOND_SWORD
+      glow: true
+      name: "&c&lSAVAŞ ARENASI &7(Sağ Tıkla)"
+      lore:
+        - "&7PvP arenasına ışınlanarak diğer"
+        - "&7oyuncularla savaşa katıl!"
+        - ""
+        - "&c► Arenaya gitmek için sağ tıkla!"
+      command: "warp arena"
+      is-console: false
+      cooldown: 2
+
+    # 7. Hotbar Yuvası (Slot 6): Parkur
+    parkur:
+      slot: 6
+      material: SLIME_BLOCK
+      glow: false
+      name: "&b&lPARKUR ALANI &7(Sağ Tıkla)"
+      lore:
+        - "&7Ödüllü parkur etabına ışınlan"
+        - "&7ve yeteneklerini göster!"
+        - ""
+        - "&b► Parkura gitmek için sağ tıkla!"
+      command: "warp parkur"
+      is-console: false
+      cooldown: 2
+
+    # 8. Hotbar Yuvası (Slot 7): Discord Topluluğumuz
+    discord:
+      slot: 7
+      material: AMETHYST_SHARD
+      glow: true
+      name: "&9&lDISCORD TOPLULUĞUMUZ &7(Sağ Tıkla)"
+      lore:
+        - "&7Discord sunucumuza katıl,"
+        - "&7çekilişler ve duyurulardan haberdar ol!"
+        - ""
+        - "&9► Tıklayarak Discord bağlantısını al!"
+      command: "discord"
+      is-console: false
+      cooldown: 2
+
+    # 9. Hotbar Yuvası (Slot 8): Kişisel Ayarlar
+    ayarlar:
+      slot: 8
+      material: COMPARATOR
+      glow: false
+      name: "&7&lKİŞİSEL AYARLAR &7(Sağ Tıkla)"
+      lore:
+        - "&7Işınlanma, özel mesaj ve oyun"
+        - "&7tercihlerini özelleştir."
+        - ""
+        - "&7► Tıklayarak ayarları aç!"
+      command: "ayarlar"
+      is-console: false
+      cooldown: 1
 
 # Eşyaya komut eklendiğinde altına yazılacak açıklama biçimi
 lore-format:
@@ -56,4 +164,4 @@ messages:
   lore-cleared: "&e[✔] Eşyanın açıklamaları temizlendi."
   cooldown-wait: "&cTekrar kullanmak için lütfen &e{seconds} &csaniye bekle!"
   spawn-only-error: "&c[!] Bu eşyayı yalnızca spawn bölgesinde kullanabilirsin!"
-  reload: "&aKünefeKomut ayarları yenilendi!"
+  reload: "&aKünefeKomut ayarları ve spawn eşyaları yenilendi!"
