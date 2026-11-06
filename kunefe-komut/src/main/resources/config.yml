@@ -1,0 +1,38 @@
+# ==============================================================================
+#                       KÜNEFESMP - KÜNEFEKOMUT AYARLARI
+# ==============================================================================
+
+# Mesaj ön eki
+prefix: "&6&l[KünefeKomut]&r "
+
+# Varsayılan spam koruması (saniye cinsinden)
+cooldown-default-seconds: 1
+
+# Sağ tıklayınca ses efekti çalsın mı?
+play-sound: true
+sound-name: "UI_BUTTON_CLICK"
+sound-volume: 1.0
+sound-pitch: 1.2
+
+# Eşyaya komut eklendiğinde altına yazılacak açıklama biçimi
+lore-format:
+  player: "&7► Sağ tıklandığında: &e/{cmd}"
+  console: "&7► Sağ tıklandığında: &6/{cmd} &8(Özel)"
+  single-use: "&c⚠ Tek kullanımlıktır (Kullanılınca kaybolur)"
+  cooldown: "&8⏱ Bekleme Süresi: &7{seconds} sn"
+
+# Mesajlar
+messages:
+  no-permission: "&cBu komutu kullanmak için yetkin yok!"
+  no-item: "&c[!] Elinde herhangi bir eşya tutmuyorsun!"
+  command-added-player: "&a[✔] Eşyaya oyuncu komutu bağlandı: &e/{cmd}"
+  command-added-console: "&a[✔] Eşyaya KONSOL komutu bağlandı: &6/{cmd}"
+  command-removed: "&c[✔] Eşyadaki komut ve açıklamalar temizlendi."
+  single-use-on: "&e[✔] Eşya artık &cTEK KULLANIMLIK &e(kullanılınca silinir)."
+  single-use-off: "&e[✔] Eşya artık &aSÜREKLİ KULLANILABİLİR&e."
+  cooldown-set: "&a[✔] Eşyanın bekleme süresi &e{seconds} &asaniye olarak ayarlandı."
+  name-set: "&a[✔] Eşya ismi güncellendi!"
+  lore-added: "&a[✔] Eşyaya açıklama satırı eklendi!"
+  lore-cleared: "&e[✔] Eşyanın açıklamaları temizlendi."
+  cooldown-wait: "&cTekrar kullanmak için lütfen &e{seconds} &csaniye bekle!"
+  reload: "&aKünefeKomut ayarları yenilendi!"

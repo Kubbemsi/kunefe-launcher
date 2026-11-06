@@ -1,0 +1,21 @@
+name: KunefeKomut
+version: 1.0.0
+main: com.kunefesmp.komut.KunefeKomut
+api-version: '1.21'
+authors: [KunefeSMP]
+description: KünefeSMP Eşyaya Sağ Tıklama Komutu Bağlama Eklentisi
+
+commands:
+  kunefekomut:
+    description: Eldeki eşyaya tıklanabilir komut bağlama yöneticisi.
+    usage: /kunefekomut <ekle|konsol|tekkullanimlik|cooldown|isim|lore|sil|bilgi>
+    aliases: [esyakomut, kkomut, itemcmd]
+    permission: kunefekomut.admin
+
+permissions:
+  kunefekomut.admin:
+    description: Eşyaya komut bağlama ve düzenleme izni
+    default: op
+  kunefekomut.use:
+    description: Komutlu eşyayı sağ tıklayarak kullanma izni
+    default: true
