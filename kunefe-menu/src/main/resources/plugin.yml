@@ -20,6 +20,12 @@ commands:
       - sunucumenu
       - server
     usage: /menu
+  kurallar:
+    description: KünefeSMP Sunucu Kurallarını açar.
+    aliases:
+      - kural
+      - rules
+    usage: /kurallar
   kunefemenu:
     description: KunefeMenu yönetim komutu.
     permission: kunefemenu.admin

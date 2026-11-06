@@ -46,6 +46,12 @@ public final class KunefeMenu extends JavaPlugin {
             menuCmd.setTabCompleter(menuCommand);
         }
 
+        PluginCommand kurallarCmd = getCommand("kurallar");
+        if (kurallarCmd != null) {
+            kurallarCmd.setExecutor(menuCommand);
+            kurallarCmd.setTabCompleter(menuCommand);
+        }
+
         PluginCommand adminCmd = getCommand("kunefemenu");
         if (adminCmd != null) {
             adminCmd.setExecutor(menuCommand);

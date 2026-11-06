@@ -66,9 +66,14 @@ public class MenuCommand implements CommandExecutor, TabCompleter {
             }
         }
 
-        // Oyuncu menü açma komutu (/menu, /menü, /sunucu vb.)
+        // Oyuncu menü açma komutu (/menu, /menü, /sunucu, /kurallar vb.)
         if (!(sender instanceof Player player)) {
             sender.sendMessage(ColorUtils.colorize("&cBu komut yalnızca oyun içinden kullanılabilir! (Konsol için: /kunefemenu ac <oyuncu>)"));
+            return true;
+        }
+
+        if (cmdName.equals("kurallar") || cmdName.equals("kural") || cmdName.equals("rules")) {
+            plugin.getMenuManager().openMenu(player, "kurallar");
             return true;
         }
 

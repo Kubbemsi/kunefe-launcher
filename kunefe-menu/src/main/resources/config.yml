@@ -3,6 +3,10 @@
 # ==============================================================================
 
 menus:
+
+  # ============================================================================
+  #                               ANA MENÜ (/menu)
+  # ============================================================================
   main:
     title: "&8» &6&lKÜNEFESMP &8| &eSunucu Menüsü"
     size: 54
@@ -110,7 +114,7 @@ menus:
           - "&7güvenli ve rastgele bir konuma ışınlan."
           - ""
           - "&f• Kendi evini kur, maden ve kaynak topla"
-          - "&f• Arkadaşlarınla güvenli üs inşa et"
+          - "&f• Arkadaşlarınla üs inşa et"
           - ""
           - "&a▶ Rastgele ışınlanmak için tıkla!"
         actions:
@@ -284,18 +288,19 @@ menus:
           - "[sound] UI_TOAST_CHALLENGE_COMPLETE 0.8 1.2"
 
       # ========================================================================
-      #                   4. SIRA: KİŞİSEL ÖZELLİKLER VE GÜVENLİK
+      #                   4. SIRA: KİŞİSEL ÖZELLİKLER VE TOPLULUK
       # ========================================================================
       evlerim:
         material: RED_BED
         slot: 37
-        name: "&c&lEVLERİM & IŞINLANMA"
+        name: "&c&lEVLERİM &7(/ev)"
         lore:
           - "&7Kaydettiğin evlerin listesini aç ve"
           - "&7tek tıkla üssüne ışınlan!"
           - ""
-          - "&f• Yeni ev kaydet: &e/sethome <isim>"
-          - "&f• Maksimum 10 ev kaydedebilirsin!"
+          - "&f• Menüyü aç: &e/ev"
+          - "&f• Yeni ev ekle: &e/ev kaydet <isim>"
+          - "&f• 10 adede kadar ev kaydedebilirsin!"
           - ""
           - "&c▶ Ev menüsünü açmak için tıkla!"
         actions:
@@ -318,22 +323,22 @@ menus:
           - "[player] team"
           - "[sound] ITEM_ARMOR_EQUIP_IRON 1.0 1.0"
 
-      claim:
-        material: GOLDEN_SHOVEL
+      spawner:
+        material: SPAWNER
         slot: 41
         glow: true
-        name: "&6&lARAZİ KORUMA (CLAIM SİSTEMİ)"
+        name: "&e&lSPAWNER MARKETİ"
         lore:
-          - "&7Yapılarını ve sandıklarını korumak için"
-          - "&7altın kürek ile alanını claimle!"
+          - "&7Zombi, İskelet ve Demir Golem"
+          - "&7spawnerlarını KP karşılığında satın al!"
           - ""
-          - "&f• Eline altın kürek al ve iki çapraz köşeye sağ tıkla"
-          - "&f• Claimli alanda başkaları blok kıramaz ve sandık açamaz!"
+          - "&f• Otomatik XP ve maden çiftlikleri kur"
+          - "&f• Spawnerları üssüne yerleştir"
           - ""
-          - "&6▶ Claim rehberi mesajını almak için tıkla!"
+          - "&e▶ Spawner marketini açmak için tıkla!"
         actions:
-          - "[player] claimbilgi"
-          - "[sound] ITEM_ARMOR_EQUIP_GOLD 1.0 1.0"
+          - "[player] kp_spawner"
+          - "[sound] BLOCK_ANVIL_USE 0.8 1.4"
 
       ayarlar:
         material: COMPARATOR
@@ -351,7 +356,7 @@ menus:
           - "[sound] BLOCK_LEVER_CLICK 1.0 1.4"
 
       # ========================================================================
-      #                   5. SIRA: DESTEK, LAUNCHER VE BİLGİ
+      #                   5. SIRA: DESTEK, KURALLAR VE BİLGİ
       # ========================================================================
       kunefebot:
         material: BEACON
@@ -359,7 +364,7 @@ menus:
         glow: true
         name: "&e&lKÜNEFEBOT (YAPAY ZEKA DESTEK)"
         lore:
-          - "&7Sunucu, modlar veya komutlarla ilgili bir"
+          - "&7Sunucu veya komutlarla ilgili bir"
           - "&7sorun mu var? KünefeBot 7/24 yanında!"
           - ""
           - "&f• Kullanım: &e/kunefebot <sorun>"
@@ -371,21 +376,23 @@ menus:
           - "[message] &6&l[KünefeBot]&r &eAklına takılan her şeyi bana sormak için: &b/kunefebot <sorun>"
           - "[sound] ENTITY_EXPERIENCE_ORB_PICKUP 1.0 1.4"
 
-      launcher:
-        material: FIREWORK_ROCKET
+      skin:
+        material: NAME_TAG
         slot: 48
         glow: true
-        name: "&d&lKUNEFELAUNCHER 4.7 & MODLAR"
+        name: "&d&lKOSTÜM & SKİN DEĞİŞTİR"
         lore:
-          - "&7En yüksek FPS ve en iyi grafikler!"
-          - "&7103 Fabric modu ve 13 Shader hazır gelir."
+          - "&7Karakterinin görünüşünü anında"
+          - "&7istediğin oyuncunun skiniyle değiştir!"
           - ""
-          - "&f• Windows, macOS, Linux (AppImage) ve Android"
-          - "&f• Otomatik güncelleme ve mod yöneticisi"
+          - "&f• Komut: &e/skin <isim>"
+          - "&f• Örnek: &7/skin Technoblade"
           - ""
-          - "&d▶ İndirme bağlantısını almak için tıkla!"
+          - "&d▶ Bilgi mesajını almak için tıkla!"
         actions:
-          - "[url] https://kunefesmp.com/downloads/KunefeLauncher4.7.exe"
+          - "[close]"
+          - "[message] &6&l[Kostüm]&r &eKarakter görünüşünü değiştirmek için: &b/skin <isim>"
+          - "[sound] ITEM_ARMOR_EQUIP_LEATHER 1.0 1.2"
 
       kapat:
         material: BARRIER
@@ -400,18 +407,18 @@ menus:
       kurallar:
         material: BOOK
         slot: 50
+        glow: true
         name: "&f&lSUNUCU KURALLARI"
         lore:
           - "&7Adil, keyifli ve saygılı bir oyun deneyimi"
           - "&7için geçerli olan temel kurallar."
           - ""
-          - "&c• Hile ve makro kesinlikle yasaktır"
+          - "&c• Hile, makro ve suistimal yasaktır"
           - "&c• Küfür, hakaret ve argo yasaktır"
-          - "&c• Bug suistimali yasaktır"
           - ""
-          - "&f▶ Kuralları okumak için tıkla!"
+          - "&f▶ Kurallar menüsünü açmak için tıkla!"
         actions:
-          - "[player] kurallar"
+          - "[menu] kurallar"
           - "[sound] ITEM_BOOK_PAGE_TURN 1.0 1.0"
 
       sesli_sohbet:
@@ -430,3 +437,90 @@ menus:
           - "[close]"
           - "[message] &6&l[Sesli Sohbet]&r &7Sunucumuzda sesli sohbet etkindir! Ayarlar ve konuşma için klavyenizden &eV tuşuna &7basın."
           - "[sound] BLOCK_NOTE_BLOCK_CHIME 1.0 1.2"
+
+  # ============================================================================
+  #                          KURALLAR MENÜSÜ (/kurallar)
+  # ============================================================================
+  kurallar:
+    title: "&8» &c&lKÜNEFESMP &8| &4Sunucu Kuralları"
+    size: 27
+    open-sound: "ITEM_BOOK_PAGE_TURN 1.0 1.0"
+    items:
+
+      # Dekoratif kenarlıklar
+      cerceve:
+        material: BLACK_STAINED_GLASS_PANE
+        slots: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 19, 20, 21, 23, 24, 25, 26]
+        name: " "
+        lore: []
+        actions: []
+
+      kural_1:
+        material: NETHERITE_SWORD
+        slot: 10
+        name: "&c&l1. HİLE VE MAKRO YASAKTIR"
+        lore:
+          - "&7Killaura, fly, x-ray, reach, oto-tıklayıcı"
+          - "&7ve haksız rekabet yaratan tüm modlar yasaktır."
+          - ""
+          - "&4Cezası: &cSınırsız Uzaklaştırma (Perma Ban)"
+        actions:
+          - "[sound] ENTITY_VILLAGER_NO 1.0 1.0"
+
+      kural_2:
+        material: WRITABLE_BOOK
+        slot: 12
+        name: "&e&l2. SOHBET VE SAYGI KURALLARI"
+        lore:
+          - "&7Küfür, argo, hakaret, ailevi küfür,"
+          - "&7siyaset, din ve ırk ayrımcılığı kesinlikle yasaktır."
+          - ""
+          - "&4Cezası: &cSusturma (Mute) / Geçici Ban"
+        actions:
+          - "[sound] ENTITY_VILLAGER_NO 1.0 1.0"
+
+      kural_3:
+        material: GOLD_INGOT
+        slot: 13
+        name: "&6&l3. DOLANDIRICILIK VE GERÇEK PARA (RMT)"
+        lore:
+          - "&7Oyun içi dolandırıcılık ve yetkili izni olmadan"
+          - "&7gerçek para/TL ile hesap veya eşya satışı yasaktır."
+          - ""
+          - "&4Cezası: &cSınırsız Uzaklaştırma"
+        actions:
+          - "[sound] ENTITY_VILLAGER_NO 1.0 1.0"
+
+      kural_4:
+        material: BEDROCK
+        slot: 14
+        name: "&4&l4. BUG VE AÇIK SUİSTİMALİ"
+        lore:
+          - "&7Oyun açıklarını (dupe vb.) kullanmak yasaktır."
+          - "&aBulunan açıkları yetkililere bildirenler ödüllendirilir!"
+          - ""
+          - "&4Cezası: &cEnvanter Sıfırlama + Sınırsız Ban"
+        actions:
+          - "[sound] ENTITY_VILLAGER_NO 1.0 1.0"
+
+      kural_5:
+        material: IRON_HELMET
+        slot: 16
+        name: "&b&l5. YETKİLİ SAYGISI VE SABOTAJ"
+        lore:
+          - "&7Yetkilileri gereksiz meşgul etmek, sahte rapor"
+          - "&7açmak veya sunucu düzenini sabote etmek yasaktır."
+          - ""
+          - "&4Cezası: &cHapis (Jail) / Ban"
+        actions:
+          - "[sound] ENTITY_VILLAGER_NO 1.0 1.0"
+
+      geri_don:
+        material: ARROW
+        slot: 22
+        name: "&e&l◀ ANA MENÜYE DÖN"
+        lore:
+          - "&7Sunucu ana menüsüne geri döner."
+        actions:
+          - "[menu] main"
+          - "[sound] UI_BUTTON_CLICK 1.0 1.0"

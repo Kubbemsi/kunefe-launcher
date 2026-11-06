@@ -150,7 +150,7 @@ faq:
 
   home:
     keywords: ["home", "ev", "ev kaydet", "sethome", "eve git", "evime nasil giderim", "evler"]
-    response: "&7Ev listeni açmak için &e/ev&7, bulunduğun yeri kaydetmek için &e/sethome <isim> &7(veya &e/ev kaydet <isim>&7) yazabilirsin. Maksimum 10 ev kaydedebilirsin!"
+    response: "&7Ev listeni açmak ve ev kaydetmek için doğrudan &e/ev &7(veya &e/ev kaydet <isim>&7) yazabilirsin. Maksimum 10 ev kaydedebilirsin!"
 
   ev_sil:
     keywords: ["ev sil", "delsome", "home sil", "ev silme"]
@@ -198,7 +198,7 @@ faq:
 
   claim:
     keywords: ["claim", "arazi", "koruma", "alan koruma", "arsa", "calinmasin", "evimi koru", "altin kurek"]
-    response: "&7Arsanı korumak için eline altın kürek alıp iki çapraz köşeye sağ tıklayarak claim atabilirsin! Detaylı rehber: &e/claimbilgi"
+    response: "&cSunucumuzda claim sistemi yoktur! &7Burası saf bir hayatta kalma (SMP) dünyasıdır; eşyalarını ve üssünü gizleyerek veya takım kurarak korumalısın."
 
   site:
     keywords: ["site", "vip", "web", "magaza linki", "tebex", "satin al", "vip paketleri", "fiyatlar"]
@@ -218,7 +218,7 @@ faq:
 
   kurallar:
     keywords: ["kural", "kurallar", "yasak", "ban", "hile", "kufur", "dolandiricilik"]
-    response: "&7Sunucu kurallarını görmek için &e/kurallar &7yaz! Hile, küfür, argo, dolandırıcılık ve bug suistimali kesinlikle yasaktır."
+    response: "&7Sunucu kurallarını görmek için &e/kurallar &7yazabilir veya &e/menu &7üzerinden kurallar menüsüne bakabilirsin!"
 
   pvp:
     keywords: ["pvp", "savas", "duello", "duel", "dovus"]
