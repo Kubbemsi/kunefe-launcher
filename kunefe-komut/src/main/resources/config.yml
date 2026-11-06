@@ -14,11 +14,31 @@ sound-name: "UI_BUTTON_CLICK"
 sound-volume: 1.0
 sound-pitch: 1.2
 
+# ==============================================================================
+#                      OTOMATİK SPAWN EŞYASI & BÖLGE AYARLARI
+# ==============================================================================
+spawn-system:
+  enabled: true
+  world: "spawn"
+  # Sadece spawn dünyasında olmayı yeterli saymak için true yapabilirsiniz.
+  # false olursa aşağıdaki koordinat sınırları (bounding box) kontrol edilir.
+  only-check-world: false
+  region:
+    min-x: -150.0
+    max-x: 160.0
+    min-y: -10.0
+    max-y: 120.0
+    min-z: 400.0
+    max-z: 710.0
+  # Eşyanın oyuncunun hangi hotbar yuvasına geleceği (0: 1. yuva, 4: ortadaki 5. yuva, 8: 9. yuva)
+  slot: 4
+
 # Eşyaya komut eklendiğinde altına yazılacak açıklama biçimi
 lore-format:
   player: "&7► Sağ tıklandığında: &e/{cmd}"
   console: "&7► Sağ tıklandığında: &6/{cmd} &8(Özel)"
   single-use: "&c⚠ Tek kullanımlıktır (Kullanılınca kaybolur)"
+  spawn-only: "&6✦ Sadece Spawn Bölgesinde Çalışır"
   cooldown: "&8⏱ Bekleme Süresi: &7{seconds} sn"
 
 # Mesajlar
@@ -35,4 +55,5 @@ messages:
   lore-added: "&a[✔] Eşyaya açıklama satırı eklendi!"
   lore-cleared: "&e[✔] Eşyanın açıklamaları temizlendi."
   cooldown-wait: "&cTekrar kullanmak için lütfen &e{seconds} &csaniye bekle!"
+  spawn-only-error: "&c[!] Bu eşyayı yalnızca spawn bölgesinde kullanabilirsin!"
   reload: "&aKünefeKomut ayarları yenilendi!"

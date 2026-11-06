@@ -18,6 +18,8 @@ public class ItemDataHelper {
     public final NamespacedKey keyType;
     public final NamespacedKey keyConsume;
     public final NamespacedKey keyCooldown;
+    public final NamespacedKey keySpawnOnly;
+    public final NamespacedKey keySpawnItem;
 
     public ItemDataHelper(KunefeKomut plugin) {
         this.plugin = plugin;
@@ -25,6 +27,8 @@ public class ItemDataHelper {
         this.keyType = new NamespacedKey(plugin, "type");
         this.keyConsume = new NamespacedKey(plugin, "consume");
         this.keyCooldown = new NamespacedKey(plugin, "cooldown");
+        this.keySpawnOnly = new NamespacedKey(plugin, "spawn_only");
+        this.keySpawnItem = new NamespacedKey(plugin, "is_spawn_item");
     }
 
     public enum CommandType {
@@ -70,12 +74,48 @@ public class ItemDataHelper {
         return val != null ? val : 0;
     }
 
+    public boolean isSpawnOnly(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) return false;
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return false;
+        Byte val = meta.getPersistentDataContainer().get(keySpawnOnly, PersistentDataType.BYTE);
+        return val != null && val == (byte) 1;
+    }
+
+    public void setSpawnOnly(ItemStack item, boolean spawnOnly) {
+        if (!hasCommand(item)) return;
+        ItemMeta meta = item.getItemMeta();
+        meta.getPersistentDataContainer().set(keySpawnOnly, PersistentDataType.BYTE, spawnOnly ? (byte) 1 : (byte) 0);
+        item.setItemMeta(meta);
+        refreshVisualLore(item);
+    }
+
+    public boolean isSpawnItem(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) return false;
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return false;
+        Byte val = meta.getPersistentDataContainer().get(keySpawnItem, PersistentDataType.BYTE);
+        return val != null && val == (byte) 1;
+    }
+
+    public void markAsSpawnItem(ItemStack item, boolean isSpawnItem) {
+        if (item == null || !item.hasItemMeta()) return;
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
+        meta.getPersistentDataContainer().set(keySpawnItem, PersistentDataType.BYTE, isSpawnItem ? (byte) 1 : (byte) 0);
+        // Spawn eşyaları her zaman sadece spawnda çalışır
+        if (isSpawnItem) {
+            meta.getPersistentDataContainer().set(keySpawnOnly, PersistentDataType.BYTE, (byte) 1);
+        }
+        item.setItemMeta(meta);
+        refreshVisualLore(item);
+    }
+
     public void bindCommand(ItemStack item, String cmd, CommandType type) {
         if (item == null) return;
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
-        // "/" işaretini temizle
         if (cmd.startsWith("/")) {
             cmd = cmd.substring(1);
         }
@@ -84,7 +124,6 @@ public class ItemDataHelper {
         pdc.set(keyCommand, PersistentDataType.STRING, cmd);
         pdc.set(keyType, PersistentDataType.STRING, type.name());
 
-        // Varsayılan consume yoksa 0 ata
         if (!pdc.has(keyConsume, PersistentDataType.BYTE)) {
             pdc.set(keyConsume, PersistentDataType.BYTE, (byte) 0);
         }
@@ -119,6 +158,8 @@ public class ItemDataHelper {
         pdc.remove(keyType);
         pdc.remove(keyConsume);
         pdc.remove(keyCooldown);
+        pdc.remove(keySpawnOnly);
+        pdc.remove(keySpawnItem);
 
         item.setItemMeta(meta);
         removePluginLore(item);
@@ -140,7 +181,6 @@ public class ItemDataHelper {
         List<Component> lore = meta.lore();
         if (lore == null) lore = new ArrayList<>();
 
-        // Eklenti lore'larının hemen öncesine ekle
         int insertIndex = lore.size();
         for (int i = 0; i < lore.size(); i++) {
             String str = LegacyComponentSerializer.legacySection().serialize(lore.get(i));
@@ -174,7 +214,6 @@ public class ItemDataHelper {
         List<Component> lore = meta.lore();
         if (lore == null) lore = new ArrayList<>();
 
-        // Eski eklenti satırlarını filtrele
         List<Component> cleanLore = new ArrayList<>();
         for (Component c : lore) {
             String str = LegacyComponentSerializer.legacySection().serialize(c);
@@ -187,8 +226,8 @@ public class ItemDataHelper {
         CommandType type = getType(item);
         boolean consume = isConsume(item);
         int cd = getCooldown(item);
+        boolean spawnOnly = isSpawnOnly(item);
 
-        // Yeni satırları oluştur
         String cmdLine;
         if (type == CommandType.CONSOLE) {
             cmdLine = plugin.getConfig().getString("lore-format.console", "&7► Sağ tıklandığında: &6/{cmd} &8(Özel)")
@@ -203,6 +242,11 @@ public class ItemDataHelper {
             String cdLine = plugin.getConfig().getString("lore-format.cooldown", "&8⏱ Bekleme Süresi: &7{seconds} sn")
                     .replace("{seconds}", String.valueOf(cd));
             cleanLore.add(colorizeComponent(cdLine));
+        }
+
+        if (spawnOnly) {
+            String spawnLine = plugin.getConfig().getString("lore-format.spawn-only", "&6✦ Sadece Spawn Bölgesinde Çalışır");
+            cleanLore.add(colorizeComponent(spawnLine));
         }
 
         if (consume) {
@@ -233,7 +277,8 @@ public class ItemDataHelper {
         if (line == null) return false;
         return line.contains("Sağ tıklandığında:")
                 || line.contains("Tek kullanımlıktır")
-                || line.contains("Bekleme Süresi:");
+                || line.contains("Bekleme Süresi:")
+                || line.contains("Sadece Spawn");
     }
 
     public static Component colorizeComponent(String msg) {
