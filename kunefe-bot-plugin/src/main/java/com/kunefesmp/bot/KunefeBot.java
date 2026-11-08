@@ -6,6 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class KunefeBot extends JavaPlugin {
     private KnowledgeBase knowledgeBase;
     private AIService aiService;
+    private BotCommand botCommand;
     private String prefix;
 
     @Override
@@ -13,16 +14,19 @@ public class KunefeBot extends JavaPlugin {
         saveDefaultConfig();
         loadSettings();
 
-        BotCommand botCommand = new BotCommand(this);
+        this.botCommand = new BotCommand(this);
         if (getCommand("kunefebot") != null) {
             getCommand("kunefebot").setExecutor(botCommand);
             getCommand("kunefebot").setTabCompleter(botCommand);
         }
 
+        getServer().getPluginManager().registerEvents(new ChatListener(this), this);
+
         getLogger().info("=========================================");
-        getLogger().info("  KunefeBot v1.0.0 basariyla baslatildi! ");
+        getLogger().info("  KunefeBot v1.1.0 basariyla baslatildi! ");
         getLogger().info("  Soru-Cevap Bankasi: " + knowledgeBase.getFaqCount() + " madde");
         getLogger().info("  AI Modu: " + (aiService.isConfigured() ? "Aktif (" + aiService.getProviderName() + ")" : "Pasif (Yerel Mod)"));
+        getLogger().info("  Sohbet Tetikleyici: Aktif (@bot, bot: <soru>)");
         getLogger().info("=========================================");
     }
 
@@ -56,6 +60,10 @@ public class KunefeBot extends JavaPlugin {
 
     public AIService getAiService() {
         return aiService;
+    }
+
+    public BotCommand getBotCommand() {
+        return botCommand;
     }
 
     public String getPrefix() {

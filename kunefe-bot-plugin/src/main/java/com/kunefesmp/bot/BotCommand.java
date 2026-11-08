@@ -53,6 +53,14 @@ public class BotCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        String question = String.join(" ", args).trim();
+        handleQuestion(sender, question);
+        return true;
+    }
+
+    public void handleQuestion(CommandSender sender, String question) {
+        if (question == null || question.isEmpty()) return;
+
         // Cooldown kontrolü (oyuncu ise)
         if (sender instanceof Player player) {
             if (!player.hasPermission("kunefebot.bypass")) {
@@ -66,24 +74,22 @@ public class BotCommand implements CommandExecutor, TabCompleter {
                     String cdMsg = plugin.getConfig().getString("messages.cooldown", "&cBekle: {seconds} sn.")
                             .replace("{seconds}", String.valueOf(remainingSec));
                     player.sendMessage(plugin.getPrefix() + colorize(cdMsg));
-                    return true;
+                    return;
                 }
                 cooldowns.put(player.getUniqueId(), now);
             }
         }
 
-        String question = String.join(" ", args).trim();
-
         // 1. Önce yerel akıllı soru bankasında ara (0ms / lag yok)
         String localAnswer = plugin.getKnowledgeBase().findBestMatch(question);
         if (localAnswer != null) {
             sendResponse(sender, localAnswer);
-            return true;
+            return;
         }
 
         // 2. Yerelde bulunamadıysa ve Yapay Zeka yapılandırılmışsa AI'ya sor
         if (plugin.getAiService().isConfigured()) {
-            String thinking = plugin.getConfig().getString("messages.thinking", "&eDüşünüyorum...");
+            String thinking = plugin.getConfig().getString("messages.thinking", "&eSorunun cevabını düşünüyorum... &7(Lütfen bekle)");
             sender.sendMessage(plugin.getPrefix() + colorize(thinking));
 
             plugin.getAiService().askAI(question).thenAccept(aiAnswer -> {
@@ -91,19 +97,17 @@ public class BotCommand implements CommandExecutor, TabCompleter {
                     if (aiAnswer != null && !aiAnswer.isEmpty()) {
                         sendResponse(sender, aiAnswer);
                     } else {
-                        // AI başarısız olduysa varsayılan yanıtı gönder
-                        String fallback = plugin.getConfig().getString("messages.unknown-fallback", "&cBilemedim!");
+                        String fallback = plugin.getConfig().getString("messages.unknown-fallback", "&cÜzgünüm, bu soru için doğrudan bir yanıt bulamadım! &7Sorunu başka kelimelerle sorabilir veya &e/yardim &7yazabilirsin.");
                         sender.sendMessage(plugin.getPrefix() + colorize(fallback));
                     }
                 });
             });
-            return true;
+            return;
         }
 
-        // 3. Yapay zeka kapalıysa veya anahtar yoksa varsayılan yanıtı göster
-        String fallback = plugin.getConfig().getString("messages.unknown-fallback", "&cBilemedim!");
+        // 3. Yapay zeka kapalıysa varsayılan yanıtı göster
+        String fallback = plugin.getConfig().getString("messages.unknown-fallback", "&cÜzgünüm, bu soru için doğrudan bir yanıt bulamadım! &7Sorunu başka kelimelerle sorabilir veya &e/yardim &7yazabilirsin.");
         sender.sendMessage(plugin.getPrefix() + colorize(fallback));
-        return true;
     }
 
     private void sendResponse(CommandSender sender, String text) {
@@ -128,12 +132,12 @@ public class BotCommand implements CommandExecutor, TabCompleter {
     private void sendHelp(CommandSender sender, String label) {
         sender.sendMessage(colorize("&6§l━━━━━━━━━━━━━━ &e§lKÜNEFE BOT &6§l━━━━━━━━━━━━━━"));
         sender.sendMessage(colorize("&7Bana sunucu veya oyun hakkında aklına takılan her şeyi sorabilirsin!"));
-        sender.sendMessage(colorize("&eKullanım: &a/" + label + " <sorun>"));
+        sender.sendMessage(colorize("&eKullanım: &a/" + label + " <sorun> &7veya sohbette &e@bot <sorun>"));
         sender.sendMessage(colorize("&7Örnekler:"));
         sender.sendMessage(colorize(" &8» &f/" + label + " market nasıl açılır?"));
         sender.sendMessage(colorize(" &8» &f/" + label + " para nasıl kazanılır?"));
-        sender.sendMessage(colorize(" &8» &f/" + label + " claim nasıl atılır?"));
         sender.sendMessage(colorize(" &8» &f/" + label + " evime nasıl giderim?"));
+        sender.sendMessage(colorize(" &8» &f/" + label + " rtp nasıl yapılır?"));
         sender.sendMessage(colorize(" &8» &f/" + label + " discord linki ne?"));
         if (sender.hasPermission("kunefebot.admin")) {
             sender.sendMessage(colorize("&cAdmin: &7/" + label + " reload &8| &7/" + label + " status"));
@@ -165,7 +169,6 @@ public class BotCommand implements CommandExecutor, TabCompleter {
             list.add("para");
             list.add("sat");
             list.add("ah");
-            list.add("claim");
             list.add("ev");
             list.add("rtp");
             list.add("spawn");

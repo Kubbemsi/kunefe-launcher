@@ -1,7 +1,6 @@
 package com.kunefesmp.bot;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -19,6 +18,8 @@ public class AIService {
 
     private boolean enabled;
     private String provider;
+    private String ollamaEndpoint;
+    private String ollamaModel;
     private String geminiApiKey;
     private String geminiModel;
     private String openaiApiKey;
@@ -36,7 +37,10 @@ public class AIService {
 
     public void loadFromConfig(FileConfiguration config) {
         this.enabled = config.getBoolean("ai.enabled", true);
-        this.provider = config.getString("ai.provider", "gemini").toLowerCase();
+        this.provider = config.getString("ai.provider", "ollama").toLowerCase();
+
+        this.ollamaEndpoint = config.getString("ai.ollama.endpoint", "http://132.145.255.254:7899/v1/chat/completions").trim();
+        this.ollamaModel = config.getString("ai.ollama.model", "qwen2.5:3b").trim();
 
         this.geminiApiKey = config.getString("ai.gemini.api-key", "").trim();
         this.geminiModel = config.getString("ai.gemini.model", "gemini-1.5-flash").trim();
@@ -46,15 +50,17 @@ public class AIService {
         this.openaiEndpoint = config.getString("ai.openai.endpoint", "https://api.openai.com/v1/chat/completions").trim();
 
         this.systemPrompt = config.getString("ai.system-prompt", "Sen KünefeSMP sunucusunun yardımcı botusun.").trim();
-        this.timeoutSeconds = config.getInt("ai.timeout-seconds", 6);
+        this.timeoutSeconds = config.getInt("ai.timeout-seconds", 12);
     }
 
     public boolean isConfigured() {
         if (!enabled) return false;
-        if ("gemini".equalsIgnoreCase(provider)) {
-            return !geminiApiKey.isEmpty() && !geminiApiKey.startsWith("BURAYA");
+        if ("ollama".equalsIgnoreCase(provider)) {
+            return !ollamaEndpoint.isEmpty();
         } else if ("openai".equalsIgnoreCase(provider)) {
             return !openaiApiKey.isEmpty() && !openaiApiKey.startsWith("BURAYA");
+        } else if ("gemini".equalsIgnoreCase(provider)) {
+            return !geminiApiKey.isEmpty() && !geminiApiKey.startsWith("BURAYA");
         }
         return false;
     }
@@ -63,19 +69,71 @@ public class AIService {
         return provider;
     }
 
-    /**
-     * Asenkron olarak yapay zekaya sorar.
-     */
     public CompletableFuture<String> askAI(String question) {
         if (!isConfigured()) {
             return CompletableFuture.completedFuture(null);
         }
 
-        if ("openai".equalsIgnoreCase(provider)) {
-            return askOpenAI(question);
+        if ("ollama".equalsIgnoreCase(provider)) {
+            return askOpenAICompatible(ollamaEndpoint, ollamaModel, "ollama", question);
+        } else if ("openai".equalsIgnoreCase(provider)) {
+            return askOpenAICompatible(openaiEndpoint, openaiModel, openaiApiKey, question);
         } else {
             return askGemini(question);
         }
+    }
+
+    private CompletableFuture<String> askOpenAICompatible(String endpoint, String model, String apiKey, String question) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                JsonObject root = new JsonObject();
+                root.addProperty("model", model);
+                root.addProperty("max_tokens", 160);
+                root.addProperty("temperature", 0.5);
+
+                JsonArray messages = new JsonArray();
+
+                JsonObject sysMsg = new JsonObject();
+                sysMsg.addProperty("role", "system");
+                sysMsg.addProperty("content", systemPrompt);
+                messages.add(sysMsg);
+
+                JsonObject userMsg = new JsonObject();
+                userMsg.addProperty("role", "user");
+                userMsg.addProperty("content", question);
+                messages.add(userMsg);
+
+                root.add("messages", messages);
+
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create(endpoint))
+                        .header("Content-Type", "application/json")
+                        .header("Authorization", "Bearer " + (apiKey.isEmpty() ? "none" : apiKey))
+                        .timeout(Duration.ofSeconds(timeoutSeconds))
+                        .POST(HttpRequest.BodyPublishers.ofString(root.toString()))
+                        .build();
+
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
+                    JsonArray choices = jsonResponse.getAsJsonArray("choices");
+                    if (choices != null && !choices.isEmpty()) {
+                        JsonObject firstChoice = choices.get(0).getAsJsonObject();
+                        JsonObject message = firstChoice.getAsJsonObject("message");
+                        if (message != null && message.has("content")) {
+                            String reply = message.get("content").getAsString();
+                            return cleanAiReply(reply);
+                        }
+                    }
+                } else {
+                    plugin.getLogger().warning("AI API hatası (" + response.statusCode() + "): " + response.body());
+                }
+            } catch (Exception e) {
+                plugin.getLogger().warning("AI API bağlantı hatası: " + e.getMessage());
+            }
+            return null;
+        });
     }
 
     private CompletableFuture<String> askGemini(String question) {
@@ -86,7 +144,6 @@ public class AIService {
 
                 JsonObject root = new JsonObject();
 
-                // systemInstruction
                 JsonObject sysObj = new JsonObject();
                 JsonArray sysParts = new JsonArray();
                 JsonObject sysTextPart = new JsonObject();
@@ -95,7 +152,6 @@ public class AIService {
                 sysObj.add("parts", sysParts);
                 root.add("systemInstruction", sysObj);
 
-                // contents
                 JsonArray contents = new JsonArray();
                 JsonObject userMessage = new JsonObject();
                 userMessage.addProperty("role", "user");
@@ -107,19 +163,16 @@ public class AIService {
                 contents.add(userMessage);
                 root.add("contents", contents);
 
-                // generationConfig
                 JsonObject genConfig = new JsonObject();
                 genConfig.addProperty("maxOutputTokens", 200);
                 genConfig.addProperty("temperature", 0.4);
                 root.add("generationConfig", genConfig);
 
-                String requestBody = root.toString();
-
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(URI.create(url))
                         .header("Content-Type", "application/json")
                         .timeout(Duration.ofSeconds(timeoutSeconds))
-                        .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                        .POST(HttpRequest.BodyPublishers.ofString(root.toString()))
                         .build();
 
                 HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -148,66 +201,17 @@ public class AIService {
         });
     }
 
-    private CompletableFuture<String> askOpenAI(String question) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                JsonObject root = new JsonObject();
-                root.addProperty("model", openaiModel);
-                root.addProperty("max_tokens", 150);
-                root.addProperty("temperature", 0.4);
-
-                JsonArray messages = new JsonArray();
-
-                JsonObject sysMsg = new JsonObject();
-                sysMsg.addProperty("role", "system");
-                sysMsg.addProperty("content", systemPrompt);
-                messages.add(sysMsg);
-
-                JsonObject userMsg = new JsonObject();
-                userMsg.addProperty("role", "user");
-                userMsg.addProperty("content", question);
-                messages.add(userMsg);
-
-                root.add("messages", messages);
-
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(openaiEndpoint))
-                        .header("Content-Type", "application/json")
-                        .header("Authorization", "Bearer " + openaiApiKey)
-                        .timeout(Duration.ofSeconds(timeoutSeconds))
-                        .POST(HttpRequest.BodyPublishers.ofString(root.toString()))
-                        .build();
-
-                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-                if (response.statusCode() == 200) {
-                    JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
-                    JsonArray choices = jsonResponse.getAsJsonArray("choices");
-                    if (choices != null && !choices.isEmpty()) {
-                        JsonObject firstChoice = choices.get(0).getAsJsonObject();
-                        JsonObject message = firstChoice.getAsJsonObject("message");
-                        if (message != null && message.has("content")) {
-                            String reply = message.get("content").getAsString();
-                            return cleanAiReply(reply);
-                        }
-                    }
-                } else {
-                    plugin.getLogger().warning("OpenAI API hatası (" + response.statusCode() + "): " + response.body());
-                }
-            } catch (Exception e) {
-                plugin.getLogger().warning("OpenAI API bağlantı hatası: " + e.getMessage());
-            }
-            return null;
-        });
-    }
-
     private String cleanAiReply(String reply) {
         if (reply == null) return null;
         String cleaned = reply.trim();
-        // Eğer AI markdown tırnakları ya da fazla satır sonu eklediyse temizle
         if (cleaned.startsWith("\"") && cleaned.endsWith("\"") && cleaned.length() > 2) {
             cleaned = cleaned.substring(1, cleaned.length() - 1);
         }
-        return cleaned.replace("\n\n", " ").replace("\n", " ");
+        // Markdown bold ve italic çevirisi
+        cleaned = cleaned.replaceAll("\\*\\*(.*?)\\*\\*", "&e$1&r");
+        cleaned = cleaned.replaceAll("\\*(.*?)\\*", "&7$1&r");
+        cleaned = cleaned.replace("###", "").replace("##", "").replace("#", "");
+        cleaned = cleaned.replace("`", "");
+        return cleaned.replace("\n\n", " ").replace("\n", " ").trim();
     }
 }

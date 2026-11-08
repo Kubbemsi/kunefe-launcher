@@ -9,6 +9,9 @@ public class KnowledgeBase {
     private final KunefeBot plugin;
     private final List<FaqItem> faqItems = new ArrayList<>();
     private static final Locale TR_LOCALE = Locale.forLanguageTag("tr-TR");
+    private static final Set<String> STOP_WORDS = new HashSet<>(Arrays.asList(
+            "mi", "mu", "mı", "mü", "ne", "ve", "ile", "de", "da", "bu", "o", "su", "bir", "icin", "nasil", "var"
+    ));
 
     public KnowledgeBase(KunefeBot plugin) {
         this.plugin = plugin;
@@ -37,7 +40,7 @@ public class KnowledgeBase {
     }
 
     /**
-     * Soruya en uygun yerel yanıtı arar. Bulunamazsa null döner.
+     * Soruya en uygun yerel yanıtı arar. Bulunamazsa null döner (AI devreye girer).
      */
     public String findBestMatch(String rawQuestion) {
         if (rawQuestion == null || rawQuestion.trim().isEmpty()) {
@@ -58,8 +61,8 @@ public class KnowledgeBase {
             }
         }
 
-        // Güven eşiği: en az 20 puan
-        if (bestItem != null && highestScore >= 20) {
+        // Güven eşiği: en az 60 puan olmalı
+        if (bestItem != null && highestScore >= 60) {
             return bestItem.getResponse();
         }
 
@@ -75,22 +78,26 @@ public class KnowledgeBase {
             // Tam veya kısmi kalıp eşleşmesi
             if (normQuestion.equals(kw)) {
                 score += 100;
-            } else if (normQuestion.contains(kw)) {
-                // Soru içinde kalıp geçiyorsa kelime uzunluğuna göre puan
-                score += 30 + (kw.length() * 2);
+            } else if (normQuestion.contains(kw) && kw.length() >= 4) {
+                score += 40 + (kw.length() * 2);
             }
 
             // Kelime bazlı eşleşme
             String[] kwParts = kw.split("\\s+");
             int matchedParts = 0;
             for (String part : kwParts) {
-                if (part.length() < 2) continue;
+                if (part.length() < 3 || STOP_WORDS.contains(part)) {
+                    if (qWords.contains(part)) {
+                        matchedParts++;
+                    }
+                    continue;
+                }
+
                 if (qWords.contains(part)) {
                     matchedParts++;
                 } else {
-                    // Kısmi kök kontrolü (Türkçe ekler için örn: "markete", "pazarda", "evime")
                     for (String qw : qWords) {
-                        if (qw.startsWith(part) || (part.length() >= 4 && qw.contains(part))) {
+                        if (qw.startsWith(part) || (part.length() >= 5 && qw.contains(part))) {
                             matchedParts++;
                             break;
                         }
@@ -99,9 +106,10 @@ public class KnowledgeBase {
             }
 
             if (matchedParts > 0) {
-                score += (matchedParts * 15);
                 if (matchedParts == kwParts.length) {
-                    score += 25; // Anahtar kelimenin tüm parçaları geçti
+                    score += 50 + (matchedParts * 10);
+                } else if (kwParts.length > 1 && (float) matchedParts / kwParts.length >= 0.5f) {
+                    score += matchedParts * 15;
                 }
             }
         }
@@ -139,7 +147,6 @@ public class KnowledgeBase {
             }
         }
 
-        // Fazla boşlukları temizle
         return sb.toString().trim().replaceAll("\\s+", " ");
     }
 }
