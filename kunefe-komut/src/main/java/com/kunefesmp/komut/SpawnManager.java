@@ -24,6 +24,8 @@ public class SpawnManager {
     private double minX, maxX, minY, maxY, minZ, maxZ;
     private int preferredSlot;
     private ItemStack cachedSpawnItem;
+    private boolean adventureMode;
+    private boolean protectInteractions;
 
     private final Map<Integer, ItemStack> spawnItems = new HashMap<>();
 
@@ -47,6 +49,8 @@ public class SpawnManager {
         this.maxZ = config.getDouble("spawn-system.region.max-z", 710.0);
 
         this.preferredSlot = config.getInt("spawn-system.slot", 4);
+        this.adventureMode = config.getBoolean("spawn-system.adventure-mode", true);
+        this.protectInteractions = config.getBoolean("spawn-system.protect-interactions", true);
         this.spawnItems.clear();
 
         // 1. Config'deki 'spawn-system.items' listesini yükle
@@ -169,6 +173,14 @@ public class SpawnManager {
 
     public void giveSpawnItems(Player player) {
         if (!enabled || player == null || !player.isOnline()) return;
+
+        // Spawna girince macera moduna geçir (OP/Yetkililer hariç)
+        if (adventureMode && !player.isOp() && !player.hasPermission("kunefekomut.bypass")) {
+            if (player.getGameMode() == org.bukkit.GameMode.SURVIVAL) {
+                player.setGameMode(org.bukkit.GameMode.ADVENTURE);
+            }
+        }
+
         if (spawnItems.isEmpty()) return;
 
         for (Map.Entry<Integer, ItemStack> entry : spawnItems.entrySet()) {
@@ -218,6 +230,13 @@ public class SpawnManager {
     public void removeSpawnItems(Player player) {
         if (player == null || !player.isOnline()) return;
 
+        // Spawndan çıkınca hayatta kalma (Survival) moduna geri döndür
+        if (adventureMode && !player.isOp() && !player.hasPermission("kunefekomut.bypass")) {
+            if (player.getGameMode() == org.bukkit.GameMode.ADVENTURE) {
+                player.setGameMode(org.bukkit.GameMode.SURVIVAL);
+            }
+        }
+
         boolean removed = false;
         ItemStack[] contents = player.getInventory().getContents();
         for (int i = 0; i < contents.length; i++) {
@@ -240,6 +259,14 @@ public class SpawnManager {
             }
         }
         return false;
+    }
+
+    public boolean isAdventureMode() {
+        return adventureMode;
+    }
+
+    public boolean isProtectInteractions() {
+        return protectInteractions;
     }
 
     public void updateAllPlayers() {

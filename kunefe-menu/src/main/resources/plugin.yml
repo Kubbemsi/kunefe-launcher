@@ -26,6 +26,11 @@ commands:
       - kural
       - rules
     usage: /kurallar
+  rtpmenu:
+    description: KünefeSMP Rastgele Işınlanma Menüsünü açar.
+    aliases:
+      - rtpmenü
+    usage: /rtpmenu
   kunefemenu:
     description: KunefeMenu yönetim komutu.
     permission: kunefemenu.admin

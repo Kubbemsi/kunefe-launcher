@@ -77,6 +77,11 @@ public class MenuCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (cmdName.equals("rtpmenu") || cmdName.equals("rtpmenü")) {
+            plugin.getMenuManager().openMenu(player, "rtp");
+            return true;
+        }
+
         String targetMenu = (args.length > 0) ? args[0] : "main";
         plugin.getMenuManager().openMenu(player, targetMenu);
         return true;

@@ -3,14 +3,19 @@ package com.kunefesmp.komut;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -185,17 +190,105 @@ public class EsyaDinleyici implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getClickedInventory() == null) return;
-        // Oyuncu kendi envanteri dışında bir depolama birimine (sandık vb.) tıklıyorsa engelle
-        if (!event.getClickedInventory().equals(event.getWhoClicked().getInventory())) {
-            ItemStack current = event.getCurrentItem();
-            ItemStack cursor = event.getCursor();
-            if (helper.isSpawnItem(current) || helper.isSpawnItem(cursor)) {
-                event.setCancelled(true);
-                event.getWhoClicked().sendMessage(plugin.getPrefix() + colorize("&c[!] Bu spawn eşyasını sandıklara koyamazsın!"));
+        // 1. Tıklanan eşya veya imleçteki eşya spawn eşyası ise hareketi kesinlikle engelle
+        if (helper.isSpawnItem(event.getCurrentItem()) || helper.isSpawnItem(event.getCursor())) {
+            event.setCancelled(true);
+            return;
+        }
+
+        // 2. Sayı tuşları (1-9) ile hotbar takası yapılıyorsa engelle
+        if (event.getClick() == ClickType.NUMBER_KEY) {
+            int hotbarButton = event.getHotbarButton();
+            if (hotbarButton >= 0 && hotbarButton < 9) {
+                ItemStack hotbarItem = event.getWhoClicked().getInventory().getItem(hotbarButton);
+                if (helper.isSpawnItem(hotbarItem) || helper.isSpawnItem(event.getCurrentItem())) {
+                    event.setCancelled(true);
+                    return;
+                }
             }
+        }
+
+        // 3. İkinci ele takas (F tuşu) veya çift tıklama toplama
+        if (event.getClick() == ClickType.SWAP_OFFHAND || event.getClick() == ClickType.DOUBLE_CLICK) {
+            if (helper.isSpawnItem(event.getCurrentItem()) || helper.isSpawnItem(event.getCursor())) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+
+        // 4. Shift ile sandığa veya başka yuvaya taşıma
+        if (event.getAction() == org.bukkit.event.inventory.InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+            if (helper.isSpawnItem(event.getCurrentItem())) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onInventoryDrag(InventoryDragEvent event) {
+        if (helper.isSpawnItem(event.getOldCursor())) {
+            event.setCancelled(true);
+            return;
+        }
+        for (int slot : event.getRawSlots()) {
+            ItemStack item = event.getView().getItem(slot);
+            if (helper.isSpawnItem(item)) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
+        if (helper.isSpawnItem(event.getMainHandItem()) || helper.isSpawnItem(event.getOffHandItem())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onSpawnBlockInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if (player.isOp() || player.hasPermission("kunefekomut.bypass")) return;
+        if (!spawnManager.isProtectInteractions()) return;
+        if (!spawnManager.isInSpawn(player.getLocation())) return;
+
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            Block block = event.getClickedBlock();
+            if (block == null) return;
+            Material mat = block.getType();
+            String name = mat.name();
+
+            // Tabela düzenleme engeli
+            if (name.contains("SIGN")) {
+                event.setCancelled(true);
+                event.setUseInteractedBlock(org.bukkit.event.Event.Result.DENY);
+                return;
+            }
+
+            // Tuzak kapısı, kapı, çit kapısı, buton, şalter engeli
+            if (name.endsWith("_TRAPDOOR")
+                    || name.endsWith("_DOOR")
+                    || name.endsWith("_FENCE_GATE")
+                    || name.endsWith("_BUTTON")
+                    || mat == Material.LEVER
+                    || mat == Material.REPEATER
+                    || mat == Material.COMPARATOR) {
+                event.setCancelled(true);
+                event.setUseInteractedBlock(org.bukkit.event.Event.Result.DENY);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onSignChange(SignChangeEvent event) {
+        Player player = event.getPlayer();
+        if (player.isOp() || player.hasPermission("kunefekomut.bypass")) return;
+        if (!spawnManager.isProtectInteractions()) return;
+        if (spawnManager.isInSpawn(event.getBlock().getLocation())) {
+            event.setCancelled(true);
         }
     }
 

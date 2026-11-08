@@ -108,18 +108,18 @@ menus:
       rtp:
         material: ENDER_PEARL
         slot: 12
-        name: "&a&lVAHŞİ DOĞA (RTP)"
+        name: "&a&lVAHŞİ DOĞA / RTP MENÜSÜ"
         lore:
           - "&7Hayatta kalma dünyasında keşfedilmemiş,"
-          - "&7güvenli ve rastgele bir konuma ışınlan."
+          - "&7güvenli ve rastgele bir konuma ışınlan!"
           - ""
-          - "&f• Kendi evini kur, maden ve kaynak topla"
-          - "&f• Arkadaşlarınla üs inşa et"
+          - "&f• &aDünya &7(Overworld)"
+          - "&f• &cNether &7Dünyası"
+          - "&f• &dEnd &7Dünyası"
           - ""
-          - "&a▶ Rastgele ışınlanmak için tıkla!"
+          - "&a▶ RTP menüsünü açmak için tıkla!"
         actions:
-          - "[player] rtp"
-          - "[sound] ENTITY_ENDERMAN_TELEPORT 1.0 1.0"
+          - "[menu] rtp"
 
       arena:
         material: DIAMOND_SWORD
@@ -514,6 +514,84 @@ menus:
           - "&4Cezası: &cHapis (Jail) / Ban"
         actions:
           - "[sound] ENTITY_VILLAGER_NO 1.0 1.0"
+
+      geri_don:
+        material: ARROW
+        slot: 22
+        name: "&e&l◀ ANA MENÜYE DÖN"
+        lore:
+          - "&7Sunucu ana menüsüne geri döner."
+        actions:
+          - "[menu] main"
+          - "[sound] UI_BUTTON_CLICK 1.0 1.0"
+
+  # ============================================================================
+  #                          RTP MENÜSÜ (/menu rtp)
+  # ============================================================================
+  rtp:
+    title: "&8» &6&lKÜNEFESMP &8| &aRastgele Işınlanma"
+    size: 27
+    open-sound: "ENTITY_ENDERMAN_TELEPORT 1.0 1.2"
+    items:
+
+      # Dekoratif kenarlıklar
+      cerceve:
+        material: GRAY_STAINED_GLASS_PANE
+        slots: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26]
+        name: " "
+        lore: []
+        actions: []
+
+      dunya:
+        material: GRASS_BLOCK
+        slot: 11
+        glow: true
+        name: "&a&lDÜNYA (OVERWORLD)"
+        lore:
+          - "&7Hayatta kalma dünyasında keşfedilmemiş,"
+          - "&7güvenli ve rastgele bir konuma ışınlan!"
+          - ""
+          - "&f• Maden topla, evini kur ve yaşa"
+          - ""
+          - "&a▶ Dünyaya ışınlanmak için tıkla!"
+        actions:
+          - "[close]"
+          - "[player] rtp"
+          - "[sound] ENTITY_ENDERMAN_TELEPORT 1.0 1.0"
+
+      nether:
+        material: NETHERRACK
+        slot: 13
+        glow: true
+        name: "&c&lNETHER DÜNYASI"
+        lore:
+          - "&7Lavların ve kalelerin bulunduğu"
+          - "&7Nether dünyasına rastgele ışınlan!"
+          - ""
+          - "&c⚠ DİKKAT: Tehlikeli yaratıklar mevcuttur!"
+          - ""
+          - "&c► Nether'a rastgele ışınlanmak için tıkla!"
+        actions:
+          - "[close]"
+          - "[player] rtp world world_nether"
+          - "[sound] ENTITY_GHAST_SHOOT 0.8 1.0"
+
+      end:
+        material: END_STONE
+        slot: 15
+        glow: true
+        name: "&d&lEND DÜNYASI"
+        lore:
+          - "&7Shulker ve elitra arayışı için"
+          - "&7End dünyasına rastgele ışınlan!"
+          - ""
+          - "&d⚠ DİKKAT: Boşluğa (void) dikkat et!"
+          - ""
+          - "&d► End'e rastgele ışınlanmak için tıkla!"
+        actions:
+          - "[close]"
+          - "[player] rtp world world_the_end"
+          - "[sound] ENTITY_ENDER_DRAGON_GROWL 0.8 1.2"
 
       geri_don:
         material: ARROW
