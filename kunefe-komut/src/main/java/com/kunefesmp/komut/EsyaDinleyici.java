@@ -127,8 +127,12 @@ public class EsyaDinleyici implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            if (p.isOnline() && spawnManager.isInSpawn(p.getLocation())) {
-                spawnManager.giveSpawnItem(p);
+            if (p.isOnline()) {
+                if (spawnManager.isInSpawn(p.getLocation())) {
+                    spawnManager.handlePlayerEnterSpawn(p);
+                } else {
+                    spawnManager.handlePlayerLeaveSpawn(p);
+                }
             }
         }, 5L);
     }

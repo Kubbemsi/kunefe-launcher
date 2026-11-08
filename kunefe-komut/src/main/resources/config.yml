@@ -31,6 +31,11 @@ spawn-system:
     min-z: 400.0
     max-z: 710.0
 
+  # Spawnda oyuncunun normal dünyadaki tüm envanterini (zırh, sol el ve eşyaları)
+  # güvenle yedekleyip gizlesin mi? Spawndan çıkınca tüm eşyalar, zırhlar ve sol eldeki eşya
+  # eksiksiz geri yüklenir!
+  separate-inventory: true
+
   # Spawnda oyuncuları otomatik Macera (Adventure) moduna alsın mı?
   # Spawndan çıkınca otomatik Hayatta Kalma (Survival) moduna geri döner.
   # (OP/Yetkili olanların oyun modu bozulmaz!)

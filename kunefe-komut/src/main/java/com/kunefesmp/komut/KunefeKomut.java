@@ -35,6 +35,9 @@ public class KunefeKomut extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (spawnManager != null && spawnManager.getInventoryBackup() != null) {
+            spawnManager.getInventoryBackup().saveToFile();
+        }
         getLogger().info("KunefeKomut devre disi birakildi.");
     }
 

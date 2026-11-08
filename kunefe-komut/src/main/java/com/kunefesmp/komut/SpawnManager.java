@@ -26,12 +26,15 @@ public class SpawnManager {
     private ItemStack cachedSpawnItem;
     private boolean adventureMode;
     private boolean protectInteractions;
+    private boolean separateInventory;
 
+    private final SpawnInventoryBackup inventoryBackup;
     private final Map<Integer, ItemStack> spawnItems = new HashMap<>();
 
     public SpawnManager(KunefeKomut plugin, ItemDataHelper helper) {
         this.plugin = plugin;
         this.helper = helper;
+        this.inventoryBackup = new SpawnInventoryBackup(plugin, helper);
         loadFromConfig();
     }
 
@@ -51,6 +54,7 @@ public class SpawnManager {
         this.preferredSlot = config.getInt("spawn-system.slot", 4);
         this.adventureMode = config.getBoolean("spawn-system.adventure-mode", true);
         this.protectInteractions = config.getBoolean("spawn-system.protect-interactions", true);
+        this.separateInventory = config.getBoolean("spawn-system.separate-inventory", true);
         this.spawnItems.clear();
 
         // 1. Config'deki 'spawn-system.items' listesini yükle
@@ -167,20 +171,50 @@ public class SpawnManager {
         updateAllPlayers();
     }
 
-    public void giveSpawnItem(Player player) {
-        giveSpawnItems(player);
-    }
-
-    public void giveSpawnItems(Player player) {
+    public void handlePlayerEnterSpawn(Player player) {
         if (!enabled || player == null || !player.isOnline()) return;
 
-        // Spawna girince macera moduna geçir (OP/Yetkililer hariç)
+        // 1. Hayatta kalma envanterini (zırh, sol el ve eşyalar) güvenle yedekle ve temizle
+        if (separateInventory) {
+            inventoryBackup.backupAndClear(player);
+        }
+
+        // 2. Spawna girince macera moduna geçir (OP/Yetkililer hariç)
         if (adventureMode && !player.isOp() && !player.hasPermission("kunefekomut.bypass")) {
             if (player.getGameMode() == org.bukkit.GameMode.SURVIVAL) {
                 player.setGameMode(org.bukkit.GameMode.ADVENTURE);
             }
         }
 
+        // 3. Spawn eşyalarını hotbara dağıt
+        giveSpawnItems(player);
+    }
+
+    public void handlePlayerLeaveSpawn(Player player) {
+        if (player == null || !player.isOnline()) return;
+
+        // 1. Spawn eşyalarını çantadan temizle
+        removeSpawnItems(player);
+
+        // 2. Spawndan çıkınca hayatta kalma (Survival) moduna geri döndür
+        if (adventureMode && !player.isOp() && !player.hasPermission("kunefekomut.bypass")) {
+            if (player.getGameMode() == org.bukkit.GameMode.ADVENTURE) {
+                player.setGameMode(org.bukkit.GameMode.SURVIVAL);
+            }
+        }
+
+        // 3. Yedeklenmiş hayatta kalma envanterini, zırhları ve sol eli geri yükle
+        if (separateInventory) {
+            inventoryBackup.restore(player);
+        }
+    }
+
+    public void giveSpawnItem(Player player) {
+        handlePlayerEnterSpawn(player);
+    }
+
+    public void giveSpawnItems(Player player) {
+        if (!enabled || player == null || !player.isOnline()) return;
         if (spawnItems.isEmpty()) return;
 
         for (Map.Entry<Integer, ItemStack> entry : spawnItems.entrySet()) {
@@ -195,15 +229,14 @@ public class SpawnManager {
                 continue;
             }
 
-            // Yuva doluysa ve oyuncunun kendi eşyasıysa envanterdeki boş alana taşı
-            if (current != null && !current.getType().isAir()) {
+            // Ayrı envanter modu kapalıysa ve yuva doluysa boş alana taşı
+            if (!separateInventory && current != null && !current.getType().isAir()) {
                 int emptySlot = findEmptyStorageSlot(player);
                 if (emptySlot != -1) {
                     player.getInventory().setItem(emptySlot, current);
                 } else {
                     HashMap<Integer, ItemStack> leftovers = player.getInventory().addItem(current);
                     if (!leftovers.isEmpty()) {
-                        // Çanta tamamen doluysa eşyasını silme
                         continue;
                     }
                 }
@@ -211,6 +244,7 @@ public class SpawnManager {
 
             player.getInventory().setItem(slot, spawnItem);
         }
+        player.updateInventory();
     }
 
     private int findEmptyStorageSlot(Player player) {
@@ -224,18 +258,11 @@ public class SpawnManager {
     }
 
     public void removeSpawnItem(Player player) {
-        removeSpawnItems(player);
+        handlePlayerLeaveSpawn(player);
     }
 
     public void removeSpawnItems(Player player) {
         if (player == null || !player.isOnline()) return;
-
-        // Spawndan çıkınca hayatta kalma (Survival) moduna geri döndür
-        if (adventureMode && !player.isOp() && !player.hasPermission("kunefekomut.bypass")) {
-            if (player.getGameMode() == org.bukkit.GameMode.ADVENTURE) {
-                player.setGameMode(org.bukkit.GameMode.SURVIVAL);
-            }
-        }
 
         boolean removed = false;
         ItemStack[] contents = player.getInventory().getContents();
@@ -269,12 +296,20 @@ public class SpawnManager {
         return protectInteractions;
     }
 
+    public boolean isSeparateInventory() {
+        return separateInventory;
+    }
+
+    public SpawnInventoryBackup getInventoryBackup() {
+        return inventoryBackup;
+    }
+
     public void updateAllPlayers() {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (isInSpawn(p.getLocation())) {
-                giveSpawnItems(p);
+                handlePlayerEnterSpawn(p);
             } else {
-                removeSpawnItems(p);
+                handlePlayerLeaveSpawn(p);
             }
         }
     }
